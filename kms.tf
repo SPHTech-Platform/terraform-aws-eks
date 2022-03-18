@@ -1,0 +1,18 @@
+module "kms_secret" {
+  source  = "app.terraform.io/sph/kms/aws"
+  version = "~> 0.1.0"
+
+  key_description = "Encrypt Kubernetes secret for EKS Cluster ${var.cluster_name}"
+  alias           = "alias/${join("-", [var.cluster_name, "secrets"])}"
+}
+
+module "kms_ebs" {
+  source  = "app.terraform.io/sph/kms/aws"
+  version = "~> 0.1.0"
+
+  key_description = "EBS Key for EKS Cluster ${var.cluster_name}"
+  alias           = "alias/${join("-", [var.cluster_name, "ebs"])}"
+  key_policy_statements = [
+    data.aws_iam_policy_document.kms_ebs.json,
+  ]
+}

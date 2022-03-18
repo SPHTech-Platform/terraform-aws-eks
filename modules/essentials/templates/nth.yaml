@@ -1,0 +1,179 @@
+# Default values for aws-node-termination-handler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: ${image}
+  # Overrides the image tag whose default is {{ printf "v%s" .Chart.AppVersion }}
+  tag: ${tag}
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ${fullname_override}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use. If namenot set and create is true, a name is generated using fullname template
+  name: ${service_account}
+  annotations:
+    eks.amazonaws.com/role-arn: ${iam_role_arn}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Specifies if PodSecurityPolicy resources should be created
+  pspEnabled: false
+
+customLabels: {}
+
+podLabels: {}
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  runAsUser: 1000
+  runAsGroup: 1000
+
+terminationGracePeriodSeconds:
+
+resources: ${resources}
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+# Extra environment variables
+extraEnv:
+  - name: AWS_STS_REGIONAL_ENDPOINTS
+    value: regional
+
+# Liveness probe settings
+probes:
+  httpGet:
+    path: /healthz
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+# Set the log level
+logLevel: info
+
+# Log messages in JSON format
+jsonLogging: ${json_logging}
+
+enablePrometheusServer: false
+prometheusServerPort: 9092
+
+# dryRun tells node-termination-handler to only log calls to kubernetes control plane
+dryRun: ${dry_run}
+
+# Cordon but do not drain nodes upon spot interruption termination notice.
+cordonOnly: ${cordon_only}
+
+# Taint node upon spot interruption termination notice.
+taintNode: ${taint_node}
+
+# deleteLocalData tells kubectl to continue even if there are pods using
+# emptyDir (local data that will be deleted when the node is drained).
+deleteLocalData: true
+
+# ignoreDaemonSets causes kubectl to skip Daemon Set managed pods.
+ignoreDaemonSets: true
+
+# podTerminationGracePeriod is time in seconds given to each pod to terminate gracefully. If negative, the default value specified in the pod will be used.
+podTerminationGracePeriod: -1
+
+# nodeTerminationGracePeriod specifies the period of time in seconds given to each NODE to terminate gracefully. Node draining will be scheduled based on this value to optimize the amount of compute time, but still safely drain the node before an event.
+nodeTerminationGracePeriod: 120
+
+# emitKubernetesEvents If true, Kubernetes events will be emitted when interruption events are received and when actions are taken on Kubernetes nodes. In IMDS Processor mode a default set of annotations with all the node metadata gathered from IMDS will be attached to each event
+emitKubernetesEvents: false
+
+# kubernetesEventsExtraAnnotations A comma-separated list of key=value extra annotations to attach to all emitted Kubernetes events
+# Example: "first=annotation,sample.annotation/number=two"
+kubernetesEventsExtraAnnotations: ""
+
+# webhookURL if specified, posts event data to URL upon instance interruption action.
+webhookURL: ""
+
+# Webhook URL will be fetched from the secret store using the given name.
+webhookURLSecretName: ""
+
+# webhookHeaders if specified, replaces the default webhook headers.
+webhookHeaders: ""
+
+# webhookProxy if specified, uses this HTTP(S) proxy configuration.
+webhookProxy: ""
+
+# webhookTemplate if specified, replaces the default webhook message template.
+webhookTemplate: ""
+
+# webhook template file will be fetched from given config map name
+# if specified, replaces the default webhook message with the content of the template file
+webhookTemplateConfigMapName: ""
+
+# template file name stored in configmap
+webhookTemplateConfigMapKey: ""
+
+# enableSqsTerminationDraining If true, this turns on queue-processor mode which drains nodes when an SQS termination event is received
+enableSqsTerminationDraining: true
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Queue Processor Mode
+# ---------------------------------------------------------------------------------------------------------------------
+
+# The number of replicas in the NTH deployment when using queue-processor mode (NOTE: increasing this may cause duplicate webhooks since NTH pods are stateless)
+replicas: ${replicas}
+
+# Specify the update strategy for the deployment
+strategy: {}
+
+# podDisruptionBudget specifies the disruption budget for the controller pods.
+# Disruption budget will be configured only when the replicaCount is greater than 1
+podDisruptionBudget:
+ minAvailable: ${pdb_min_available}
+
+serviceMonitor:
+  # Specifies whether ServiceMonitor should be created
+  # this needs enableSqsTerminationDraining: true
+  # and enablePrometheusServer: true
+  create: false
+  # Specifies whether the ServiceMonitor should be created in a different namespace than
+  # the Helm release
+  namespace:
+  # Additional labels to add to the metadata
+  labels: {}
+  # The Prometheus scrape interval
+  interval: 30s
+  # The number of scraped samples that will be accepted
+  sampleLimit: 5000
+
+priorityClassName: ${priority_class}
+
+# If specified, use the AWS region for AWS API calls
+awsRegion: ${region}
+
+# Listens for messages on the specified SQS queue URL
+queueURL: "${sqs_queue_url}"
+
+# The maximum amount of parallel event processors to handle concurrent events
+workers: 10
+
+# If true, check that the instance is tagged with "aws-node-termination-handler/managed" as the key before draining the node
+checkASGTagBeforeDraining: true
+
+# The tag to ensure is on a node if checkASGTagBeforeDraining is true
+managedAsgTag: "aws-node-termination-handler/managed"
+
+# If true, assume that ASG tags will be appear on the ASG's instances
+assumeAsgTagPropagation: false
