@@ -19,6 +19,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: latest
+          cli_config_credentials_token: ${{ secrets.TFE_TOKEN }}
       - name: Terraform init
         run: terraform init
       - name: precommit run hooks
@@ -42,6 +43,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: latest
+          cli_config_credentials_token: ${{ secrets.TFE_TOKEN }}
       - name: Terraform init
         run: terraform init
       - name: Run tflint with review comment on PR
