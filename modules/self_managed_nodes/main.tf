@@ -40,7 +40,7 @@ locals {
 
 module "self_managed_group" {
   source  = "terraform-aws-modules/eks/aws//modules/self-managed-node-group"
-  version = "~> 18.7.2"
+  version = "~> 18.20.0"
 
   for_each = local.self_managed_node_groups
 
@@ -157,5 +157,6 @@ module "self_managed_group" {
   security_group_rules           = try(each.value.security_group_rules, local.self_managed_node_group_defaults.security_group_rules, {})
   security_group_tags            = try(each.value.security_group_tags, local.self_managed_node_group_defaults.security_group_tags, {})
 
-  tags = merge(var.tags, try(each.value.tags, local.self_managed_node_group_defaults.tags, {}))
+  tags             = merge(var.tags, try(each.value.tags, local.self_managed_node_group_defaults.tags, {}))
+  use_default_tags = true
 }

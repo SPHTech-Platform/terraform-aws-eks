@@ -1,6 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 18.7.2"
+  version = "~> 18.20.0"
 
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
@@ -63,4 +63,11 @@ module "eks" {
   enable_irsa = true
 
   create_node_security_group = true
+
+  # aws-auth configmap
+  manage_aws_auth_configmap               = true
+  aws_auth_node_iam_role_arns_non_windows = [aws_iam_role.workers.arn]
+  aws_auth_roles                          = var.role_mapping
+  aws_auth_users                          = var.user_mapping
+  aws_auth_accounts                       = []
 }
