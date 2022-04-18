@@ -1,5 +1,5 @@
 module "kms_secret" {
-  source  = "app.terraform.io/sph/kms/aws"
+  source  = "SPHTech-Platform/kms/aws"
   version = "~> 0.1.0"
 
   key_description = "Encrypt Kubernetes secret for EKS Cluster ${var.cluster_name}"
@@ -7,7 +7,7 @@ module "kms_secret" {
 }
 
 module "kms_ebs" {
-  source  = "app.terraform.io/sph/kms/aws"
+  source  = "SPHTech-Platform/kms/aws"
   version = "~> 0.1.0"
 
   key_description = "EBS Key for EKS Cluster ${var.cluster_name}"
