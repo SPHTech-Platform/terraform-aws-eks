@@ -6,6 +6,6 @@ on:
       - main
 jobs:
   ci:
-    uses: SPHTech-Platform/reusable-workflows/terraform/ci.yaml@main
+    uses: SPHTech-Platform/reusable-workflows/.github/workflows/terraform.yaml@main
     with:
       upload_sarif: true
