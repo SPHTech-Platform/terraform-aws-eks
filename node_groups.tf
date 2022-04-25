@@ -59,7 +59,7 @@ locals {
 module "node_groups" {
   source = "./modules/self_managed_nodes"
 
-  cluster_name = var.cluster_name
+  cluster_name = module.eks.cluster_id
 
   worker_iam_instance_profile_arn = aws_iam_instance_profile.workers.arn
 
