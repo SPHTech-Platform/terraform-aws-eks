@@ -53,7 +53,7 @@ the type of images:
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_self_managed_group"></a> [self\_managed\_group](#module\_self\_managed\_group) | terraform-aws-modules/eks/aws//modules/self-managed-node-group | ~> 18.7.2 |
+| <a name="module_self_managed_group"></a> [self\_managed\_group](#module\_self\_managed\_group) | terraform-aws-modules/eks/aws//modules/self-managed-node-group | ~> 18.20.0 |
 
 ## Resources
 
