@@ -49,8 +49,23 @@ variable "workers_iam_boundary" {
 }
 
 #######################
-# Cluster RBAC (AWS Auth)
+# Cluster RBAC (AWS Auth) 
 #######################
+
+# For Self managed nodes groups set the create_aws_auth to true
+variable "create_aws_auth" {
+  description = "IAM boundary for the workers IAM role, if any"
+  type        = bool
+  default     = true
+}
+
+# For managed node groups and fargate profile set manage_aws_auth to true
+variable "manage_aws_auth" {
+  description = "IAM boundary for the workers IAM role, if any"
+  type        = bool
+  default     = false
+}
+
 variable "role_mapping" {
   description = "List of IAM roles to give access to the EKS cluster"
   type = list(object({

@@ -65,8 +65,8 @@ module "eks" {
   create_node_security_group = true
 
   # aws-auth configmap
-  create_aws_auth_configmap               = true
-  manage_aws_auth_configmap               = true
+  create_aws_auth_configmap               = var.create_aws_auth
+  manage_aws_auth_configmap               = var.manage_aws_auth
   aws_auth_node_iam_role_arns_non_windows = [aws_iam_role.workers.arn]
   aws_auth_roles                          = var.role_mapping
   aws_auth_users                          = var.user_mapping
