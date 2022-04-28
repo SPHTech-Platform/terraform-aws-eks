@@ -49,8 +49,22 @@ variable "workers_iam_boundary" {
 }
 
 #######################
-# Cluster RBAC (AWS Auth)
+# Cluster RBAC (AWS Auth) 
 #######################
+
+# For Self managed nodes groups set the create_aws_auth to true
+variable "create_aws_auth_configmap" {
+  description = "Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap`"
+  type        = bool
+  default     = true
+}
+
+variable "manage_aws_auth_configmap" {
+  description = "Determines whether to manage the aws-auth configmap"
+  type        = bool
+  default     = false
+}
+
 variable "role_mapping" {
   description = "List of IAM roles to give access to the EKS cluster"
   type = list(object({
