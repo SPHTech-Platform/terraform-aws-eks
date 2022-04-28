@@ -49,7 +49,7 @@ variable "workers_iam_boundary" {
 }
 
 #######################
-# Cluster RBAC (AWS Auth) 
+# Cluster RBAC (AWS Auth)
 #######################
 
 # For Self managed nodes groups set the create_aws_auth to true
