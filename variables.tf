@@ -53,15 +53,14 @@ variable "workers_iam_boundary" {
 #######################
 
 # For Self managed nodes groups set the create_aws_auth to true
-variable "create_aws_auth" {
-  description = "IAM boundary for the workers IAM role, if any"
+variable "create_aws_auth_configmap" {
+  description = "Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap`"
   type        = bool
   default     = true
 }
 
-# For managed node groups and fargate profile set manage_aws_auth to true
-variable "manage_aws_auth" {
-  description = "IAM boundary for the workers IAM role, if any"
+variable "manage_aws_auth_configmap" {
+  description = "Determines whether to manage the aws-auth configmap"
   type        = bool
   default     = false
 }
