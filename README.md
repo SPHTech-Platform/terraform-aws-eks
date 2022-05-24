@@ -15,7 +15,7 @@
 In addition, it is expected that all worker nodes will share one IAM Role and a common security
 group.
 
-- IAM Role contains the necessart policies for nodes to join the EKS cluster and optionally manage
+- IAM Role contains the necessary policies for nodes to join the EKS cluster and optionally manage
   ENI for CNI purposes. IAM Role for Service Account usage is **strongly recommended**.
 - The Security Group has default rules to allow the cluster to function. Additional groups can be
   added for additional node groups.
