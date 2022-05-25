@@ -68,7 +68,7 @@ variable "manage_aws_auth_configmap" {
 variable "role_mapping" {
   description = "List of IAM roles to give access to the EKS cluster"
   type = list(object({
-    role_arn = string
+    rolearn  = string
     username = string
     groups   = list(string)
   }))
@@ -237,7 +237,7 @@ variable "node_termination_handler_sqs_name" {
 }
 
 variable "node_termination_handler_spot_event_name" {
-  description = "Override name of the Cloudwatch Event to handle spot temrination of nodes"
+  description = "Override name of the Cloudwatch Event to handle spot termination of nodes"
   type        = string
   default     = ""
 }
