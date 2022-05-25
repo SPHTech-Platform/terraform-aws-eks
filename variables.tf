@@ -68,7 +68,7 @@ variable "manage_aws_auth_configmap" {
 variable "role_mapping" {
   description = "List of IAM roles to give access to the EKS cluster"
   type = list(object({
-    role_arn = string
+    rolearn  = string
     username = string
     groups   = list(string)
   }))
