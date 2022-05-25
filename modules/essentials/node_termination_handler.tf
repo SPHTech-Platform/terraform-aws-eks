@@ -43,7 +43,7 @@ resource "helm_release" "node_termination_handler" {
 
 module "node_termination_handler_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 4.13.1"
+  version = "~> 4.21.1"
 
   role_name_prefix              = coalesce(var.node_termination_handler_iam_role, "${var.cluster_name}-nth-")
   role_description              = "EKS Cluster ${var.cluster_name} Node Termination Handler"
