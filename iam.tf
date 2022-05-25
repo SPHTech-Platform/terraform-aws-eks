@@ -75,7 +75,7 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 ############################
 module "vpc_cni_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 4.13.1"
+  version = "~> 4.21.1"
 
   role_name_prefix = "${var.cluster_name}-cni-"
   role_description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
@@ -93,7 +93,7 @@ module "vpc_cni_irsa_role" {
 
 module "ebs_csi_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 4.13.1"
+  version = "~> 4.21.1"
 
   role_name_prefix = "${var.cluster_name}-ebs-csi-"
   role_description = "EKS Cluster ${var.cluster_name} EBS CSI Addon"
