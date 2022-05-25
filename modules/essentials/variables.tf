@@ -282,7 +282,7 @@ variable "csi_allow_volume_expansion" {
 
 variable "csi_parameters_override" {
   description = <<-EOF
-    Parmeters for the StorageClass for Raft.
+    Parameters for the StorageClass for Raft.
     For AWS EBS see https://kubernetes.io/docs/concepts/storage/storage-classes/#aws-ebs
     for AWS EBS CSI driver see https://github.com/kubernetes-sigs/aws-ebs-csi-driver#createvolume-parameters
     EOF
@@ -341,7 +341,7 @@ variable "node_termination_handler_iam_role" {
 }
 
 variable "node_termination_handler_permissions_boundary" {
-  description = "IAM Bounadary for the Node Termination Handler IAM Role, if any"
+  description = "IAM Boundary for the Node Termination Handler IAM Role, if any"
   type        = string
   default     = null
 }
@@ -422,7 +422,7 @@ variable "node_termination_handler_resources" {
 }
 
 variable "node_termination_handler_spot_interruption_draining_enabled" {
-  description = "Drain nodes when the spot interruption termination notice is receieved"
+  description = "Drain nodes when the spot interruption termination notice is received"
   type        = bool
   default     = true
 }

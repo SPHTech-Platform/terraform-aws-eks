@@ -1,7 +1,7 @@
 # EKS Self Managed Nodes
 
 This is an opinionated module to create one or more self-managed node groups on EKS. It depends on
-the `eks` module by making the following assunmptions:
+the `eks` module by making the following assumptions:
 
 - IAM Roles for Service Accounts is in use.
 - Therefore, all worker nodes will share one IAM role which has the necessary policies for EKS
@@ -13,7 +13,7 @@ the `eks` module by making the following assunmptions:
   is so that each ASG will create instances in exactly one AZ and subnet and allow the cluster
   autoscaler to work properly.
 - ASGs will be tagged to allow the Cluster AutoScaler to scale the node group.
-- ASG lifecycle hook is created to enable instance refresh facillitated by
+- ASG lifecycle hook is created to enable instance refresh facilitated by
   [AWS Node Termination Handler](https://github.com/aws/aws-node-termination-handler).
 
 ## Node Groups Specification

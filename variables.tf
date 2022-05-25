@@ -237,7 +237,7 @@ variable "node_termination_handler_sqs_name" {
 }
 
 variable "node_termination_handler_spot_event_name" {
-  description = "Override name of the Cloudwatch Event to handle spot temrination of nodes"
+  description = "Override name of the Cloudwatch Event to handle spot termination of nodes"
   type        = string
   default     = ""
 }

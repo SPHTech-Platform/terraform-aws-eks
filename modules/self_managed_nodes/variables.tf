@@ -71,7 +71,7 @@ variable "node_termination_handler_sqs_arn" {
 }
 
 variable "node_termination_handler_event_name" {
-  description = "Override name of the Cloudwatch Event to handle temrination of nodes"
+  description = "Override name of the Cloudwatch Event to handle termination of nodes"
   type        = string
   default     = ""
 }
