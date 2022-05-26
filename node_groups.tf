@@ -1,5 +1,6 @@
 locals {
   default_group = {
+    name            = var.default_group_name
     use_name_prefix = true
 
     platform      = "bottlerocket"
