@@ -1,6 +1,10 @@
 locals {
   default_group = {
     use_name_prefix = true
+    name            = var.default_group_name
+
+    launch_template_use_name_prefix = true
+    launch_template_name            = var.default_group_launch_template_name
 
     platform      = "bottlerocket"
     ami_id        = data.aws_ami.eks_default_bottlerocket.id

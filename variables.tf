@@ -167,6 +167,12 @@ variable "default_group_name" {
   default     = "default"
 }
 
+variable "default_group_launch_template_name" {
+  description = "Name of the default node group launch template"
+  type        = string
+  default     = "default"
+}
+
 variable "default_group_instance_type" {
   description = "Instance type for the default node group"
   type        = string
