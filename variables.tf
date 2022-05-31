@@ -78,7 +78,7 @@ variable "role_mapping" {
 variable "user_mapping" {
   description = "List of IAM Users to give access to the EKS Cluster"
   type = list(object({
-    userarn = string
+    userarn  = string
     username = string
     groups   = list(string)
   }))
