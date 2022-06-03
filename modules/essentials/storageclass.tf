@@ -1,4 +1,6 @@
 resource "kubernetes_storage_class" "default" {
+  count = var.csi_default_storage_class ? 1 : 0
+
   metadata {
     name = var.csi_storage_class
 
@@ -23,47 +25,32 @@ resource "kubernetes_storage_class" "default" {
   }, var.csi_parameters_override)
 }
 
-# Unmark the other StorageClass as default
-locals {
-  kubeconfig = yamlencode({
-    apiVersion      = "v1"
-    kind            = "Config"
-    current-context = "terraform"
-    clusters = [{
-      name = var.cluster_name
-      cluster = {
-        certificate-authority-data = data.aws_eks_cluster.this.certificate_authority[0].data
-        server                     = data.aws_eks_cluster.this.endpoint
-      }
-    }]
-    contexts = [{
-      name = "terraform"
-      context = {
-        cluster = var.cluster_name
-        user    = "terraform"
-      }
-    }]
-    users = [{
-      name = "terraform"
-      user = {
-        token = data.aws_eks_cluster_auth.this.token
-      }
-    }]
-  })
-}
+# Unmark the gp2 StorageClass as default
+resource "kubectl_manifest" "gp2_storage_class" {
+  count = var.csi_default_storage_class ? 1 : 0
+  depends_on = [
+    kubernetes_storage_class.default,
+  ]
 
-resource "null_resource" "patch_storageclass" {
-  triggers = {
-    cmd_patch = <<-EOT
-      kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}' --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-    EOT
-  }
-
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    environment = {
-      KUBECONFIG = base64encode(local.kubeconfig)
+  yaml_body = yamlencode({
+    apiVersion = "storage.k8s.io/v1"
+    kind       = "StorageClass"
+    metadata = {
+      annotations = {
+        "storageclass.kubernetes.io/is-default-class" = "false"
+      }
+      name = "gp2"
     }
-    command = self.triggers.cmd_patch
-  }
+    parameters = {
+      fsType = "ext4"
+      type   = "gp2"
+    }
+    provisioner       = "kubernetes.io/aws-ebs"
+    reclaimPolicy     = "Delete"
+    volumeBindingMode = "WaitForFirstConsumer"
+  })
+
+  server_side_apply = true
+  force_conflicts   = true
+  apply_only        = true
 }

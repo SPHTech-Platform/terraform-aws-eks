@@ -298,6 +298,12 @@ variable "csi_encryption_key_id" {
   default     = ""
 }
 
+variable "csi_default_storage_class" {
+  description = "Set the CSI StorageClass as the default storage class"
+  type        = bool
+  default     = true
+}
+
 #####################
 # ECR Pull Through Cache
 #####################
