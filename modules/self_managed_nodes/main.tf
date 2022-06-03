@@ -9,11 +9,6 @@ locals {
 
       "aws-node-termination-handler/managed" = "true"
       },
-      # Handle Spot
-      try(var.self_managed_node_groups.instance_market_options.market_type, null) == "spot" ? {
-        "k8s.io/cluster-autoscaler/node-template/label/lifecycle"           = "spot"
-        "k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot" = "true"
-      } : {},
       lookup(var.self_managed_node_group_defaults, "tags", {}),
     )
   }, var.self_managed_node_group_defaults)
@@ -35,9 +30,18 @@ locals {
         subnet_ids = [subnet]
 
         # Tags for AutoScaler to scale from zero for CSI: See https://github.com/kubernetes/autoscaler/issues/3845
-        tags = merge(local.self_managed_node_group_defaults.tags, try(group.tags, {}), {
-          "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = data.aws_subnet.subnets[subnet].availability_zone
-        })
+        tags = merge(
+          local.self_managed_node_group_defaults.tags,
+          try(group.tags, {}),
+          {
+            "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = data.aws_subnet.subnets[subnet].availability_zone
+          },
+          # Handle Spot
+          try(var.self_managed_node_groups.instance_market_options.market_type, null) == "spot" ? {
+            "k8s.io/cluster-autoscaler/node-template/label/lifecycle"           = "spot"
+            "k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot" = "true"
+          } : {},
+        )
       },
     )
   }]...)
