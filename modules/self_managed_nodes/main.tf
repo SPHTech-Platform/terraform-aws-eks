@@ -10,7 +10,7 @@ locals {
       "aws-node-termination-handler/managed" = "true"
       },
       # Handle Spot
-      lookup(var.self_managed_node_group_defaults.instance_market_options, "market_type", null) == "spot" ? {
+      try(var.self_managed_node_groups.instance_market_options.market_type, null) == "spot" ? {
         "k8s.io/cluster-autoscaler/node-template/label/lifecycle"           = "spot"
         "k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot" = "true"
       } : {},
