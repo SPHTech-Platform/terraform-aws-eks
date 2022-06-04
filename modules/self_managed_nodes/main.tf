@@ -37,7 +37,7 @@ locals {
             "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = data.aws_subnet.subnets[subnet].availability_zone
           },
           # Handle Spot
-          try(var.self_managed_node_groups.instance_market_options.market_type, false) == "spot" ? {
+          try(group.instance_market_options.market_type, false) == "spot" ? {
             "k8s.io/cluster-autoscaler/node-template/label/lifecycle"           = "spot"
             "k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot" = "true"
           } : {},
