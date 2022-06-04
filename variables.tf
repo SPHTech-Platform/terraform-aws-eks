@@ -9,7 +9,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.21"
+  default     = "1.22"
 }
 
 variable "cluster_enabled_log_types" {
@@ -60,9 +60,9 @@ variable "create_aws_auth_configmap" {
 }
 
 variable "manage_aws_auth_configmap" {
-  description = "Determines whether to manage the aws-auth configmap"
+  description = "Determines whether to manage the contents of the aws-auth configmap"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "role_mapping" {
