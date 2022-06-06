@@ -25,32 +25,20 @@ resource "kubernetes_storage_class" "default" {
   }, var.csi_parameters_override)
 }
 
-# Unmark the gp2 StorageClass as default
-resource "kubectl_manifest" "gp2_storage_class" {
+resource "kubernetes_annotations" "gp2_storage_class" {
   count = var.csi_default_storage_class ? 1 : 0
   depends_on = [
     kubernetes_storage_class.default,
   ]
 
-  yaml_body = yamlencode({
-    apiVersion = "storage.k8s.io/v1"
-    kind       = "StorageClass"
-    metadata = {
-      annotations = {
-        "storageclass.kubernetes.io/is-default-class" = "false"
-      }
-      name = "gp2"
-    }
-    parameters = {
-      fsType = "ext4"
-      type   = "gp2"
-    }
-    provisioner       = "kubernetes.io/aws-ebs"
-    reclaimPolicy     = "Delete"
-    volumeBindingMode = "WaitForFirstConsumer"
-  })
+  kind        = "storage.k8s.io"
+  api_version = "v1"
+  metadata {
+    name = "gp2"
+  }
+  annotations = {
+    "storageclass.kubernetes.io/is-default-class" = "false"
+  }
 
-  server_side_apply = true
-  force_conflicts   = true
-  apply_only        = true
+  force = true
 }
