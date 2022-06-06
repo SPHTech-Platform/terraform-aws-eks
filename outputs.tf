@@ -33,6 +33,16 @@ output "cluster_name" {
   value       = module.eks.cluster_id
 }
 
+output "cluster_endpoint" {
+  description = "Endpoint of the EKS Cluster"
+  value       = module.eks.cluster_endpoint
+}
+
+output "cluster_certificate_authority_data" {
+  description = "Base64 Encoded Cluster CA Data"
+  value       = module.eks.cluster_certificate_authority_data
+}
+
 output "ebs_kms_key_id" {
   description = "KMS Key ID used for EBS encryption"
   value       = module.kms_ebs.key_id
