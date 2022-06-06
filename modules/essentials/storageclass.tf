@@ -1,4 +1,6 @@
 resource "kubernetes_storage_class" "default" {
+  count = var.csi_default_storage_class ? 1 : 0
+
   metadata {
     name = var.csi_storage_class
 
@@ -23,47 +25,20 @@ resource "kubernetes_storage_class" "default" {
   }, var.csi_parameters_override)
 }
 
-# Unmark the other StorageClass as default
-locals {
-  kubeconfig = yamlencode({
-    apiVersion      = "v1"
-    kind            = "Config"
-    current-context = "terraform"
-    clusters = [{
-      name = var.cluster_name
-      cluster = {
-        certificate-authority-data = data.aws_eks_cluster.this.certificate_authority[0].data
-        server                     = data.aws_eks_cluster.this.endpoint
-      }
-    }]
-    contexts = [{
-      name = "terraform"
-      context = {
-        cluster = var.cluster_name
-        user    = "terraform"
-      }
-    }]
-    users = [{
-      name = "terraform"
-      user = {
-        token = data.aws_eks_cluster_auth.this.token
-      }
-    }]
-  })
-}
+resource "kubernetes_annotations" "gp2_storage_class" {
+  count = var.csi_default_storage_class ? 1 : 0
+  depends_on = [
+    kubernetes_storage_class.default,
+  ]
 
-resource "null_resource" "patch_storageclass" {
-  triggers = {
-    cmd_patch = <<-EOT
-      kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}' --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-    EOT
+  kind        = "storage.k8s.io"
+  api_version = "v1"
+  metadata {
+    name = "gp2"
+  }
+  annotations = {
+    "storageclass.kubernetes.io/is-default-class" = "false"
   }
 
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    environment = {
-      KUBECONFIG = base64encode(local.kubeconfig)
-    }
-    command = self.triggers.cmd_patch
-  }
+  force = true
 }
