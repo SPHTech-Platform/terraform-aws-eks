@@ -1,5 +1,50 @@
 # EKS Essentials
 
+## Usage
+
+### Defining Providers
+
+Definining providers in reusable modules is
+[deprecated](https://www.terraform.io/language/modules/develop/providers) and causes features like
+modules `for_each` and `count` to not work. In addition to the `aws` providers, the main module
+and submodules can require additional Kubernetes providers to be configured.
+
+```hcl
+provider "aws" {
+  # ...
+}
+
+data "aws_eks_cluster" "this" {
+  name = var.cluster_name
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = var.cluster_name
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.this.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.this.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.this.token
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.this.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.this.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.this.token
+  }
+
+  experiments {
+    manifest = true
+  }
+}
+
+module "eks_essentials" {
+  # ...
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
