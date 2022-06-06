@@ -31,8 +31,8 @@ resource "kubernetes_annotations" "gp2_storage_class" {
     kubernetes_storage_class.default,
   ]
 
-  kind        = "storage.k8s.io"
-  api_version = "v1"
+  api_version = "storage.k8s.io/v1"
+  kind        = "StorageClass"
   metadata {
     name = "gp2"
   }
