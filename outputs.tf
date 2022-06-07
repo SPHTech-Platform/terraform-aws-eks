@@ -28,6 +28,11 @@ output "oidc_provider_arn" {
   value       = module.eks.oidc_provider_arn
 }
 
+output "cluster_oidc_issuer_url" {
+  description = "The URL on the EKS cluster for the OpenID Connect identity provider"
+  value       = module.eks.cluster_oidc_issuer_url
+}
+
 output "cluster_name" {
   description = "EKS Cluster name created"
   value       = module.eks.cluster_id
