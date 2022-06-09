@@ -15,8 +15,8 @@ locals {
 
   metadata_options = {
     http_endpoint               = "enabled"
-    http_tokens                 = "required"
-    http_put_response_hop_limit = 1
+    http_tokens                 = var.force_imdsv2 ? "required" : "optional"
+    http_put_response_hop_limit = var.force_imdsv2 && var.force_irsa ? 1 : 2
   }
 
   # Cartesian product of node groups and individual subnets

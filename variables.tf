@@ -233,6 +233,18 @@ variable "self_managed_node_group_defaults" {
   }
 }
 
+variable "force_imdsv2" {
+  description = "Force IMDSv2 metadata server."
+  type        = bool
+  default     = true
+}
+
+variable "force_irsa" {
+  description = "Force usage of IAM Roles for Service Account"
+  type        = bool
+  default     = true
+}
+
 #####################################
 # Instance Refresh/Node Termination Handler
 #####################################
