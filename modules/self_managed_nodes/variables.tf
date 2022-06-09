@@ -75,3 +75,18 @@ variable "node_termination_handler_event_name" {
   type        = string
   default     = ""
 }
+
+############################
+# Metadata Server
+############################
+variable "force_imdsv2" {
+  description = "Force IMDSv2 metadata server."
+  type        = bool
+  default     = true
+}
+
+variable "force_irsa" {
+  description = "Force usage of IAM Roles for Service Account"
+  type        = bool
+  default     = true
+}

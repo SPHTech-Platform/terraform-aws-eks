@@ -46,8 +46,8 @@ the type of images:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.16.0 |
-| <a name="provider_time"></a> [time](#provider\_time) | 0.7.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.0 |
+| <a name="provider_time"></a> [time](#provider\_time) | ~> 0.7 |
 
 ## Modules
 
@@ -72,6 +72,8 @@ the type of images:
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_cluster_security_group_id"></a> [cluster\_security\_group\_id](#input\_cluster\_security\_group\_id) | Security Group ID of the master nodes | `string` | n/a | yes |
+| <a name="input_force_imdsv2"></a> [force\_imdsv2](#input\_force\_imdsv2) | Force IMDSv2 metadata server. | `bool` | `true` | no |
+| <a name="input_force_irsa"></a> [force\_irsa](#input\_force\_irsa) | Force usage of IAM Roles for Service Account | `bool` | `true` | no |
 | <a name="input_node_termination_handler_event_name"></a> [node\_termination\_handler\_event\_name](#input\_node\_termination\_handler\_event\_name) | Override name of the Cloudwatch Event to handle termination of nodes | `string` | `""` | no |
 | <a name="input_node_termination_handler_sqs_arn"></a> [node\_termination\_handler\_sqs\_arn](#input\_node\_termination\_handler\_sqs\_arn) | ARN of the SQS queue used to handle node termination events | `string` | n/a | yes |
 | <a name="input_self_managed_node_group_defaults"></a> [self\_managed\_node\_group\_defaults](#input\_self\_managed\_node\_group\_defaults) | Map of self-managed node group default configurations to override the built in defaults | `any` | <pre>{<br>  "create_iam_role": false,<br>  "create_security_group": false,<br>  "disk_size": 50,<br>  "instance_refresh": {<br>    "strategy": "Rolling"<br>  },<br>  "metadata_options": {<br>    "http_endpoint": "enabled",<br>    "http_put_response_hop_limit": 1,<br>    "http_tokens": "required",<br>    "instance_metadata_tags": "disabled"<br>  },<br>  "protect_from_scale_in": false,<br>  "update_launch_template_default_version": true<br>}</pre> | no |
