@@ -203,6 +203,12 @@ variable "default_group_subnet_ids" {
   default     = []
 }
 
+variable "only_critical_addons_enabled" {
+  description = "Enabling this option will taint default node group with CriticalAddonsOnly=true:NoSchedule taint. Changing this forces a new resource to be created."
+  type        = bool
+  default     = false
+}
+
 variable "self_managed_node_groups" {
   description = "Map of self-managed node group definitions to create"
   type        = any
