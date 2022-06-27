@@ -15,6 +15,8 @@ locals {
 
     subnet_ids = coalescelist(var.default_group_subnet_ids, var.subnet_ids)
 
+    only_critical_addons_enabled = var.only_critical_addons_enabled
+
     # See https://github.com/bottlerocket-os/bottlerocket#settings
     bootstrap_extra_args = <<-EOT
       # The admin host container provides SSH access and runs with "superpowers".
@@ -28,6 +30,10 @@ locals {
       enabled = true
       [settings.kubernetes.node-labels]
       ingress = "allowed"
+      %{if var.only_critical_addons_enabled}
+      [settings.kubernetes.node-taints]
+      CriticalAddonsOnly=true:NoSchedule
+      %{endif}
       EOT
 
     # See https://github.com/bottlerocket-os/bottlerocket#default-volumes

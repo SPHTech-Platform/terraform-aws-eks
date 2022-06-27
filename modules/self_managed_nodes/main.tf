@@ -41,6 +41,10 @@ locals {
             "k8s.io/cluster-autoscaler/node-template/label/lifecycle"           = "spot"
             "k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot" = "true"
           } : {},
+          # Allow only critical addons for default node group
+          try(group.only_critical_addons_enabled, false) ? {
+            "k8s.io/cluster-autoscaler/node-template/taint/CriticalAddonsOnly" = "true:NoSchedule"
+          } : {},
         )
       },
     )
