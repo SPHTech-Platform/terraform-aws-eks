@@ -36,10 +36,3 @@ resource "aws_iam_role_policy_attachment" "worker_ecr_pullthrough" {
   role       = var.worker_iam_role_name
   policy_arn = aws_iam_policy.ecr_cache[0].arn
 }
-
-resource "aws_iam_role_policy_attachment" "worker_ecr_pullthrough_existing" {
-  for_each = var.ecr_pull_through_existing_policy_arn
-
-  role       = var.worker_iam_role_name
-  policy_arn = each.key
-}

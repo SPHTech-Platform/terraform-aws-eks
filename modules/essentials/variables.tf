@@ -313,12 +313,6 @@ variable "configure_ecr_pull_through" {
   default     = true
 }
 
-variable "ecr_pull_through_existing_policy_arn" {
-  description = "Configure ECR Pull Through Cache IAM policy."
-  type        = set(string)
-  default     = []
-}
-
 variable "ecr_cache_iam_cache_policy" {
   description = "Name of ECR Cache IAM Policy"
   type        = string
