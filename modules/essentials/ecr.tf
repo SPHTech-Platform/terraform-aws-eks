@@ -38,7 +38,7 @@ resource "aws_iam_role_policy_attachment" "worker_ecr_pullthrough" {
 }
 
 resource "aws_iam_role_policy_attachment" "worker_ecr_pullthrough_existing" {
-  for_each = toset(var.ecr_pull_through_existing_policy_arn)
+  for_each = var.ecr_pull_through_existing_policy_arn
 
   role       = var.worker_iam_role_name
   policy_arn = each.key
