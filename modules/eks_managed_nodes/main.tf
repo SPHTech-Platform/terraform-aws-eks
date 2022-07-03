@@ -1,7 +1,7 @@
 locals {
 
   cluster_autoscaler_label_tags = merge([
-    for name, group in module.eks.eks_managed_node_groups : {
+    for name, group in var.eks_managed_node_groups : {
       for label_name, label_value in coalesce(group.node_group_labels, {}) : "${name}|label|${label_name}" => {
         autoscaling_group = group.node_group_autoscaling_group_names[0],
         key               = "k8s.io/cluster-autoscaler/node-template/label/${label_name}",
@@ -11,7 +11,7 @@ locals {
   ]...)
 
   cluster_autoscaler_taint_tags = merge([
-    for name, group in module.eks.eks_managed_node_groups : {
+    for name, group in var.eks_managed_node_groups : {
       for taint in coalesce(group.node_group_taints, []) : "${name}|taint|${taint.key}" => {
         autoscaling_group = group.node_group_autoscaling_group_names[0],
         key               = "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}"
