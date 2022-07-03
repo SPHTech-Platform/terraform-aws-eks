@@ -1,38 +1,47 @@
 locals {
 
-  cluster_autoscaler_label_tags = merge([
-    for name, group in var.eks_managed_node_groups : {
-      for label_name, label_value in coalesce(group.node_group_labels, {}) : "${name}|label|${label_name}" => {
-        autoscaling_group = group.node_group_autoscaling_group_names[0],
-        key               = "k8s.io/cluster-autoscaler/node-template/label/${label_name}",
-        value             = label_value,
-      }
-    }
-  ]...)
+  # cluster_autoscaler_label_tags = merge([
+  #   for name, group in var.eks_managed_node_groups : {
+  #     for label_name, label_value in coalesce(group.node_group_labels, {}) : "${name}|label|${label_name}" => {
+  #       autoscaling_group = group.node_group_autoscaling_group_names[0],
+  #       key               = "k8s.io/cluster-autoscaler/node-template/label/${label_name}",
+  #       value             = label_value,
+  #     }
+  #   }
+  # ]...)
 
-  cluster_autoscaler_taint_tags = merge([
-    for name, group in var.eks_managed_node_groups : {
-      for taint in coalesce(group.node_group_taints, []) : "${name}|taint|${taint.key}" => {
-        autoscaling_group = group.node_group_autoscaling_group_names[0],
-        key               = "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}"
-        value             = "${taint.value}:${taint.effect}"
-      }
-    }
-  ]...)
+  # cluster_autoscaler_taint_tags = merge([
+  #   for name, group in var.eks_managed_node_groups : {
+  #     for taint in coalesce(group.node_group_taints, []) : "${name}|taint|${taint.key}" => {
+  #       autoscaling_group = group.node_group_autoscaling_group_names[0],
+  #       key               = "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}"
+  #       value             = "${taint.value}:${taint.effect}"
+  #     }
+  #   }
+  # ]...)
 
-  cluster_autoscaler_asg_tags = merge(
-    local.cluster_autoscaler_label_tags,
-    local.cluster_autoscaler_taint_tags,
-    {
-      "k8s.io/cluster-autoscaler/enabled"             = "true"
-      "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
-    }
-  )
+  # cluster_autoscaler_asg_tags = merge(
+  #   local.cluster_autoscaler_label_tags,
+  #   local.cluster_autoscaler_taint_tags,
+  #   {
+  #     "k8s.io/cluster-autoscaler/enabled"             = "true"
+  #     "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
+  #   }
+  # )
 
   eks_managed_node_group_defaults = merge(
     {
       create_iam_role = false
       iam_role_arn    = var.worker_iam_role_arn
+
+      tags = merge({
+        "k8s.io/cluster-autoscaler/enabled"             = "true"
+        "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
+
+        "aws-node-termination-handler/managed" = "true"
+        },
+        lookup(var.eks_managed_node_group_defaults, "tags", {}),
+      )
     },
     var.eks_managed_node_group_defaults
   )
