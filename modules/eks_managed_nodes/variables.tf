@@ -1,3 +1,9 @@
+variable "tags" {
+  description = "Tags for all resources"
+  type        = map(string)
+  default     = {}
+}
+
 ############################
 # K8S Cluster Information
 ############################
@@ -19,6 +25,12 @@ variable "cluster_security_group_id" {
 variable "worker_security_group_id" {
   description = "Security Group ID of the worker nodes"
   type        = string
+}
+
+variable "cluster_service_ipv4_cidr" {
+  description = "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks"
+  type        = string
+  default     = null
 }
 
 ####################################
@@ -49,4 +61,19 @@ variable "eks_managed_node_group_defaults" {
     create_iam_role       = false
     create_security_group = false
   }
+}
+
+############################
+# Metadata Server
+############################
+variable "force_imdsv2" {
+  description = "Force IMDSv2 metadata server."
+  type        = bool
+  default     = true
+}
+
+variable "force_irsa" {
+  description = "Force usage of IAM Roles for Service Account"
+  type        = bool
+  default     = true
 }

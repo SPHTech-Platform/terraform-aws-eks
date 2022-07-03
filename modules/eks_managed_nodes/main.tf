@@ -37,6 +37,12 @@ locals {
     var.eks_managed_node_group_defaults
   )
 
+  metadata_options = {
+    http_endpoint               = "enabled"
+    http_tokens                 = var.force_imdsv2 ? "required" : "optional"
+    http_put_response_hop_limit = var.force_imdsv2 && var.force_irsa ? 1 : 2
+  }
+
   # Cartesian product of node groups and individual subnets
   # Multiple copies of each node group will be created with each subnet
   # defined in the original variable, this will not be needed when using Karpenter instead of CA.
@@ -78,7 +84,7 @@ module "eks_managed_node_group" {
   name            = try(each.value.name, each.key)
   use_name_prefix = try(each.value.use_name_prefix, local.eks_managed_node_group_defaults.use_name_prefix, true)
 
-  subnet_ids = try(each.value.subnet_ids, local.eks_managed_node_group_defaults.subnet_ids, var.subnet_ids)
+  subnet_ids = each.value.subnet_ids
 
   min_size     = try(each.value.min_size, local.eks_managed_node_group_defaults.min_size, 1)
   max_size     = try(each.value.max_size, local.eks_managed_node_group_defaults.max_size, 3)
@@ -159,7 +165,7 @@ module "eks_managed_node_group" {
   security_group_name               = try(each.value.security_group_name, local.eks_managed_node_group_defaults.security_group_name, null)
   security_group_use_name_prefix    = try(each.value.security_group_use_name_prefix, local.eks_managed_node_group_defaults.security_group_use_name_prefix, true)
   security_group_description        = try(each.value.security_group_description, local.eks_managed_node_group_defaults.security_group_description, "EKS managed node group security group")
-  vpc_id                            = try(each.value.vpc_id, local.eks_managed_node_group_defaults.vpc_id, var.vpc_id)
+  vpc_id                            = try(each.value.vpc_id, local.eks_managed_node_group_defaults.vpc_id, data.aws_eks_cluster.this.vpc_config[0].vpc_id)
   security_group_rules              = try(each.value.security_group_rules, local.eks_managed_node_group_defaults.security_group_rules, {})
   security_group_tags               = try(each.value.security_group_tags, local.eks_managed_node_group_defaults.security_group_tags, {})
 
