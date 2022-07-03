@@ -40,7 +40,7 @@ locals {
   # Cartesian product of node groups and individual subnets
   # Multiple copies of each node group will be created with each subnet
   # defined in the original variable, this will not be needed when using Karpenter instead of CA.
-  managed_node_groups = merge([for name, group in var.eks_managed_node_groups : {
+  eks_managed_node_groups = merge([for name, group in var.eks_managed_node_groups : {
     for subnet in try(group.subnet_ids, local.eks_managed_node_group_defaults.subnet_ids, data.aws_eks_cluster.this.vpc_config[0].subnet_ids) : "${name}-${subnet}" => merge(
       group,
       {
@@ -67,9 +67,7 @@ module "eks_managed_node_group" {
   source  = "terraform-aws-modules/eks/aws//modules/self-managed-node-group"
   version = "~> 18.21.0"
 
-  for_each = { for k, v in var.eks_managed_node_groups : k => v if var.create }
-
-  create = try(each.value.create, true)
+  for_each = local.eks_managed_node_groups
 
   cluster_name              = var.cluster_name
   cluster_version           = try(each.value.cluster_version, local.eks_managed_node_group_defaults.cluster_version, data.aws_eks_cluster.this.version)
