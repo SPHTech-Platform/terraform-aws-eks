@@ -78,7 +78,7 @@ module "eks_managed_node_group" {
   cluster_name              = var.cluster_name
   cluster_version           = try(each.value.cluster_version, local.eks_managed_node_group_defaults.cluster_version, data.aws_eks_cluster.this.version)
   cluster_security_group_id = var.cluster_security_group_id
-  cluster_ip_family         = var.cluster_ip_family
+  cluster_ip_family         = "ipv4"
 
   # EKS Managed Node Group
   name            = try(each.value.name, each.key)
