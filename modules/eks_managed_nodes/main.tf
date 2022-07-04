@@ -59,7 +59,8 @@ locals {
     for subnet in try(group.subnet_ids, local.eks_managed_node_group_defaults.subnet_ids, data.aws_eks_cluster.this.vpc_config[0].subnet_ids) : "${name}-${subnet}" => merge(
       group,
       {
-        name       = "${try(group.name, name, "unnamed")}-${data.aws_subnet.subnets[subnet].availability_zone}"
+        # nodeGroupName can't be longer than 63 characters!
+        name       = "${try(group.name, name, "unnamed")}-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
         subnet_ids = [subnet]
 
         # Tags for AutoScaler to scale from zero for CSI: See https://github.com/kubernetes/autoscaler/issues/3845
