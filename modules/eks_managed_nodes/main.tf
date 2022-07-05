@@ -1,45 +1,38 @@
 locals {
 
-  # cluster_autoscaler_label_tags = merge([
-  #   for name, group in var.eks_managed_node_groups : {
-  #     for label_name, label_value in coalesce(group.node_group_labels, {}) : "${name}|label|${label_name}" => {
-  #       autoscaling_group = group.node_group_autoscaling_group_names[0],
-  #       key               = "k8s.io/cluster-autoscaler/node-template/label/${label_name}",
-  #       value             = label_value,
-  #     }
-  #   }
-  # ]...)
+  cluster_autoscaler_label_tags = merge([
+    for name, group in data.eks_managed_node_group.this : {
+      for label_name, label_value in coalesce(group.labels, {}) : "${name}|label|${label_name}" => {
+        autoscaling_group = group.resources[0].autoscaling_groups[0],
+        key               = "k8s.io/cluster-autoscaler/node-template/label/${label_name}",
+        value             = label_value,
+      }
+    }
+  ]...)
 
-  # cluster_autoscaler_taint_tags = merge([
-  #   for name, group in var.eks_managed_node_groups : {
-  #     for taint in coalesce(group.node_group_taints, []) : "${name}|taint|${taint.key}" => {
-  #       autoscaling_group = group.node_group_autoscaling_group_names[0],
-  #       key               = "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}"
-  #       value             = "${taint.value}:${taint.effect}"
-  #     }
-  #   }
-  # ]...)
+  cluster_autoscaler_taint_tags = merge([
+    for name, group in data.eks_managed_node_group.this : {
+      for taint in coalesce(group.taints, []) : "${name}|taint|${taint.key}" => {
+        autoscaling_group = group.node_group_autoscaling_group_names[0],
+        key               = "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}"
+        value             = "${taint.value}:${taint.effect}"
+      }
+    }
+  ]...)
 
-  # cluster_autoscaler_asg_tags = merge(
-  #   local.cluster_autoscaler_label_tags,
-  #   local.cluster_autoscaler_taint_tags,
-  #   {
-  #     "k8s.io/cluster-autoscaler/enabled"             = "true"
-  #     "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
-  #   }
-  # )
+  cluster_autoscaler_asg_tags = merge(
+    local.cluster_autoscaler_label_tags,
+    local.cluster_autoscaler_taint_tags,
+    {
+      "k8s.io/cluster-autoscaler/enabled"             = "true"
+      "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
+    }
+  )
 
   eks_managed_node_group_defaults = merge(
     {
       create_iam_role = false
       iam_role_arn    = var.worker_iam_role_arn
-
-      tags = merge({
-        "k8s.io/cluster-autoscaler/enabled"             = "true"
-        "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
-        },
-        lookup(var.eks_managed_node_group_defaults, "tags", {}),
-      )
     },
     var.eks_managed_node_group_defaults
   )
@@ -60,15 +53,6 @@ locals {
         # nodeGroupName can't be longer than 63 characters!
         name       = "${try(group.name, name, "unnamed")}-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
         subnet_ids = [subnet]
-
-        # Tags for AutoScaler to scale from zero for CSI: See https://github.com/kubernetes/autoscaler/issues/3845
-        tags = merge(
-          local.eks_managed_node_group_defaults.tags,
-          try(group.tags, {}),
-          {
-            "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = data.aws_subnet.subnets[subnet].availability_zone
-          },
-        )
       },
     )
   }]...)
@@ -180,3 +164,20 @@ module "eks_managed_node_group" {
   tags = merge(var.tags, try(each.value.tags, local.eks_managed_node_group_defaults.tags, {}))
 }
 
+#########################
+# Tag Autoscaling Group
+#########################
+#https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1558#issuecomment-1030640207
+
+resource "aws_autoscaling_group_tag" "cluster_autoscaler_label_tags" {
+  for_each = local.cluster_autoscaler_asg_tags
+
+  autoscaling_group_name = each.value.autoscaling_group
+
+  tag {
+    key   = each.value.key
+    value = each.value.value
+
+    propagate_at_launch = false
+  }
+}
