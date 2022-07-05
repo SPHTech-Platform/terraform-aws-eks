@@ -12,7 +12,7 @@ locals {
 
   cluster_autoscaler_label_tags = merge([
     for asg in module.eks_managed_node_group.node_group_autoscaling_group_names : {
-      for label_name, label_value in module.eks_managed_node_group.node_group_labels : "${name}|label|${label_name}" => {
+      for label_name, label_value in module.eks_managed_node_group.node_group_labels : "${asg}|label|${label_name}" => {
         autoscaling_group = asg,
         key               = "k8s.io/cluster-autoscaler/node-template/label/${label_name}",
         value             = label_value,
