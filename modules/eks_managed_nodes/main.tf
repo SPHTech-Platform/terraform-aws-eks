@@ -23,10 +23,10 @@ locals {
   cluster_autoscaler_asg_tags = merge(
     local.cluster_autoscaler_label_tags,
     local.cluster_autoscaler_taint_tags,
-    {
-      "k8s.io/cluster-autoscaler/enabled"             = "true"
-      "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
-    }
+    # {
+    #   "k8s.io/cluster-autoscaler/enabled"             = "true"
+    #   "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
+    # }
   )
 
   eks_managed_node_group_defaults = merge(
