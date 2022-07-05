@@ -53,6 +53,9 @@ locals {
         # nodeGroupName can't be longer than 63 characters!
         name       = "${try(group.name, name, "unnamed")}-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
         subnet_ids = [subnet]
+        labels = {
+          "topology.kubernetes.io/zone" = data.aws_subnet.subnets[subnet].availability_zone
+        }
       },
     )
   }]...)
