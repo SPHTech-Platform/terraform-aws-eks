@@ -134,7 +134,7 @@ resource "aws_cloudwatch_event_target" "node_termination_handler_spot" {
 }
 
 ################################################
-# Below resources are to Enable Windows support to cluster. 
+# Resources below are to enable Windows Support for Cluster. 
 ################################################
 
 locals {
