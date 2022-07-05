@@ -65,6 +65,12 @@ variable "manage_aws_auth_configmap" {
   default     = true
 }
 
+variable "enable_cluster_windows_support" {
+  description = "Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth."
+  type        = bool
+  default     = false
+}
+
 variable "role_mapping" {
   description = "List of IAM roles to give access to the EKS cluster"
   type = list(object({

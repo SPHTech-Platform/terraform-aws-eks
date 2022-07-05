@@ -32,6 +32,7 @@ variable "worker_security_group_id" {
 # Refer to https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/self-managed-node-group
 # for the parameters supported. See README for more information.
 ####################################
+
 variable "self_managed_node_groups" {
   description = "Map of self-managed node group definitions to create"
   type        = any
