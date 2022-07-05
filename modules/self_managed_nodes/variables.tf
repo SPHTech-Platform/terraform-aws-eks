@@ -33,12 +33,6 @@ variable "worker_security_group_id" {
 # for the parameters supported. See README for more information.
 ####################################
 
-variable "enable_cluster_windows_support" {
-  description = "Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth."
-  type        = bool
-  default     = false
-}
-
 variable "self_managed_node_groups" {
   description = "Map of self-managed node group definitions to create"
   type        = any
