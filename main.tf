@@ -76,7 +76,7 @@ module "eks" {
   create_aws_auth_configmap               = var.create_aws_auth_configmap
   manage_aws_auth_configmap               = var.manage_aws_auth_configmap
   aws_auth_node_iam_role_arns_non_windows = [aws_iam_role.workers.arn]
-  aws_auth_node_iam_role_arns_windows     = [aws_iam_role.workers.arn]
+  aws_auth_node_iam_role_arns_windows     = var.enable_cluster_windows_support ? [aws_iam_role.workers.arn]:[]
   aws_auth_roles                          = var.role_mapping
   aws_auth_users                          = var.user_mapping
   aws_auth_accounts                       = []
