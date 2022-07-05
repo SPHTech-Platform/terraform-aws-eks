@@ -66,7 +66,7 @@ variable "manage_aws_auth_configmap" {
 }
 
 variable "enable_cluster_windows_support" {
-  description = "Determines whether to create the amazon-vpc-cni configmap."
+  description = "Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth."
   type        = bool
   default     = false
 }
