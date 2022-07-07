@@ -40,7 +40,6 @@ resource "aws_iam_role_policy_attachment" "worker_ecr_pullthrough" {
 resource "aws_iam_role_policy_attachment" "worker_ecr_existing_pullthrough" {
   count = !var.configure_ecr_pull_through && var.attach_existing_ecr_policy ? 1 : 0
 
-  role = var.worker_iam_role_name
-  # policy_arn = aws_iam_policy.ecr_cache[0].arn
+  role       = var.worker_iam_role_name
   policy_arn = var.existing_ecr_policy_arn
 }
