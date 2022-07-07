@@ -15,7 +15,7 @@
 
 output "node_group_labels" {
   description = "Map of labels applied to the node group"
-  value       = module.eks_managed_node_group.node_group_labels
+  value       = values(module.eks_managed_node_group)[*].node_group_labels
 }
 
 # output "node_group_taints" {
