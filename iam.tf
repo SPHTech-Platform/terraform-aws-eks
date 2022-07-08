@@ -57,6 +57,7 @@ resource "aws_iam_role_policy_attachment" "workers" {
 
     # For nodes that do not restrict to only using IRSA
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
+    var.iam_role_additional_policies,
   ])
 
   policy_arn = each.value
