@@ -38,18 +38,6 @@ variable "worker_iam_role_name" {
   type        = string
 }
 
-# variable "attach_existing_ecr_policy" {
-#   description = "Attach existing ECR policy to the IAM role"
-#   type        = bool
-#   default     = false
-# }
-
-# variable "existing_ecr_policy_arn" {
-#   description = "Existing ECR policy ARN"
-#   type        = string
-#   default     = ""
-# }
-
 ############################
 # K8S Resources
 ############################
