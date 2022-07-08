@@ -50,14 +50,12 @@ resource "aws_iam_instance_profile" "workers" {
 }
 
 resource "aws_iam_role_policy_attachment" "workers" {
-  for_each = toset([
+  for_each = toset(compact(distinct(concat([
     "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore",
-
-    # For nodes that do not restrict to only using IRSA
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
-  ])
+  ], var.iam_role_additional_policies))))
 
   policy_arn = each.value
   role       = aws_iam_role.workers.name

@@ -48,6 +48,12 @@ variable "workers_iam_boundary" {
   default     = null
 }
 
+variable "iam_role_additional_policies" {
+  description = "Additional policies to be added to the IAM role"
+  type        = list(string)
+  default     = []
+}
+
 #######################
 # Cluster RBAC (AWS Auth)
 #######################
