@@ -32,9 +32,21 @@ locals {
     }
   ]...)
 
+  cluster_autoscaler_implicit_tags = merge({
+    for name, group in var.eks_managed_node_groups : name => merge(
+      length(try(group.instance_types, local.eks_managed_node_group_defaults.instance_types)) == 1 ? {
+        autoscaling_group = data.aws_autoscaling_group.node_groups[name].name
+        key               = "k8s.io/cluster-autoscaler/node-template/label/node.kubernetes.io/instance-type"
+        value             = one(try(group.instance_types, local.eks_managed_node_group_defaults.instance_types))
+      } : {}
+    )
+    }
+  )
+
   cluster_autoscaler_asg_tags = merge(
     local.cluster_autoscaler_label_tags,
     local.cluster_autoscaler_taint_tags,
+    local.cluster_autoscaler_implicit_tags,
     # {
     #   "k8s.io/cluster-autoscaler/enabled"             = "true"
     #   "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
