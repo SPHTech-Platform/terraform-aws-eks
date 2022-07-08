@@ -3,7 +3,6 @@ output "node_group_resources" {
   value = {
     for k, v in module.eks_managed_node_group : k => v.node_group_resources
   }
-  # value       = values(module.eks_managed_node_group)[*].node_group_resources
 }
 
 output "node_group_autoscaling_group_names" {
@@ -32,4 +31,9 @@ output "node_group_taints" {
   value = {
     for k, v in module.eks_managed_node_group : k => v.node_group_taints
   }
+}
+
+output "node_groups" {
+  description = "Test outputs"
+  value       = data.aws_autoscaling_group.node_groups
 }

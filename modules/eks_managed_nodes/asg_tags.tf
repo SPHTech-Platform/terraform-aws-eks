@@ -47,7 +47,7 @@ locals {
 #########################
 #https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1558#issuecomment-1030640207
 
-resource "aws_autoscaling_group_tag" "cluster_autoscaler_label_tags" {
+resource "aws_autoscaling_group_tag" "cluster_autoscaler_label_taint_tags" {
   for_each = local.cluster_autoscaler_asg_tags
 
   autoscaling_group_name = each.value.autoscaling_group
