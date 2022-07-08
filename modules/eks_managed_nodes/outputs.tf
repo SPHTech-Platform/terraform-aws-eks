@@ -1,6 +1,9 @@
 output "node_group_resources" {
   description = "List of objects containing information about underlying resources"
-  value       = values(module.eks_managed_node_group)[*].node_group_resources
+  value = {
+    for k, v in module.eks_managed_node_group : k => v.node_group_resources
+  }
+  # value       = values(module.eks_managed_node_group)[*].node_group_resources
 }
 
 output "node_group_autoscaling_group_names" {
