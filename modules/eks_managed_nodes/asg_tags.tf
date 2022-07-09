@@ -50,7 +50,13 @@ locals {
 #https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1558#issuecomment-1030640207
 resource "aws_autoscaling_group_tag" "cluster_autoscaler" {
   # Create a tuple in a map for each ASG tags
-  for_each = merge([for name, tags in local.cluster_autoscaler_asg_tags : { for tag_key, tag_value in tags : "${name}-${substr(tag_key, 26, -1)}" => { group = name, key = tag_key, value = tag_value } }]...)
+  for_each = merge([
+    for name, tags in local.cluster_autoscaler_asg_tags : {
+      for tag_key, tag_value in tags : "${name}-${substr(tag_key, 26, -1)}" => {
+        group = name, key = tag_key, value = tag_value
+      }
+    }
+  ]...)
 
   # Lookup the ASG name for the managed node groups, erroring if there is more than one
   autoscaling_group_name = one(module.eks_managed_node_group[each.value.group].node_group_autoscaling_group_names)
