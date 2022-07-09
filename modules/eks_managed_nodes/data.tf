@@ -11,18 +11,6 @@ data "aws_subnet" "subnets" {
 
   id = each.key
 }
-
-data "aws_eks_node_groups" "this" {
-  cluster_name = var.cluster_name
-}
-
-data "aws_eks_node_group" "this" {
-  for_each = data.aws_eks_node_groups.this.names
-
-  cluster_name    = var.cluster_name
-  node_group_name = each.value
-}
-
 data "aws_autoscaling_group" "node_groups" {
   for_each = module.eks_managed_node_group
   name     = each.value.node_group_resources.0.autoscaling_groups.0.name

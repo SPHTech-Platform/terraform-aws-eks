@@ -1,73 +1,57 @@
 locals {
-  node_group_autoscaling_group_names = {
-    for k, v in module.eks_managed_node_group : k => v.node_group_autoscaling_group_names
+  cluster_autoscaler_label_tags = {
+    for name, group in local.eks_managed_node_groups : name => merge(
+      {
+        for label_name, label_value in group.labels : "k8s.io/cluster-autoscaler/node-template/label/${label_name}" => label_value
+      },
+    ) if try(group.labels, {}) != {}
   }
 
-  node_group_labels = {
-    for k, v in module.eks_managed_node_group : k => v.node_group_labels
-  }
-
-  node_group_taints = {
-    for k, v in module.eks_managed_node_group : k => v.node_group_taints
-  }
-
-  cluster_autoscaler_label_tags = merge([
-
-    for group, asg in local.node_group_autoscaling_group_names : {
-      for label_name, label_value in local.node_group_labels[group] : "${group}|label|${label_name}" => {
-        autoscaling_group = asg[0],
-        key               = "k8s.io/cluster-autoscaler/node-template/label/${label_name}",
-        value             = label_value,
+  cluster_autoscaler_taint_tags = {
+    for name, group in local.eks_managed_node_groups : name => merge(
+      {
+        for taint in group.taints : "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}" => "${taint.value}:${taint.effect}"
       }
-    }
-  ]...)
+    ) if try(group.taints, {}) != {}
+  }
 
-  cluster_autoscaler_taint_tags = merge([
-    for group, asg in local.node_group_autoscaling_group_names : {
-      for taint in local.node_group_taints[group] : "${group}|taint|${taint.key}" => {
-        autoscaling_group = asg[0],
-        key               = "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}"
-        value             = "${taint.value}:${taint.effect}"
-      }
-    }
-  ]...)
-
-  cluster_autoscaler_implicit_tags = merge({
-    for name, group in var.eks_managed_node_groups : name => merge(
+  cluster_autoscaler_implicit_tags = {
+    for name, group in local.eks_managed_node_groups : name => merge(
       length(try(group.instance_types, local.eks_managed_node_group_defaults.instance_types)) == 1 ? {
-        autoscaling_group = data.aws_autoscaling_group.node_groups[name].name
-        key               = "k8s.io/cluster-autoscaler/node-template/label/node.kubernetes.io/instance-type"
-        value             = one(try(group.instance_types, local.eks_managed_node_group_defaults.instance_types))
-      } : {}
+        "k8s.io/cluster-autoscaler/node-template/label/node.kubernetes.io/instance-type" = one(try(group.instance_types, local.eks_managed_node_group_defaults.instance_types))
+      } : {},
+      length(data.aws_autoscaling_group.node_groups[name].availability_zones) == 1 ? {
+        "k8s.io/cluster-autoscaler/node-template/label/topology.ebs.csi.aws.com/zone" = one(data.aws_autoscaling_group.node_groups[name].availability_zones)
+      } : {},
+      length(data.aws_autoscaling_group.node_groups[name].availability_zones) == 1 ? {
+        "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = one(data.aws_autoscaling_group.node_groups[name].availability_zones)
+      } : {},
     )
-    }
-  )
+  }
 
-  cluster_autoscaler_asg_tags = merge(
-    local.cluster_autoscaler_label_tags,
-    local.cluster_autoscaler_taint_tags,
-    local.cluster_autoscaler_implicit_tags,
-    # {
-    #   "k8s.io/cluster-autoscaler/enabled"             = "true"
-    #   "k8s.io/cluster-autoscaler/${var.cluster_name}" = "true"
-    # }
-  )
+  cluster_autoscaler_asg_tags = {
+    for name, group in local.eks_managed_node_groups : name => merge(
+      try(local.cluster_autoscaler_label_tags[name], {}),
+      try(local.cluster_autoscaler_taint_tags[name], {}),
+      local.cluster_autoscaler_implicit_tags[name],
+    )
+  }
 }
 
 #########################
 # Tag Autoscaling Group
 #########################
 #https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1558#issuecomment-1030640207
+resource "aws_autoscaling_group_tag" "cluster_autoscaler" {
+  # Create a tuple in a map for each ASG tags
+  for_each = merge([for name, tags in local.cluster_autoscaler_asg_tags : { for tag_key, tag_value in tags : "${name}-${substr(tag_key, 26, -1)}" => { group = name, key = tag_key, value = tag_value } }]...)
 
-resource "aws_autoscaling_group_tag" "cluster_autoscaler_label_taint_tags" {
-  for_each = local.cluster_autoscaler_asg_tags
-
-  autoscaling_group_name = each.value.autoscaling_group
+  # Lookup the ASG name for the managed node groups, erroring if there is more than one
+  autoscaling_group_name = one(module.eks_managed_node_group[each.value.group].node_group_autoscaling_group_names)
 
   tag {
-    key   = each.value.key
-    value = each.value.value
-
+    key                 = each.value.key
+    value               = each.value.value
     propagate_at_launch = false
   }
 }

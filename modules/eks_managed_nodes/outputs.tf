@@ -33,7 +33,7 @@ output "node_group_taints" {
   }
 }
 
-output "node_groups" {
-  description = "Test outputs"
-  value       = data.aws_autoscaling_group.node_groups
+output "autoscaling_group_tags" {
+  description = "Tags applied to autoscaling groups"
+  value       = local.cluster_autoscaler_asg_tags
 }
