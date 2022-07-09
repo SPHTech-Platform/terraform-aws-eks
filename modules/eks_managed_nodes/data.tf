@@ -11,6 +11,7 @@ data "aws_subnet" "subnets" {
 
   id = each.key
 }
+
 data "aws_autoscaling_group" "node_groups" {
   for_each = module.eks_managed_node_group
   name     = each.value.node_group_resources.0.autoscaling_groups.0.name

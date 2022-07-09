@@ -1,4 +1,10 @@
 locals {
+  taint_effects = {
+    NO_SCHEDULE        = "NoSchedule"
+    NO_EXECUTE         = "NoExecute"
+    PREFER_NO_SCHEDULE = "PreferNoSchedule"
+  }
+
   cluster_autoscaler_label_tags = {
     for name, group in local.eks_managed_node_groups : name => merge(
       {
@@ -10,7 +16,7 @@ locals {
   cluster_autoscaler_taint_tags = {
     for name, group in local.eks_managed_node_groups : name => merge(
       {
-        for taint in group.taints : "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}" => "${taint.value}:${taint.effect}"
+        for taint in group.taints : "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}" => "${taint.value}:${local.taint_effects[taint.effect]}"
       }
     ) if try(group.taints, {}) != {}
   }
