@@ -84,7 +84,5 @@ the type of images:
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_autoscaling_group_name"></a> [autoscaling\_group\_name](#output\_autoscaling\_group\_name) | The autoscaling group name |
+No outputs.
 <!-- END_TF_DOCS -->
