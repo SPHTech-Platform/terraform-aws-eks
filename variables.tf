@@ -48,6 +48,12 @@ variable "workers_iam_boundary" {
   default     = null
 }
 
+variable "iam_role_additional_policies" {
+  description = "Additional policies to be added to the IAM role"
+  type        = list(string)
+  default     = []
+}
+
 #######################
 # Cluster RBAC (AWS Auth)
 #######################
@@ -63,6 +69,12 @@ variable "manage_aws_auth_configmap" {
   description = "Determines whether to manage the contents of the aws-auth configmap"
   type        = bool
   default     = true
+}
+
+variable "enable_cluster_windows_support" {
+  description = "Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth."
+  type        = bool
+  default     = false
 }
 
 variable "role_mapping" {
