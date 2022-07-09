@@ -47,7 +47,7 @@ locals {
 #########################
 # Tag Autoscaling Group
 #########################
-#https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1558#issuecomment-1030640207
+# https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1558#issuecomment-1030640207
 resource "aws_autoscaling_group_tag" "cluster_autoscaler" {
   # Create a tuple in a map for each ASG tags
   for_each = merge([
