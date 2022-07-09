@@ -17,7 +17,7 @@ locals {
     for name, group in local.eks_managed_node_groups : name => merge(
       {
         for taint in group.taints : "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}" => "${taint.value}:${local.taint_effects[taint.effect]}"
-      }
+      },
     ) if try(group.taints, {}) != {}
   }
 
@@ -53,7 +53,9 @@ resource "aws_autoscaling_group_tag" "cluster_autoscaler" {
   for_each = merge([
     for name, tags in local.cluster_autoscaler_asg_tags : {
       for tag_key, tag_value in tags : "${name}-${substr(tag_key, 26, -1)}" => {
-        group = name, key = tag_key, value = tag_value
+        group = name,
+        key   = tag_key,
+        value = tag_value,
       }
     }
   ]...)
