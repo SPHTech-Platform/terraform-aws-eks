@@ -53,7 +53,7 @@ the type of images:
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_self_managed_group"></a> [self\_managed\_group](#module\_self\_managed\_group) | terraform-aws-modules/eks/aws//modules/self-managed-node-group | ~> 18.21.0 |
+| <a name="module_self_managed_group"></a> [self\_managed\_group](#module\_self\_managed\_group) | terraform-aws-modules/eks/aws//modules/self-managed-node-group | ~> 18.26.0 |
 
 ## Resources
 
@@ -84,5 +84,7 @@ the type of images:
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_autoscaling_group_name"></a> [autoscaling\_group\_name](#output\_autoscaling\_group\_name) | The autoscaling group name |
 <!-- END_TF_DOCS -->
