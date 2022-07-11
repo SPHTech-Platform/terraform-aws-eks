@@ -6,19 +6,15 @@ locals {
   }
 
   cluster_autoscaler_label_tags = {
-    for name, group in local.eks_managed_node_groups : name => merge(
-      {
-        for label_name, label_value in group.labels : "k8s.io/cluster-autoscaler/node-template/label/${label_name}" => label_value
-      },
-    ) if try(group.labels, {}) != {}
+    for name, group in local.eks_managed_node_groups : name => {
+      for label_name, label_value in try(group.labels, {}) : "k8s.io/cluster-autoscaler/node-template/label/${label_name}" => label_value
+    }
   }
 
   cluster_autoscaler_taint_tags = {
-    for name, group in local.eks_managed_node_groups : name => merge(
-      {
-        for taint in group.taints : "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}" => "${taint.value}:${local.taint_effects[taint.effect]}"
-      },
-    ) if try(group.taints, {}) != {}
+    for name, group in local.eks_managed_node_groups : name => {
+      for taint in try(group.taints, {}) : "k8s.io/cluster-autoscaler/node-template/taint/${taint.key}" => "${taint.value}:${local.taint_effects[taint.effect]}"
+    }
   }
 
   cluster_autoscaler_implicit_tags = {
@@ -37,8 +33,8 @@ locals {
 
   cluster_autoscaler_asg_tags = {
     for name, group in local.eks_managed_node_groups : name => merge(
-      try(local.cluster_autoscaler_label_tags[name], {}),
-      try(local.cluster_autoscaler_taint_tags[name], {}),
+      local.cluster_autoscaler_label_tags[name],
+      local.cluster_autoscaler_taint_tags[name],
       local.cluster_autoscaler_implicit_tags[name],
     )
   }
