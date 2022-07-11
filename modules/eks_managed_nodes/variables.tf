@@ -12,8 +12,8 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "worker_iam_instance_profile_arn" {
-  description = "Worker Nodes IAM Instance Profile ARN"
+variable "worker_iam_role_arn" {
+  description = "Worker Nodes IAM Role ARN"
   type        = string
 }
 
@@ -27,47 +27,33 @@ variable "worker_security_group_id" {
   type        = string
 }
 
+variable "cluster_service_ipv4_cidr" {
+  description = "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks"
+  type        = string
+  default     = null
+}
+
 ####################################
 # Node Groups
-# Refer to https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/self-managed-node-group
+# Refer to https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/modules/eks-managed-node-group
 # for the parameters supported. See README for more information.
 ####################################
-
-variable "self_managed_node_groups" {
-  description = "Map of self-managed node group definitions to create"
+variable "eks_managed_node_groups" {
+  description = "Map of EKS managed node group definitions to create"
   type        = any
   default     = {}
 }
 
-variable "self_managed_node_group_defaults" {
-  description = "Map of self-managed node group default configurations to override the built in defaults"
+variable "eks_managed_node_group_defaults" {
+  description = "Map of EKS managed node group default configurations"
   type        = any
   default = {
-    disk_size = 50
-
-    instance_refresh = {
-      strategy = "Rolling"
-    }
     update_launch_template_default_version = true
     protect_from_scale_in                  = false
 
     create_iam_role       = false
     create_security_group = false
   }
-}
-
-############################################
-# Instance Refresh/Node Termination Handler
-############################################
-variable "node_termination_handler_sqs_arn" {
-  description = "ARN of the SQS queue used to handle node termination events"
-  type        = string
-}
-
-variable "node_termination_handler_event_name" {
-  description = "Override name of the Cloudwatch Event to handle termination of nodes"
-  type        = string
-  default     = ""
 }
 
 ############################

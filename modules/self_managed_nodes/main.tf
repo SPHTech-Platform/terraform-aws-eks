@@ -17,6 +17,7 @@ locals {
     http_endpoint               = "enabled"
     http_tokens                 = var.force_imdsv2 ? "required" : "optional"
     http_put_response_hop_limit = var.force_imdsv2 && var.force_irsa ? 1 : 2
+    instance_metadata_tags      = "disabled"
   }
 
   # Cartesian product of node groups and individual subnets
@@ -53,7 +54,7 @@ locals {
 
 module "self_managed_group" {
   source  = "terraform-aws-modules/eks/aws//modules/self-managed-node-group"
-  version = "~> 18.21.0"
+  version = "~> 18.26.0"
 
   for_each = local.self_managed_node_groups
 
@@ -83,19 +84,19 @@ module "self_managed_group" {
   health_check_grace_period = try(each.value.health_check_grace_period, local.self_managed_node_group_defaults.health_check_grace_period, null)
 
   force_delete          = try(each.value.force_delete, local.self_managed_node_group_defaults.force_delete, null)
-  termination_policies  = try(each.value.termination_policies, local.self_managed_node_group_defaults.termination_policies, null)
-  suspended_processes   = try(each.value.suspended_processes, local.self_managed_node_group_defaults.suspended_processes, null)
+  termination_policies  = try(each.value.termination_policies, local.self_managed_node_group_defaults.termination_policies, [])
+  suspended_processes   = try(each.value.suspended_processes, local.self_managed_node_group_defaults.suspended_processes, [])
   max_instance_lifetime = try(each.value.max_instance_lifetime, local.self_managed_node_group_defaults.max_instance_lifetime, null)
 
-  enabled_metrics         = try(each.value.enabled_metrics, local.self_managed_node_group_defaults.enabled_metrics, null)
+  enabled_metrics         = try(each.value.enabled_metrics, local.self_managed_node_group_defaults.enabled_metrics, [])
   metrics_granularity     = try(each.value.metrics_granularity, local.self_managed_node_group_defaults.metrics_granularity, null)
   service_linked_role_arn = try(each.value.service_linked_role_arn, local.self_managed_node_group_defaults.service_linked_role_arn, null)
 
   initial_lifecycle_hooks    = try(each.value.initial_lifecycle_hooks, local.self_managed_node_group_defaults.initial_lifecycle_hooks, [])
-  instance_refresh           = try(each.value.instance_refresh, local.self_managed_node_group_defaults.instance_refresh, null)
+  instance_refresh           = try(each.value.instance_refresh, local.self_managed_node_group_defaults.instance_refresh, {})
   use_mixed_instances_policy = try(each.value.use_mixed_instances_policy, local.self_managed_node_group_defaults.use_mixed_instances_policy, false)
   mixed_instances_policy     = try(each.value.mixed_instances_policy, local.self_managed_node_group_defaults.mixed_instances_policy, null)
-  warm_pool                  = try(each.value.warm_pool, local.self_managed_node_group_defaults.warm_pool, null)
+  warm_pool                  = try(each.value.warm_pool, local.self_managed_node_group_defaults.warm_pool, {})
 
   create_schedule = try(each.value.create_schedule, local.self_managed_node_group_defaults.create_schedule, false)
   schedules       = try(each.value.schedules, local.self_managed_node_group_defaults.schedules, null)
@@ -119,6 +120,8 @@ module "self_managed_group" {
   launch_template_description     = try(each.value.launch_template_description, local.self_managed_node_group_defaults.launch_template_description, "Custom launch template for ${try(each.value.name, each.key)} self managed node group")
   launch_template_tags            = try(each.value.launch_template_tags, local.self_managed_node_group_defaults.launch_template_tags, {})
 
+  autoscaling_group_tags = try(each.value.autoscaling_group_tags, local.self_managed_node_group_defaults.autoscaling_group_tags, {})
+
   ebs_optimized   = try(each.value.ebs_optimized, local.self_managed_node_group_defaults.ebs_optimized, null)
   ami_id          = try(each.value.ami_id, local.self_managed_node_group_defaults.ami_id, "")
   cluster_version = try(each.value.cluster_version, local.self_managed_node_group_defaults.cluster_version, data.aws_eks_cluster.this.version)
@@ -135,19 +138,19 @@ module "self_managed_group" {
   ram_disk_id                            = try(each.value.ram_disk_id, local.self_managed_node_group_defaults.ram_disk_id, null)
 
   block_device_mappings              = try(each.value.block_device_mappings, local.self_managed_node_group_defaults.block_device_mappings, [])
-  capacity_reservation_specification = try(each.value.capacity_reservation_specification, local.self_managed_node_group_defaults.capacity_reservation_specification, null)
-  cpu_options                        = try(each.value.cpu_options, local.self_managed_node_group_defaults.cpu_options, null)
-  credit_specification               = try(each.value.credit_specification, local.self_managed_node_group_defaults.credit_specification, null)
-  elastic_gpu_specifications         = try(each.value.elastic_gpu_specifications, local.self_managed_node_group_defaults.elastic_gpu_specifications, null)
-  elastic_inference_accelerator      = try(each.value.elastic_inference_accelerator, local.self_managed_node_group_defaults.elastic_inference_accelerator, null)
-  enclave_options                    = try(each.value.enclave_options, local.self_managed_node_group_defaults.enclave_options, null)
-  hibernation_options                = try(each.value.hibernation_options, local.self_managed_node_group_defaults.hibernation_options, null)
-  instance_market_options            = try(each.value.instance_market_options, local.self_managed_node_group_defaults.instance_market_options, null)
-  license_specifications             = try(each.value.license_specifications, local.self_managed_node_group_defaults.license_specifications, null)
+  capacity_reservation_specification = try(each.value.capacity_reservation_specification, local.self_managed_node_group_defaults.capacity_reservation_specification, {})
+  cpu_options                        = try(each.value.cpu_options, local.self_managed_node_group_defaults.cpu_options, {})
+  credit_specification               = try(each.value.credit_specification, local.self_managed_node_group_defaults.credit_specification, {})
+  elastic_gpu_specifications         = try(each.value.elastic_gpu_specifications, local.self_managed_node_group_defaults.elastic_gpu_specifications, {})
+  elastic_inference_accelerator      = try(each.value.elastic_inference_accelerator, local.self_managed_node_group_defaults.elastic_inference_accelerator, {})
+  enclave_options                    = try(each.value.enclave_options, local.self_managed_node_group_defaults.enclave_options, {})
+  hibernation_options                = try(each.value.hibernation_options, local.self_managed_node_group_defaults.hibernation_options, {})
+  instance_market_options            = try(each.value.instance_market_options, local.self_managed_node_group_defaults.instance_market_options, {})
+  license_specifications             = try(each.value.license_specifications, local.self_managed_node_group_defaults.license_specifications, {})
   metadata_options                   = try(each.value.metadata_options, local.self_managed_node_group_defaults.metadata_options, local.metadata_options)
   enable_monitoring                  = try(each.value.enable_monitoring, local.self_managed_node_group_defaults.enable_monitoring, true)
   network_interfaces                 = try(each.value.network_interfaces, local.self_managed_node_group_defaults.network_interfaces, [])
-  placement                          = try(each.value.placement, local.self_managed_node_group_defaults.placement, null)
+  placement                          = try(each.value.placement, local.self_managed_node_group_defaults.placement, {})
 
   # IAM role
   create_iam_instance_profile   = try(each.value.create_iam_instance_profile, local.self_managed_node_group_defaults.create_iam_instance_profile, true)
