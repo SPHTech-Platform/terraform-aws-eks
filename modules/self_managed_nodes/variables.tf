@@ -45,13 +45,6 @@ variable "self_managed_node_group_defaults" {
   default = {
     disk_size = 50
 
-    metadata_options = {
-      http_endpoint               = "enabled"
-      http_tokens                 = "required"
-      http_put_response_hop_limit = 1
-      instance_metadata_tags      = "disabled"
-    }
-
     instance_refresh = {
       strategy = "Rolling"
     }

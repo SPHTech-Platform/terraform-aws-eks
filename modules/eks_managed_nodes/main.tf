@@ -11,6 +11,7 @@ locals {
     http_endpoint               = "enabled"
     http_tokens                 = var.force_imdsv2 ? "required" : "optional"
     http_put_response_hop_limit = var.force_imdsv2 && var.force_irsa ? 1 : 2
+    instance_metadata_tags      = "disabled"
   }
 
   # Cartesian product of node groups and individual subnets

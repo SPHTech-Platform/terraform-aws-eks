@@ -48,13 +48,6 @@ variable "eks_managed_node_group_defaults" {
   description = "Map of EKS managed node group default configurations"
   type        = any
   default = {
-    metadata_options = {
-      http_endpoint               = "enabled"
-      http_tokens                 = "required"
-      http_put_response_hop_limit = 1
-      instance_metadata_tags      = "disabled"
-    }
-
     update_launch_template_default_version = true
     protect_from_scale_in                  = false
 
