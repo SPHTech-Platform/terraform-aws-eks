@@ -51,6 +51,9 @@ variable "eks_managed_node_group_defaults" {
     update_launch_template_default_version = true
     protect_from_scale_in                  = false
 
+    ebs_optimized     = true
+    enable_monitoring = true
+
     create_iam_role       = false
     create_security_group = false
   }

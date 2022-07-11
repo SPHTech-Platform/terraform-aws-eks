@@ -48,6 +48,10 @@ variable "self_managed_node_group_defaults" {
     instance_refresh = {
       strategy = "Rolling"
     }
+
+    ebs_optimized     = true
+    enable_monitoring = true
+
     update_launch_template_default_version = true
     protect_from_scale_in                  = false
 
