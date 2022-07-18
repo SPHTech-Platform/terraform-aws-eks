@@ -22,11 +22,11 @@ locals {
       length(try(group.instance_types, local.eks_managed_node_group_defaults.instance_types)) == 1 ? {
         "k8s.io/cluster-autoscaler/node-template/label/node.kubernetes.io/instance-type" = one(try(group.instance_types, local.eks_managed_node_group_defaults.instance_types))
       } : {},
-      length(data.aws_autoscaling_group.node_groups[name].availability_zones) == 1 ? {
-        "k8s.io/cluster-autoscaler/node-template/label/topology.ebs.csi.aws.com/zone" = one(data.aws_autoscaling_group.node_groups[name].availability_zones)
+      length(group.subnet_ids) == 1 ? {
+        "k8s.io/cluster-autoscaler/node-template/label/topology.ebs.csi.aws.com/zone" = data.aws_subnet.subnets[one(group.subnet_ids)].availability_zone
       } : {},
-      length(data.aws_autoscaling_group.node_groups[name].availability_zones) == 1 ? {
-        "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = one(data.aws_autoscaling_group.node_groups[name].availability_zones)
+      length(group.subnet_ids) == 1 ? {
+        "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = data.aws_subnet.subnets[one(group.subnet_ids)].availability_zone
       } : {},
     )
   }
