@@ -37,3 +37,8 @@ output "autoscaling_group_tags" {
   description = "Tags applied to autoscaling groups"
   value       = local.cluster_autoscaler_asg_tags
 }
+
+output "eks_managed_node_groups" {
+  description = "EKS managed node groups"
+  value       = local.eks_managed_node_groups
+}
