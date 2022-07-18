@@ -55,9 +55,6 @@ resource "aws_autoscaling_group_tag" "cluster_autoscaler" {
       }
     }
   ]...)
-  depends_on = [
-    module.eks_managed_node_group
-  ]
 
   # Lookup the ASG name for the managed node groups, erroring if there is more than one
   autoscaling_group_name = one(module.eks_managed_node_group[each.value.group].node_group_autoscaling_group_names)
