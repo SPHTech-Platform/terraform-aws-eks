@@ -23,10 +23,10 @@ locals {
         "k8s.io/cluster-autoscaler/node-template/label/node.kubernetes.io/instance-type" = one(try(group.instance_types, local.eks_managed_node_group_defaults.instance_types))
       } : {},
       length(group.subnet_ids) == 1 ? {
-        "k8s.io/cluster-autoscaler/node-template/label/topology.ebs.csi.aws.com/zone" = data.aws_subnet.subnets[group.subnet_ids[0]].availability_zone
+        "k8s.io/cluster-autoscaler/node-template/label/topology.ebs.csi.aws.com/zone" = data.aws_subnet.subnets[one(group.subnet_ids)].availability_zone
       } : {},
       length(group.subnet_ids) == 1 ? {
-        "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = data.aws_subnet.subnets[group.subnet_ids[0]].availability_zone
+        "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = data.aws_subnet.subnets[one(group.subnet_ids)].availability_zone
       } : {},
     )
   }
