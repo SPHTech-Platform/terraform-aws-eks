@@ -251,6 +251,12 @@ variable "self_managed_node_group_defaults" {
   }
 }
 
+variable "node_termination_handler_event_name" {
+  description = "Override name of the Cloudwatch Event to handle termination of nodes"
+  type        = string
+  default     = ""
+}
+
 variable "force_imdsv2" {
   description = "Force IMDSv2 metadata server."
   type        = bool

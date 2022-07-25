@@ -79,7 +79,8 @@ module "node_groups" {
   self_managed_node_groups         = local.self_managed_node_groups
   self_managed_node_group_defaults = var.self_managed_node_group_defaults
 
-  node_termination_handler_sqs_arn = module.node_termination_handler_sqs.sqs_queue_arn
+  node_termination_handler_sqs_arn    = module.node_termination_handler_sqs.sqs_queue_arn
+  node_termination_handler_event_name = var.node_termination_handler_event_name
 
   force_imdsv2 = var.force_imdsv2
   force_irsa   = var.force_irsa
