@@ -121,6 +121,7 @@ module "eks_essentials" {
 | <a name="input_coredns_pdb_min_available"></a> [coredns\_pdb\_min\_available](#input\_coredns\_pdb\_min\_available) | PDB min available CoreDNS pods. | `number` | `1` | no |
 | <a name="input_csi_allow_volume_expansion"></a> [csi\_allow\_volume\_expansion](#input\_csi\_allow\_volume\_expansion) | Allow volume expansion in the StorageClass for CSI. Can be true or false | `bool` | `true` | no |
 | <a name="input_csi_default_storage_class"></a> [csi\_default\_storage\_class](#input\_csi\_default\_storage\_class) | Set the CSI StorageClass as the default storage class | `bool` | `true` | no |
+| <a name="input_csi_encryption_enable"></a> [csi\_encryption\_enable](#input\_csi\_encryption\_enable) | Enable encryption for CSI Storage Class | `bool` | `true` | no |
 | <a name="input_csi_encryption_key_id"></a> [csi\_encryption\_key\_id](#input\_csi\_encryption\_key\_id) | Encryption key for the CSI Storage Class | `string` | `""` | no |
 | <a name="input_csi_parameters_override"></a> [csi\_parameters\_override](#input\_csi\_parameters\_override) | Parameters for the StorageClass for Raft.<br>For AWS EBS see https://kubernetes.io/docs/concepts/storage/storage-classes/#aws-ebs<br>for AWS EBS CSI driver see https://github.com/kubernetes-sigs/aws-ebs-csi-driver#createvolume-parameters | `any` | <pre>{<br>  "type": "gp3"<br>}</pre> | no |
 | <a name="input_csi_reclaim_policy"></a> [csi\_reclaim\_policy](#input\_csi\_reclaim\_policy) | Reclaim policy of the StorageClass for CSI. Can be Delete or Retain | `string` | `"Delete"` | no |

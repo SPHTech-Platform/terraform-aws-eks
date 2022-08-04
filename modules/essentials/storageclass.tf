@@ -17,12 +17,15 @@ resource "kubernetes_storage_class" "default" {
   volume_binding_mode    = var.csi_volume_binding_mode
   allow_volume_expansion = var.csi_allow_volume_expansion
 
-  parameters = merge({
-    "csi.storage.k8s.io/fstype" = "ext4"
-    type                        = "gp3"
-    encrypted                   = var.csi_encryption_key_id != "" && var.csi_encryption_key_id != null ? "true" : "false"
-    kmsKeyId                    = var.csi_encryption_key_id
-  }, var.csi_parameters_override)
+  parameters = merge(
+    {
+      "csi.storage.k8s.io/fstype" = "ext4"
+      type                        = "gp3"
+      encrypted                   = tostring(var.csi_encryption_enable)
+    },
+    var.csi_encryption_key_id != null && var.csi_encryption_key_id != "" ? { kmsKeyId = var.csi_encryption_key_id } : {},
+    var.csi_parameters_override
+  )
 }
 
 resource "kubernetes_annotations" "gp2_storage_class" {
