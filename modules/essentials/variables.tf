@@ -292,6 +292,12 @@ variable "csi_parameters_override" {
   }
 }
 
+variable "csi_encryption_enable" {
+  description = "Enable encryption for CSI Storage Class"
+  type        = bool
+  default     = true
+}
+
 variable "csi_encryption_key_id" {
   description = "Encryption key for the CSI Storage Class"
   type        = string
