@@ -185,6 +185,12 @@ variable "default_group_launch_template_name" {
   default     = "default"
 }
 
+variable "default_group_ami_id" {
+  description = "The AMI from which to launch the defualt group instance. If not supplied, EKS will use its own default image"
+  type        = string
+  default     = ""
+}
+
 variable "default_group_instance_type" {
   description = "Instance type for the default node group"
   type        = string
