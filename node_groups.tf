@@ -7,7 +7,7 @@ locals {
     launch_template_name            = var.default_group_launch_template_name
 
     platform      = "bottlerocket"
-    ami_id        = data.aws_ami.eks_default_bottlerocket.id
+    ami_id        = coalesce(var.default_group_ami_id, data.aws_ami.eks_default_bottlerocket.id)
     instance_type = var.default_group_instance_type
 
     min_size = var.default_group_min_size
