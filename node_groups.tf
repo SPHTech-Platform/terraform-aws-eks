@@ -30,6 +30,7 @@ locals {
       enabled = true
       [settings.kubernetes.node-labels]
       ingress = "allowed"
+      "bottlerocket.aws/updater-interface-version" = "2.0.0"
       %{if var.only_critical_addons_enabled}
       [settings.kubernetes.node-taints]
       CriticalAddonsOnly=true:NoSchedule
