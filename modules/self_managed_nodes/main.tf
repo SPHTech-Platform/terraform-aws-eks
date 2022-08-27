@@ -37,6 +37,9 @@ locals {
           {
             "k8s.io/cluster-autoscaler/node-template/label/topology.kubernetes.io/zone" = data.aws_subnet.subnets[subnet].availability_zone
           },
+          {
+            "k8s.io/cluster-autoscaler/node-template/label/bottlerocket.aws/updater-interface-version" = "2.2.0"
+          },
           # Handle Spot
           try(group.instance_market_options.market_type, false) == "spot" ? {
             "k8s.io/cluster-autoscaler/node-template/label/lifecycle"           = "spot"
