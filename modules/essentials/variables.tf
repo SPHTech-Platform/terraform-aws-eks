@@ -367,6 +367,7 @@ variable "node_termination_handler_permissions_boundary" {
 variable "node_termination_handler_sqs_arn" {
   description = "ARN of the SQS used in Node Termination Handler"
   type        = string
+  default     = ""
 }
 
 variable "node_termination_handler_release_name" {
