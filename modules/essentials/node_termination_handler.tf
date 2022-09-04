@@ -20,7 +20,7 @@ locals {
     service_account = var.node_termination_service_account
     iam_role_arn    = var.node_termination_handler_enable ? module.node_termination_handler_irsa[0].iam_role_arn : ""
 
-    sqs_queue_url = data.aws_sqs_queue.node_termination_handler.url
+    sqs_queue_url = data.aws_sqs_queue.node_termination_handler[0].url
 
     replicas          = var.node_termination_handler_replicas
     pdb_min_available = var.node_termination_handler_pdb_min_available
