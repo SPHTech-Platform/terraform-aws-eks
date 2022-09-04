@@ -346,6 +346,12 @@ variable "ecr_pull_through_cache_rules" {
 ###############################
 # Node Termination Handler
 ###############################
+variable "node_termination_handler_enable" {
+  description = "Enable node_termination_handler creation. Only needed for self managed node groups."
+  type        = bool
+  default     = false
+}
+
 variable "node_termination_handler_iam_role" {
   description = "Override the name of the Node Termination Handler IAM Role"
   type        = string

@@ -18,7 +18,7 @@ locals {
     dry_run                    = var.node_termination_handler_dry_run
 
     service_account = var.node_termination_service_account
-    iam_role_arn    = module.node_termination_handler_irsa.iam_role_arn
+    iam_role_arn    = var.node_termination_handler_enable ? module.node_termination_handler_irsa[0].iam_role_arn : ""
 
     sqs_queue_url = data.aws_sqs_queue.node_termination_handler.url
 
@@ -28,6 +28,8 @@ locals {
 }
 
 resource "helm_release" "node_termination_handler" {
+  count = var.node_termination_handler_enable ? 1 : 0
+
   name       = var.node_termination_handler_release_name
   chart      = var.node_termination_handler_chart_name
   repository = var.node_termination_handler_chart_repository_url
@@ -42,6 +44,8 @@ resource "helm_release" "node_termination_handler" {
 }
 
 module "node_termination_handler_irsa" {
+  count = var.node_termination_handler_enable ? 1 : 0
+
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 4.21.1"
 
