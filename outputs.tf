@@ -13,11 +13,6 @@ output "cluster_security_group_id" {
   value       = module.eks.cluster_security_group_id
 }
 
-output "worker_iam_instance_profile_arn" {
-  description = "IAM Instance Profile ARN to use for worker nodes"
-  value       = aws_iam_instance_profile.workers.arn
-}
-
 output "worker_security_group_id" {
   description = "Security Group ID of the worker nodes"
   value       = module.eks.node_security_group_id
@@ -56,9 +51,4 @@ output "ebs_kms_key_id" {
 output "ebs_kms_key_arn" {
   description = "KMS Key ARN used for EBS encryption"
   value       = module.kms_ebs.key_arn
-}
-
-output "node_termination_handler_sqs_arn" {
-  description = "ARN of the SQS queue used to handle node termination events"
-  value       = module.node_termination_handler_sqs.sqs_queue_arn
 }
