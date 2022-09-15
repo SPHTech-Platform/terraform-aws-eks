@@ -63,3 +63,57 @@ module "node_termination_handler_irsa" {
     }
   }
 }
+
+#########################################################################################################################
+# Instance Refresh supporting resources
+# See example at https://github.com/terraform-aws-modules/terraform-aws-eks/tree/v18.7.2/examples/irsa_autoscale_refresh
+#########################################################################################################################
+locals {
+  nth_sqs_name = coalesce(var.node_termination_handler_sqs_name, "${var.cluster_name}-nth")
+}
+
+module "node_termination_handler_sqs" {
+  count = var.create_node_termination_handler_sqs ? 1 : 0
+
+  source  = "terraform-aws-modules/sqs/aws"
+  version = "~> 3.0"
+
+  name                      = local.nth_sqs_name
+  message_retention_seconds = 300
+  policy                    = data.aws_iam_policy_document.node_termination_handler_sqs.json
+}
+
+data "aws_iam_policy_document" "node_termination_handler_sqs" {
+  statement {
+    actions   = ["sqs:SendMessage"]
+    resources = ["arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.nth_sqs_name}"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com",
+        "sqs.amazonaws.com",
+      ]
+    }
+  }
+}
+
+# Handler Spot Instances termination
+resource "aws_cloudwatch_event_rule" "node_termination_handler_spot" {
+  count = var.node_termination_handler_enable ? 1 : 0
+
+  name        = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
+  description = "Node termination event rule for EKS Cluster ${var.cluster_name}"
+  event_pattern = jsonencode({
+    source      = ["aws.ec2"],
+    detail-type = ["EC2 Spot Instance Interruption Warning"]
+  })
+}
+
+resource "aws_cloudwatch_event_target" "node_termination_handler_spot" {
+  count = var.node_termination_handler_enable ? 1 : 0
+
+  target_id = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
+  rule      = aws_cloudwatch_event_rule.node_termination_handler_spot[0].name
+  arn       = module.node_termination_handler_sqs[0].sqs_queue_arn
+}

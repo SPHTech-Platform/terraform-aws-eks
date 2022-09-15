@@ -59,9 +59,9 @@ module "eks_essentials" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.2 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.29.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.6.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.13.1 |
 
 ## Modules
 
@@ -69,11 +69,14 @@ module "eks_essentials" {
 |------|--------|---------|
 | <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 4.21.1 |
 | <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 4.21.1 |
+| <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 3.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_cloudwatch_event_rule.node_termination_handler_spot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
+| [aws_cloudwatch_event_target.node_termination_handler_spot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_ecr_pull_through_cache_rule.cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_pull_through_cache_rule) | resource |
 | [aws_iam_policy.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role_policy_attachment.worker_ecr_pullthrough](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
@@ -88,6 +91,7 @@ module "eks_essentials" {
 | [aws_eks_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_eks_cluster_auth.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_iam_policy_document.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_sqs_queue.node_termination_handler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/sqs_queue) | data source |
 
@@ -119,6 +123,7 @@ module "eks_essentials" {
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_configure_ecr_pull_through"></a> [configure\_ecr\_pull\_through](#input\_configure\_ecr\_pull\_through) | Configure ECR Pull Through Cache. | `bool` | `true` | no |
 | <a name="input_coredns_pdb_min_available"></a> [coredns\_pdb\_min\_available](#input\_coredns\_pdb\_min\_available) | PDB min available CoreDNS pods. | `number` | `1` | no |
+| <a name="input_create_node_termination_handler_sqs"></a> [create\_node\_termination\_handler\_sqs](#input\_create\_node\_termination\_handler\_sqs) | Whether to create node\_termination\_handler\_sqs. | `bool` | `false` | no |
 | <a name="input_csi_allow_volume_expansion"></a> [csi\_allow\_volume\_expansion](#input\_csi\_allow\_volume\_expansion) | Allow volume expansion in the StorageClass for CSI. Can be true or false | `bool` | `true` | no |
 | <a name="input_csi_default_storage_class"></a> [csi\_default\_storage\_class](#input\_csi\_default\_storage\_class) | Set the CSI StorageClass as the default storage class | `bool` | `true` | no |
 | <a name="input_csi_encryption_enable"></a> [csi\_encryption\_enable](#input\_csi\_encryption\_enable) | Enable encryption for CSI Storage Class | `bool` | `true` | no |
@@ -138,6 +143,7 @@ module "eks_essentials" {
 | <a name="input_node_termination_handler_chart_version"></a> [node\_termination\_handler\_chart\_version](#input\_node\_termination\_handler\_chart\_version) | Chart version for Node Termination Handler | `string` | `"0.17.0"` | no |
 | <a name="input_node_termination_handler_cordon_only"></a> [node\_termination\_handler\_cordon\_only](#input\_node\_termination\_handler\_cordon\_only) | Cordon but do not drain nodes upon spot interruption termination notice | `bool` | `false` | no |
 | <a name="input_node_termination_handler_dry_run"></a> [node\_termination\_handler\_dry\_run](#input\_node\_termination\_handler\_dry\_run) | Only log calls to kubernetes control plane | `bool` | `false` | no |
+| <a name="input_node_termination_handler_enable"></a> [node\_termination\_handler\_enable](#input\_node\_termination\_handler\_enable) | Enable node\_termination\_handler creation. Only needed for self managed node groups. | `bool` | `false` | no |
 | <a name="input_node_termination_handler_iam_role"></a> [node\_termination\_handler\_iam\_role](#input\_node\_termination\_handler\_iam\_role) | Override the name of the Node Termination Handler IAM Role | `string` | `""` | no |
 | <a name="input_node_termination_handler_image"></a> [node\_termination\_handler\_image](#input\_node\_termination\_handler\_image) | Docker image for Node Termination Handler | `string` | `"public.ecr.aws/aws-ec2/aws-node-termination-handler"` | no |
 | <a name="input_node_termination_handler_json_logging"></a> [node\_termination\_handler\_json\_logging](#input\_node\_termination\_handler\_json\_logging) | Log messages in JSON format | `bool` | `true` | no |
@@ -149,8 +155,10 @@ module "eks_essentials" {
 | <a name="input_node_termination_handler_replicas"></a> [node\_termination\_handler\_replicas](#input\_node\_termination\_handler\_replicas) | Number of replicas for Node Termination Handler | `number` | `1` | no |
 | <a name="input_node_termination_handler_resources"></a> [node\_termination\_handler\_resources](#input\_node\_termination\_handler\_resources) | Resources for Node Termination Handler | `any` | <pre>{<br>  "limits": {<br>    "cpu": "100m",<br>    "memory": "100Mi"<br>  },<br>  "requests": {<br>    "cpu": "10m",<br>    "memory": "100Mi"<br>  }<br>}</pre> | no |
 | <a name="input_node_termination_handler_scheduled_event_draining_enabled"></a> [node\_termination\_handler\_scheduled\_event\_draining\_enabled](#input\_node\_termination\_handler\_scheduled\_event\_draining\_enabled) | Drain nodes before the maintenance window starts for an EC2 instance scheduled event | `bool` | `false` | no |
+| <a name="input_node_termination_handler_spot_event_name"></a> [node\_termination\_handler\_spot\_event\_name](#input\_node\_termination\_handler\_spot\_event\_name) | Override name of the Cloudwatch Event to handle spot termination of nodes | `string` | `""` | no |
 | <a name="input_node_termination_handler_spot_interruption_draining_enabled"></a> [node\_termination\_handler\_spot\_interruption\_draining\_enabled](#input\_node\_termination\_handler\_spot\_interruption\_draining\_enabled) | Drain nodes when the spot interruption termination notice is received | `bool` | `true` | no |
-| <a name="input_node_termination_handler_sqs_arn"></a> [node\_termination\_handler\_sqs\_arn](#input\_node\_termination\_handler\_sqs\_arn) | ARN of the SQS used in Node Termination Handler | `string` | n/a | yes |
+| <a name="input_node_termination_handler_sqs_arn"></a> [node\_termination\_handler\_sqs\_arn](#input\_node\_termination\_handler\_sqs\_arn) | ARN of the SQS used in Node Termination Handler | `string` | `null` | no |
+| <a name="input_node_termination_handler_sqs_name"></a> [node\_termination\_handler\_sqs\_name](#input\_node\_termination\_handler\_sqs\_name) | Override the name for the SQS used in Node Termination Handler | `string` | `""` | no |
 | <a name="input_node_termination_handler_tag"></a> [node\_termination\_handler\_tag](#input\_node\_termination\_handler\_tag) | Docker image tag for Node Termination Handler. This should correspond to the Kubernetes version | `string` | `"v1.16.0"` | no |
 | <a name="input_node_termination_handler_taint_node"></a> [node\_termination\_handler\_taint\_node](#input\_node\_termination\_handler\_taint\_node) | Taint node upon spot interruption termination notice | `bool` | `true` | no |
 | <a name="input_node_termination_iam_role"></a> [node\_termination\_iam\_role](#input\_node\_termination\_iam\_role) | Name of the IAM Role for Node Termination Handler | `string` | `"bedrock_node_termination_handler"` | no |
@@ -163,5 +171,7 @@ module "eks_essentials" {
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_node_termination_handler_sqs_arn"></a> [node\_termination\_handler\_sqs\_arn](#output\_node\_termination\_handler\_sqs\_arn) | ARN of the SQS queue used to handle node termination events |
 <!-- END_TF_DOCS -->

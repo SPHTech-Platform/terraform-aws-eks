@@ -352,6 +352,24 @@ variable "node_termination_handler_enable" {
   default     = false
 }
 
+variable "create_node_termination_handler_sqs" {
+  description = "Whether to create node_termination_handler_sqs."
+  type        = bool
+  default     = false
+}
+
+variable "node_termination_handler_sqs_name" {
+  description = "Override the name for the SQS used in Node Termination Handler"
+  type        = string
+  default     = ""
+}
+
+variable "node_termination_handler_spot_event_name" {
+  description = "Override name of the Cloudwatch Event to handle spot termination of nodes"
+  type        = string
+  default     = ""
+}
+
 variable "node_termination_handler_iam_role" {
   description = "Override the name of the Node Termination Handler IAM Role"
   type        = string
