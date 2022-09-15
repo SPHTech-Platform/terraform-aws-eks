@@ -3,6 +3,8 @@ locals {
     {
       create_iam_role = false
       iam_role_arn    = var.worker_iam_role_arn
+      platform        = "bottlerocket"
+      ami_id          = data.aws_ami.eks_default_bottlerocket.id
     },
     var.eks_managed_node_group_defaults
   )
