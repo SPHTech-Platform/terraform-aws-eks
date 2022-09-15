@@ -1,10 +1,27 @@
 locals {
   eks_managed_node_group_defaults = merge(
     {
-      create_iam_role = false
-      iam_role_arn    = var.worker_iam_role_arn
-      platform        = "bottlerocket"
-      ami_id          = data.aws_ami.eks_default_bottlerocket.id
+      create_iam_role      = false
+      iam_role_arn         = var.worker_iam_role_arn
+      platform             = "bottlerocket"
+      ami_id               = data.aws_ami.eks_default_bottlerocket.id
+      bootstrap_extra_args = <<-EOT
+      # The admin host container provides SSH access and runs with "superpowers".
+      # It is disabled by default, but can be disabled explicitly.
+      [settings.host-containers.admin]
+      enabled = false
+      # The control host container provides out-of-band access via SSM.
+      # It is enabled by default, and can be disabled if you do not expect to use SSM.
+      # This could leave you with no way to access the API and change settings on an existing node!
+      [settings.host-containers.control]
+      enabled = true
+      [settings.kubernetes.node-labels]
+      "bottlerocket.aws/updater-interface-version" = "2.0.0"
+      EOT
+
+      labels = {
+        "bottlerocket.aws/updater-interface-version" = "2.0.0"
+      }
     },
     var.eks_managed_node_group_defaults
   )
