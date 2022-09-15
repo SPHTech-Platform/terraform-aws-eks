@@ -1,8 +1,27 @@
 locals {
   eks_managed_node_group_defaults = merge(
     {
-      create_iam_role = false
-      iam_role_arn    = var.worker_iam_role_arn
+      create_iam_role      = false
+      iam_role_arn         = var.worker_iam_role_arn
+      platform             = "bottlerocket"
+      ami_id               = data.aws_ami.eks_default_bottlerocket.id
+      bootstrap_extra_args = <<-EOT
+      # The admin host container provides SSH access and runs with "superpowers".
+      # It is disabled by default, but can be disabled explicitly.
+      [settings.host-containers.admin]
+      enabled = false
+      # The control host container provides out-of-band access via SSM.
+      # It is enabled by default, and can be disabled if you do not expect to use SSM.
+      # This could leave you with no way to access the API and change settings on an existing node!
+      [settings.host-containers.control]
+      enabled = true
+      [settings.kubernetes.node-labels]
+      "bottlerocket.aws/updater-interface-version" = "2.0.0"
+      EOT
+
+      labels = {
+        "bottlerocket.aws/updater-interface-version" = "2.0.0"
+      }
     },
     var.eks_managed_node_group_defaults
   )
@@ -34,7 +53,7 @@ locals {
 ################################################################################
 module "eks_managed_node_group" {
   source  = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
-  version = "~> 18.26.0"
+  version = "~> 18.29.0"
 
   for_each = local.eks_managed_node_groups
 

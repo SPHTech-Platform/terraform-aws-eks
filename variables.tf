@@ -191,10 +191,10 @@ variable "default_group_ami_id" {
   default     = ""
 }
 
-variable "default_group_instance_type" {
+variable "default_group_instance_types" {
   description = "Instance type for the default node group"
-  type        = string
-  default     = "m5a.xlarge"
+  type        = list(string)
+  default     = ["m5a.xlarge", "m5.xlarge", "m5n.xlarge", "m5zn.xlarge"]
 }
 
 variable "default_group_min_size" {
@@ -227,14 +227,14 @@ variable "only_critical_addons_enabled" {
   default     = false
 }
 
-variable "self_managed_node_groups" {
-  description = "Map of self-managed node group definitions to create"
+variable "eks_managed_node_groups" {
+  description = "Map of EKS managed node group definitions to create"
   type        = any
   default     = {}
 }
 
-variable "self_managed_node_group_defaults" {
-  description = "Map of self-managed node group default configurations"
+variable "eks_managed_node_group_defaults" {
+  description = "Map of EKS managed node group default configurations"
   type        = any
   default = {
     disk_size = 50
@@ -246,11 +246,11 @@ variable "self_managed_node_group_defaults" {
       instance_metadata_tags      = "disabled"
     }
 
-    instance_refresh = {
-      strategy = "Rolling"
-    }
     update_launch_template_default_version = true
     protect_from_scale_in                  = false
+
+    ebs_optimized     = true
+    enable_monitoring = true
 
     create_iam_role       = false
     create_security_group = false

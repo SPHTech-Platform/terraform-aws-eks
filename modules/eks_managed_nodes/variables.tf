@@ -12,6 +12,12 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "cluster_version" {
+  description = "EKS Cluster Version"
+  type        = string
+  default     = "1.22"
+}
+
 variable "worker_iam_role_arn" {
   description = "Worker Nodes IAM Role ARN"
   type        = string

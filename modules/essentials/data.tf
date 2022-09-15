@@ -13,9 +13,13 @@ data "aws_region" "current" {
 }
 
 data "aws_arn" "node_termination_handler_sqs" {
-  arn = var.node_termination_handler_sqs_arn
+  count = var.node_termination_handler_enable ? 1 : 0
+
+  arn = try(module.node_termination_handler_sqs[0].sqs_queue_arn, var.node_termination_handler_sqs_arn)
 }
 
 data "aws_sqs_queue" "node_termination_handler" {
-  name = data.aws_arn.node_termination_handler_sqs.resource
+  count = var.node_termination_handler_enable ? 1 : 0
+
+  name = data.aws_arn.node_termination_handler_sqs[0].resource
 }

@@ -18,9 +18,9 @@ locals {
     dry_run                    = var.node_termination_handler_dry_run
 
     service_account = var.node_termination_service_account
-    iam_role_arn    = module.node_termination_handler_irsa.iam_role_arn
+    iam_role_arn    = var.node_termination_handler_enable ? module.node_termination_handler_irsa[0].iam_role_arn : ""
 
-    sqs_queue_url = data.aws_sqs_queue.node_termination_handler.url
+    sqs_queue_url = var.node_termination_handler_enable ? data.aws_sqs_queue.node_termination_handler[0].url : ""
 
     replicas          = var.node_termination_handler_replicas
     pdb_min_available = var.node_termination_handler_pdb_min_available
@@ -28,6 +28,8 @@ locals {
 }
 
 resource "helm_release" "node_termination_handler" {
+  count = var.node_termination_handler_enable ? 1 : 0
+
   name       = var.node_termination_handler_release_name
   chart      = var.node_termination_handler_chart_name
   repository = var.node_termination_handler_chart_repository_url
@@ -42,6 +44,8 @@ resource "helm_release" "node_termination_handler" {
 }
 
 module "node_termination_handler_irsa" {
+  count = var.node_termination_handler_enable ? 1 : 0
+
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 4.21.1"
 
@@ -58,4 +62,58 @@ module "node_termination_handler_irsa" {
       namespace_service_accounts = ["${var.node_termination_namespace}:${var.node_termination_service_account}"]
     }
   }
+}
+
+#########################################################################################################################
+# Instance Refresh supporting resources
+# See example at https://github.com/terraform-aws-modules/terraform-aws-eks/tree/v18.7.2/examples/irsa_autoscale_refresh
+#########################################################################################################################
+locals {
+  nth_sqs_name = coalesce(var.node_termination_handler_sqs_name, "${var.cluster_name}-nth")
+}
+
+module "node_termination_handler_sqs" {
+  count = var.create_node_termination_handler_sqs ? 1 : 0
+
+  source  = "terraform-aws-modules/sqs/aws"
+  version = "~> 3.0"
+
+  name                      = local.nth_sqs_name
+  message_retention_seconds = 300
+  policy                    = data.aws_iam_policy_document.node_termination_handler_sqs.json
+}
+
+data "aws_iam_policy_document" "node_termination_handler_sqs" {
+  statement {
+    actions   = ["sqs:SendMessage"]
+    resources = ["arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.nth_sqs_name}"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com",
+        "sqs.amazonaws.com",
+      ]
+    }
+  }
+}
+
+# Handler Spot Instances termination
+resource "aws_cloudwatch_event_rule" "node_termination_handler_spot" {
+  count = var.node_termination_handler_enable ? 1 : 0
+
+  name        = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
+  description = "Node termination event rule for EKS Cluster ${var.cluster_name}"
+  event_pattern = jsonencode({
+    source      = ["aws.ec2"],
+    detail-type = ["EC2 Spot Instance Interruption Warning"]
+  })
+}
+
+resource "aws_cloudwatch_event_target" "node_termination_handler_spot" {
+  count = var.node_termination_handler_enable ? 1 : 0
+
+  target_id = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
+  rule      = aws_cloudwatch_event_rule.node_termination_handler_spot[0].name
+  arn       = module.node_termination_handler_sqs[0].sqs_queue_arn
 }

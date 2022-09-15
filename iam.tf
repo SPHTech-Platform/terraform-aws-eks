@@ -40,15 +40,6 @@ resource "aws_iam_role" "workers" {
   force_detach_policies = true
 }
 
-resource "aws_iam_instance_profile" "workers" {
-  role = aws_iam_role.workers.name
-  name = coalesce(var.workers_iam_role, "${var.cluster_name}-workers")
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
 resource "aws_iam_role_policy_attachment" "workers" {
   for_each = toset(compact(distinct(concat([
     "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",

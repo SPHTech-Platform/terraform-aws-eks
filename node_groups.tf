@@ -6,17 +6,16 @@ locals {
     launch_template_use_name_prefix = true
     launch_template_name            = var.default_group_launch_template_name
 
-    platform      = "bottlerocket"
-    ami_id        = coalesce(var.default_group_ami_id, data.aws_ami.eks_default_bottlerocket.id)
-    instance_type = var.default_group_instance_type
+    platform       = "bottlerocket"
+    ami_id         = coalesce(var.default_group_ami_id, data.aws_ami.eks_default_bottlerocket.id)
+    instance_types = var.default_group_instance_types
 
     min_size = var.default_group_min_size
     max_size = var.default_group_max_size
 
     subnet_ids = coalescelist(var.default_group_subnet_ids, var.subnet_ids)
 
-    only_critical_addons_enabled = var.only_critical_addons_enabled
-
+    enable_bootstrap_user_data = true
     # See https://github.com/bottlerocket-os/bottlerocket#settings
     bootstrap_extra_args = <<-EOT
       # The admin host container provides SSH access and runs with "superpowers".
@@ -29,13 +28,26 @@ locals {
       [settings.host-containers.control]
       enabled = true
       [settings.kubernetes.node-labels]
-      ingress = "allowed"
+      "lifecycle" = "OnDemand"
       "bottlerocket.aws/updater-interface-version" = "2.0.0"
       %{if var.only_critical_addons_enabled}
       [settings.kubernetes.node-taints]
-      CriticalAddonsOnly=true:NoSchedule
+      "CriticalAddonsOnly" = "true:NoSchedule"
       %{endif}
       EOT
+
+    labels = {
+      "lifecycle"                                  = "OnDemand"
+      "bottlerocket.aws/updater-interface-version" = "2.0.0"
+    }
+
+    taints = var.only_critical_addons_enabled ? [
+      {
+        key    = "CriticalAddonsOnly"
+        value  = "true"
+        effect = "NO_SCHEDULE"
+      }
+    ] : []
 
     # See https://github.com/bottlerocket-os/bottlerocket#default-volumes
     block_device_mappings = {
@@ -62,77 +74,27 @@ locals {
     }
   }
 
-  self_managed_node_groups = merge(
+  eks_managed_node_groups = merge(
     { default = local.default_group },
-    var.self_managed_node_groups,
+    var.eks_managed_node_groups,
   )
 }
 module "node_groups" {
-  source = "./modules/self_managed_nodes"
+  source = "./modules/eks_managed_nodes"
 
-  cluster_name = module.eks.cluster_id
+  cluster_name    = module.eks.cluster_id
+  cluster_version = module.eks.cluster_version
 
-  worker_iam_instance_profile_arn = aws_iam_instance_profile.workers.arn
+  worker_iam_role_arn = aws_iam_role.workers.arn
 
   cluster_security_group_id = module.eks.cluster_security_group_id
   worker_security_group_id  = module.eks.node_security_group_id
 
-  self_managed_node_groups         = local.self_managed_node_groups
-  self_managed_node_group_defaults = var.self_managed_node_group_defaults
-
-  node_termination_handler_sqs_arn    = module.node_termination_handler_sqs.sqs_queue_arn
-  node_termination_handler_event_name = var.node_termination_handler_event_name
+  eks_managed_node_groups         = local.eks_managed_node_groups
+  eks_managed_node_group_defaults = var.eks_managed_node_group_defaults
 
   force_imdsv2 = var.force_imdsv2
   force_irsa   = var.force_irsa
-}
-
-################################################
-# Instance Refresh supporting resources
-# See example at https://github.com/terraform-aws-modules/terraform-aws-eks/tree/v18.7.2/examples/irsa_autoscale_refresh
-################################################
-locals {
-  nth_sqs_name = coalesce(var.node_termination_handler_sqs_name, "${var.cluster_name}-nth")
-}
-
-data "aws_iam_policy_document" "node_termination_handler_sqs" {
-  statement {
-    actions   = ["sqs:SendMessage"]
-    resources = ["arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.nth_sqs_name}"]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "events.amazonaws.com",
-        "sqs.amazonaws.com",
-      ]
-    }
-  }
-}
-
-module "node_termination_handler_sqs" {
-  source  = "terraform-aws-modules/sqs/aws"
-  version = "~> 3.0"
-
-  name                      = local.nth_sqs_name
-  message_retention_seconds = 300
-  policy                    = data.aws_iam_policy_document.node_termination_handler_sqs.json
-}
-
-# Handler Spot Instances termination
-resource "aws_cloudwatch_event_rule" "node_termination_handler_spot" {
-  name        = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
-  description = "Node termination event rule for EKS Cluster ${var.cluster_name}"
-  event_pattern = jsonencode({
-    source      = ["aws.ec2"],
-    detail-type = ["EC2 Spot Instance Interruption Warning"]
-  })
-}
-
-resource "aws_cloudwatch_event_target" "node_termination_handler_spot" {
-  target_id = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
-  rule      = aws_cloudwatch_event_rule.node_termination_handler_spot.name
-  arn       = module.node_termination_handler_sqs.sqs_queue_arn
 }
 
 ################################################
