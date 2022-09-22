@@ -257,12 +257,6 @@ variable "eks_managed_node_group_defaults" {
   }
 }
 
-variable "node_termination_handler_event_name" {
-  description = "Override name of the Cloudwatch Event to handle termination of nodes"
-  type        = string
-  default     = ""
-}
-
 variable "force_imdsv2" {
   description = "Force IMDSv2 metadata server."
   type        = bool
@@ -273,19 +267,4 @@ variable "force_irsa" {
   description = "Force usage of IAM Roles for Service Account"
   type        = bool
   default     = true
-}
-
-#####################################
-# Instance Refresh/Node Termination Handler
-#####################################
-variable "node_termination_handler_sqs_name" {
-  description = "Override the name for the SQS used in Node Termination Handler"
-  type        = string
-  default     = ""
-}
-
-variable "node_termination_handler_spot_event_name" {
-  description = "Override name of the Cloudwatch Event to handle spot termination of nodes"
-  type        = string
-  default     = ""
 }
