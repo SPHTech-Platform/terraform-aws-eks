@@ -221,7 +221,7 @@ variable "default_group_subnet_ids" {
   default     = []
 }
 
-variable "additonal_default_node_group_labels" {
+variable "default_group_node_labels" {
   description = "Additional node label for default group"
   type        = map(string)
   default     = {}
