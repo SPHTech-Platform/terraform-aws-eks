@@ -532,3 +532,49 @@ variable "node_termination_service_account" {
   type        = string
   default     = "node-termination-handler"
 }
+
+###############################
+# Bottle Rocket Update Operator
+###############################
+
+variable "brupop_namespace" {
+  description = "Namespace for all resources under bottlerocket update operator"
+  type        = string
+  default     = "brupop-bottlerocket-aws"
+}
+
+variable "brupop_release_name" {
+  description = "Release name for brupop"
+  type        = string
+  default     = "bottlerocket-brupop"
+}
+
+variable "brupop_chart_name" {
+  description = "Chart name for brupop"
+  type        = string
+  default     = "bottlerocket-brupop"
+}
+
+variable "brupop_chart_repository" {
+  description = "Chart repository for brupop"
+  type        = string
+  default     = "oci://public.ecr.aws/sphmedia/helm/"
+}
+
+variable "brupop_chart_version" {
+  description = "Chart version for brupop"
+  type        = string
+  default     = "1.0.3"
+}
+
+variable "brupop_image" {
+  description = "Docker image for brupop"
+  type        = string
+  default     = "public.ecr.aws/bottlerocket/bottlerocket-update-operator"
+}
+
+variable "brupop_tag" {
+  description = "Docker image tag for brupop. This should correspond to the Kubernetes version"
+  type        = string
+  default     = "v0.2.2"
+}
