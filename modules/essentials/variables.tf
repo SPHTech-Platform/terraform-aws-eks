@@ -578,3 +578,12 @@ variable "brupop_tag" {
   type        = string
   default     = "v0.2.2"
 }
+
+####################################
+###### CERT MANAGER NAMESPACE ######
+####################################
+variable "create_cert_manager_namespace" {
+  description = "Determines whether to create the cert-manager namespace or not`"
+  type        = bool
+  default     = true
+}

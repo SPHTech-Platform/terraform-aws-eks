@@ -12,6 +12,10 @@ resource "helm_release" "brupop" {
   values = [
     templatefile("${path.module}/templates/brupop.yaml", local.cluster_brupop_values),
   ]
+
+  depends_on = [
+    module.cert_manager
+  ]
 }
 
 locals {
