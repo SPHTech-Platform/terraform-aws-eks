@@ -14,7 +14,7 @@ resource "helm_release" "brupop" {
   ]
 
   depends_on = [
-    module.cert_manager
+    resource.helm_release.cert_manager
   ]
 }
 

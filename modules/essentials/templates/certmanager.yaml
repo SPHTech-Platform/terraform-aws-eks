@@ -1,0 +1,455 @@
+# Default values for cert-manager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: ${image_pull_secrets}
+  # - name: "image-pull-secret"
+
+  namespace: ${certmanager_namespace}
+
+  # Optional priority class to be used for the cert-manager pods
+  priorityClassName: "${priority_class_name}"
+  rbac:
+    create: ${rbac_create}
+
+  podSecurityPolicy:
+    enabled: ${psp_enable}
+    useAppArmor: ${psp_apparmor}
+
+  # Set the verbosity of cert-manager. Range of 0 - 6 with 6 being the most verbose.
+  logLevel: ${log_level}
+
+  leaderElection:
+    # Override the namespace used to store the ConfigMap for leader election
+    namespace: ${leader_election_namespace}
+
+    # The duration that non-leader candidates will wait after observing a
+    # leadership renewal until attempting to acquire leadership of a led but
+    # unrenewed leader slot. This is effectively the maximum duration that a
+    # leader can be stopped before it is replaced by another candidate.
+    leaseDuration: ${leader_election_lease_duration}
+
+    # The interval between attempts by the acting master to renew a leadership
+    # slot before it stops leading. This must be less than or equal to the
+    # lease duration.
+    renewDeadline: ${leader_election_renew_deadline}
+
+    # The duration the clients should wait between attempting acquisition and
+    # renewal of a leadership.
+    retryPeriod: ${leader_election_retry_period}
+
+installCRDs: ${install_crds}
+
+replicaCount: ${replica_count}
+
+strategy: ${strategy}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 0
+  #   maxUnavailable: 1
+
+# Comma separated list of feature gates that should be enabled on the
+# controller pod.
+featureGates: ${feature_gates}
+
+image:
+  repository: ${image_repository}
+  # You can manage a registry with
+  # registry: quay.io
+  # repository: jetstack/cert-manager-controller
+
+  # Override the image tag to deploy by setting this variable.
+  # If no value is set, the chart's appVersion will be used.
+  tag: ${image_tag}
+
+  # Setting a digest will override any tag
+  # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
+  pullPolicy: IfNotPresent
+
+# Override the namespace used to store DNS provider credentials etc. for ClusterIssuer
+# resources. By default, the same namespace as cert-manager is deployed within is
+# used. This namespace will not be automatically created by the Helm chart.
+clusterResourceNamespace: "${cluster_resource_namespace}"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: ${service_account_create}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "${service_account_name}"
+  # Optional additional annotations to add to the controller's ServiceAccount
+  annotations: ${service_account_annotations}
+  # Automount API credentials for a Service Account.
+  automountServiceAccountToken: ${service_account_automount_token}
+
+# Optional additional arguments
+extraArgs: ${extra_args}
+  # Use this flag to set a namespace that cert-manager will use to store
+  # supporting resources required for each ClusterIssuer (default is kube-system)
+  # - --cluster-resource-namespace=kube-system
+  # When this flag is enabled, secrets will be automatically removed when the certificate resource is deleted
+  # - --enable-certificate-owner-ref=true
+
+extraEnv: ${extra_env}
+# - name: SOME_VAR
+#   value: 'some value'
+
+resources: ${resources}
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
+
+# Pod Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext: ${security_context}
+# legacy securityContext parameter format: if enabled is set to true, only fsGroup and runAsUser are supported
+# securityContext:
+#   enabled: false
+#   fsGroup: 1001
+#   runAsUser: 1001
+# to support additional securityContext parameters, omit the `enabled` parameter and simply specify the parameters
+# you want to set, e.g.
+# securityContext:
+#   fsGroup: 1000
+#   runAsUser: 1000
+#   runAsNonRoot: true
+
+# Container Security Context to be set on the controller component container
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+containerSecurityContext: ${container_security_context}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+
+volumes: ${volumes}
+
+volumeMounts: ${volume_mounts}
+
+# Optional additional annotations to add to the controller Deployment
+deploymentAnnotations: ${deployment_annotations}
+
+# Optional additional annotations to add to the controller Pods
+podAnnotations: ${pod_annotations}
+
+podLabels: ${pod_labels}
+
+# Optional additional labels to add to the controller Service
+# serviceLabels: {}
+
+# Optional DNS settings, useful if you have a public and private DNS zone for
+# the same domain on Route 53. What follows is an example of ensuring
+# cert-manager can access an ingress or DNS TXT records at all times.
+# NOTE: This requires Kubernetes 1.10 or `CustomPodDNS` feature gate enabled for
+# the cluster to work.
+# podDnsPolicy: "None"
+# podDnsConfig:
+#   nameservers:
+#     - "1.1.1.1"
+#     - "8.8.8.8"
+
+nodeSelector: ${node_selector}
+
+ingressShim: ${ingress_shim}
+  # defaultIssuerName: ""
+  # defaultIssuerKind: ""
+  # defaultIssuerGroup: ""
+
+prometheus:
+  enabled: ${prometheus_enabled}
+  servicemonitor:
+    enabled: false
+    prometheusInstance: default
+    targetPort: 9402
+    path: /metrics
+    interval: 60s
+    scrapeTimeout: 30s
+    labels: {}
+
+# Use these variables to configure the HTTP_PROXY environment variables
+# http_proxy: "http://proxy:8080"
+# http_proxy: "http://proxy:8080"
+# no_proxy: 127.0.0.1,localhost
+
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+# for example:
+#   affinity:
+#     nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: foo.bar.com/role
+#            operator: In
+#            values:
+#            - master
+affinity: ${affinity}
+
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#toleration-v1-core
+# for example:
+#   tolerations:
+#   - key: foo.bar.com/role
+#     operator: Equal
+#     value: master
+#     effect: NoSchedule
+tolerations: ${tolerations}
+
+webhook:
+  replicaCount: ${webhook_replica_count}
+  timeoutSeconds: ${webhook_timeout_seconds}
+
+  strategy: ${webook_strategy}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 0
+    #   maxUnavailable: 1
+
+  securityContext: ${webhook_security_context}
+
+  # Container Security Context to be set on the webhook component container
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  containerSecurityContext: ${webook_container_security_context}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+
+  # Optional additional annotations to add to the webhook Deployment
+  deploymentAnnotations: ${webhook_deployment_annotations}
+
+  # Optional additional annotations to add to the webhook Pods
+  podAnnotations: ${webhook_pod_annotations}
+
+  # Optional additional annotations to add to the webhook MutatingWebhookConfiguration
+  mutatingWebhookConfigurationAnnotations: ${mutating_webhook_configuration_annotations}
+
+  # Optional additional annotations to add to the webhook ValidatingWebhookConfiguration
+  validatingWebhookConfigurationAnnotations: ${validating_webhook_configuration_annotations}
+
+  # Optional additional arguments for webhook
+  extraArgs: ${webhook_extra_args}
+
+  resources: ${webhook_resources}
+    # requests:
+    #   cpu: 10m
+    #   memory: 32Mi
+
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ##
+  livenessProbe: ${webhook_liveness_probe}
+    # failureThreshold: 3
+    # initialDelaySeconds: 60
+    # periodSeconds: 10
+    # successThreshold: 1
+    # timeoutSeconds: 1
+  readinessProbe: ${webhook_readiness_probe}
+    # failureThreshold: 3
+    # initialDelaySeconds: 5
+    # periodSeconds: 5
+    # successThreshold: 1
+    # timeoutSeconds: 1
+
+  nodeSelector: ${webhook_node_selector}
+
+  affinity: ${webhook_affinity}
+
+  tolerations: ${webhook_tolerations}
+
+  # Optional additional labels to add to the Webhook Pods
+  podLabels: ${webhook_pod_labels}
+
+  image:
+    repository: ${webhook_image_repository}
+    # You can manage a registry with
+    # registry: quay.io
+    # repository: jetstack/cert-manager-webhook
+
+    # Override the image tag to deploy by setting this variable.
+    # If no value is set, the chart's appVersion will be used.
+    tag: ${webhook_image_tag}
+
+    # Setting a digest will override any tag
+    # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
+
+    pullPolicy: IfNotPresent
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: "${webhook_service_account_name}"
+    # Optional additional annotations to add to the controller's ServiceAccount
+    annotations: ${webhook_service_account_annotations}
+
+  # The port that the webhook should listen on for requests.
+  # In GKE private clusters, by default kubernetes apiservers are allowed to
+  # talk to the cluster nodes only on 443 and 10250. so configuring
+  # securePort: 10250, will work out of the box without needing to add firewall
+  # rules or requiring NET_BIND_SERVICE capabilities to bind port numbers <1000
+  securePort: ${webhook_port}
+
+  # Specifies if the webhook should be started in hostNetwork mode.
+  #
+  # Required for use in some managed kubernetes clusters (such as AWS EKS) with custom
+  # CNI (such as calico), because control-plane managed by AWS cannot communicate
+  # with pods' IP CIDR and admission webhooks are not working
+  #
+  # Since the default port for the webhook conflicts with kubelet on the host
+  # network, `webhook.securePort` should be changed to an available port if
+  # running in hostNetwork mode.
+  hostNetwork: ${webhook_host_network}
+
+  # Specifies how the service should be handled. Useful if you want to expose the
+  # webhook to outside of the cluster. In some cases, the control plane cannot
+  # reach internal services.
+  # serviceType: ClusterIP
+  # loadBalancerIP:
+
+  # Overrides the mutating webhook and validating webhook so they reach the webhook
+  # service using the `url` field instead of a service.
+  # url: {}
+    # host:
+
+cainjector:
+  enabled: ${ca_injector_enabled}
+  replicaCount: ${ca_injector_replica_count}
+
+  strategy: ${ca_injector_strategy}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 0
+    #   maxUnavailable: 1
+
+  securityContext: ${ca_injector_security_context}
+
+  # Container Security Context to be set on the cainjector component container
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  containerSecurityContext: ${ca_injector_container_security_context}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+
+  # Optional additional annotations to add to the cainjector Deployment
+  deploymentAnnotations: ${ca_injector_deployment_annotations}
+
+  # Optional additional annotations to add to the cainjector Pods
+  # podAnnotations: ${ca_injector_pod_annotations}
+
+  # Optional additional arguments for cainjector
+  extraArgs: ${ca_injector_extra_args}
+
+  resources: ${ca_injector_resources}
+    # requests:
+    #   cpu: 10m
+    #   memory: 32Mi
+
+  nodeSelector: ${ca_injector_node_selector}
+
+  affinity: ${ca_injector_affinity}
+
+  tolerations: ${ca_injector_tolerations}
+
+  # Optional additional labels to add to the CA Injector Pods
+  podLabels: ${ca_injector_pod_labels}
+
+  image:
+    repository: ${ca_injector_image_repository}
+    # You can manage a registry with
+    # registry: quay.io
+    # repository: jetstack/cert-manager-cainjector
+
+    # Override the image tag to deploy by setting this variable.
+    # If no value is set, the chart's appVersion will be used.
+    tag: ${ca_injector_image_tag}
+
+    # Setting a digest will override any tag
+    # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
+
+    pullPolicy: IfNotPresent
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: ${ca_injector_service_account_create}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: "${ca_injector_service_account_name}"
+    # Optional additional annotations to add to the controller's ServiceAccount
+    annotations: ${ca_injector_service_account_annotations}
+
+# This startupapicheck is a Helm post-install hook that waits for the webhook
+# endpoints to become available.
+startupapicheck:
+  enabled: ${startupapicheck_enabled}
+
+  # Pod Security Context to be set on the startupapicheck component Pod
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: ${startupapicheck_security_context}
+
+  # Timeout for 'kubectl check api' command
+  timeout: ${startupapicheck_timeout}
+
+  # Job backoffLimit
+  backoffLimit: ${startupapicheck_backoff_limit}
+
+  # Optional additional annotations to add to the startupapicheck Job
+  jobAnnotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-weight: "1"
+    helm.sh/hook-delete-policy: hook-succeeded
+
+  # Optional additional annotations to add to the startupapicheck Pods
+  # podAnnotations: {}
+
+  # Optional additional arguments for startupapicheck
+  extraArgs: ${startupapicheck_extra_args}
+
+  resources: ${startupapicheck_resources}
+
+  nodeSelector: ${startupapicheck_node_selector}
+
+  affinity: ${startupapicheck_affinity}
+
+  tolerations: ${startupapicheck_tolerations}
+
+  # Optional additional labels to add to the startupapicheck Pods
+  podLabels: ${startupapicheck_pod_labels}
+
+  image:
+    repository: ${startupapicheck_image}
+
+    # Override the image tag to deploy by setting this variable.
+    # If no value is set, the chart's appVersion will be used.
+    tag: ${startupapicheck_image_tag}
+
+    pullPolicy: IfNotPresent
+
+  rbac:
+    annotations:
+      helm.sh/hook: post-install
+      helm.sh/hook-weight: "-5"
+      helm.sh/hook-delete-policy: hook-succeeded
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    # name: ""
+
+    # Optional additional annotations to add to the Job's ServiceAccount
+    annotations:
+      helm.sh/hook: post-install
+      helm.sh/hook-weight: "-5"
+      helm.sh/hook-delete-policy: hook-succeeded
+
+    # Automount API credentials for a Service Account.
+    automountServiceAccountToken: true
