@@ -579,41 +579,48 @@ variable "brupop_tag" {
   default     = "v0.2.2"
 }
 
-####################################
-###### CERT MANAGER NAMESPACE ######
-####################################
+##############
+# Cert Manager
+##############
 variable "cert_manager_release_name" {
   description = "Helm release name"
+  type        = string
   default     = "cert-manager"
 }
 
 variable "cert_manager_chart_name" {
   description = "Helm chart name to provision"
+  type        = string
   default     = "cert-manager"
 }
 
 variable "cert_manager_chart_repository" {
   description = "Helm repository for the chart"
+  type        = string
   default     = "https://charts.jetstack.io"
 }
 
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
+  type        = string
   default     = "1.5.0"
 }
 
 variable "certmanager_namespace" {
   description = "Namespace to install the chart into"
+  type        = string
   default     = "cert-manager"
 }
 
 variable "cert_manager_chart_timeout" {
   description = "Timeout to wait for the Chart to be deployed."
+  type        = number
   default     = 300
 }
 
 variable "cert_manager_max_history" {
   description = "Max History for Helm"
+  type        = number
   default     = 20
 }
 
@@ -622,86 +629,103 @@ variable "cert_manager_max_history" {
 #######################
 variable "priority_class_name" {
   description = "Priority class for all cert-manager pods"
+  type        = string
   default     = ""
 }
 
 variable "rbac_create" {
   description = "Create RBAC resources"
+  type        = bool
   default     = true
 }
 
 variable "psp_enable" {
   description = "Create PodSecurityPolicy"
+  type        = bool
   default     = false
 }
 
 variable "psp_apparmor" {
   description = "Use AppArmor with PSP."
+  type        = bool
   default     = true
 }
 
 variable "service_account_create" {
   description = "Create service account"
+  type        = bool
   default     = true
 }
 
 variable "service_account_name" {
   description = "Override the default service account name"
+  type        = string
   default     = ""
 }
 
 variable "service_account_annotations" {
   description = "Service acocunt annotations"
+  type        = map(string)
   default     = {}
 }
 
 variable "service_account_automount_token" {
   description = "Automount API credentials for a Service Account"
+  type        = bool
   default     = true
 }
 
 variable "log_level" {
   description = "Set the verbosity of cert-manager. Range of 0 - 6 with 6 being the most verbose."
+  type        = number
   default     = 2
 }
 
 variable "leader_election_namespace" {
   description = "Namespace used for Leader Election ConfigMap"
+  type        = string
   default     = "kube-system"
 }
 
 variable "leader_election_lease_duration" {
   description = "Duration that non-leader candidates will wait after observing a leadership renewal"
+  type        = string
   default     = "60s"
 }
 
 variable "leader_election_renew_deadline" {
   description = "Interval between attempts by the acting master to renew a leadership slot before it stops leading"
+  type        = string
   default     = "40s"
 }
 
 variable "leader_election_retry_period" {
   description = "Duration the clients should wait between attempting acquisition and renewal of a leadership."
+  type        = string
   default     = "15s"
 }
 
 variable "cluster_resource_namespace" {
   description = "Override the namespace used to store DNS provider credentials etc. for ClusterIssuer resources. By default, the same namespace as cert-manager is deployed within is used. This namespace will not be automatically created by the Helm chart."
+  type        = string
   default     = ""
 }
 
 variable "install_crds" {
   description = "Install CRDs with chart"
+  type        = bool
   default     = true
 }
 
 variable "replica_count" {
   description = "Number of controller replicas"
+  type        = number
   default     = 1
 }
 
 variable "strategy" {
   description = "Update strategy of deployment"
+  type        = any
   default = {
     type = "RollingUpdate"
     rollingUpdate = {
@@ -713,36 +737,43 @@ variable "strategy" {
 
 variable "feature_gates" {
   description = "Feature gates to enable on the pod"
+  type        = list(any)
   default     = []
 }
 
 variable "image_pull_secrets" {
   description = "Secrets for image pulling"
+  type        = list(any)
   default     = []
 }
 
 variable "image_repository" {
   description = "Image repository"
+  type        = string
   default     = "quay.io/jetstack/cert-manager-controller"
 }
 
 variable "image_tag" {
   description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
+  type        = string
   default     = null
 }
 
 variable "extra_args" {
   description = "Extra arguments"
+  type        = list(any)
   default     = []
 }
 
 variable "extra_env" {
   description = "Extra environment variables"
+  type        = list(any)
   default     = []
 }
 
 variable "resources" {
   description = "Resources for pods"
+  type        = any
   default = {
     requests = {
       cpu    = "100m"
@@ -757,61 +788,73 @@ variable "resources" {
 
 variable "volumes" {
   description = "Extra volumes for the pod"
+  type        = any
   default     = []
 }
 
 variable "volume_mounts" {
   description = "Extra volume mounts for the container"
+  type        = any
   default     = []
 }
 
 variable "security_context" {
   description = "Configure pod security context"
+  type        = map(string)
   default     = {}
 }
 
 variable "container_security_context" {
   description = "Configure container security context"
+  type        = map(string)
   default     = {}
 }
 
 variable "deployment_annotations" {
   description = "Extra annotations for the deployment"
+  type        = map(string)
   default     = {}
 }
 
 variable "pod_annotations" {
   description = "Extra annotations for pods"
+  type        = map(string)
   default     = {}
 }
 
 variable "pod_labels" {
   description = "Extra labels for pods"
+  type        = map(string)
   default     = {}
 }
 
 variable "ingress_shim" {
   description = "Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/"
+  type        = map(any)
   default     = {}
 }
 
 variable "prometheus_enabled" {
   description = "Enable Prometheus metrics"
+  type        = bool
   default     = true
 }
 
 variable "node_selector" {
   description = "Node selector for cert-manager-controller pods"
+  type        = map(string)
   default     = {}
 }
 
 variable "affinity" {
   description = "Pod affinity"
+  type        = map(string)
   default     = {}
 }
 
 variable "tolerations" {
   description = "Pod tolerations"
+  type        = list(any)
   default     = []
 }
 
@@ -820,16 +863,19 @@ variable "tolerations" {
 #####################################
 variable "webhook_replica_count" {
   description = "Number of replicas for webhook"
+  type        = number
   default     = 1
 }
 
 variable "webhook_timeout_seconds" {
   description = "Timeout in seconds for webook"
+  type        = number
   default     = 10
 }
 
 variable "webook_strategy" {
   description = "Update strategy for admission webhook"
+  type        = any
   default = {
     type = "RollingUpdate"
     rollingUpdate = {
@@ -841,46 +887,55 @@ variable "webook_strategy" {
 
 variable "webhook_security_context" {
   description = "Security context for webhook pod"
+  type        = map(any)
   default     = {}
 }
 
 variable "webook_container_security_context" {
   description = "Security context for webhook containers"
+  type        = map(any)
   default     = {}
 }
 
 variable "webhook_deployment_annotations" {
   description = "Extra annotations for webhook deployment"
+  type        = map(string)
   default     = {}
 }
 
 variable "webhook_pod_annotations" {
   description = "Extra annotations for webhook pods"
+  type        = map(string)
   default     = {}
 }
 
 variable "webhook_pod_labels" {
   description = "Extra labels for webhook pods"
+  type        = map(string)
   default     = {}
 }
 
 variable "mutating_webhook_configuration_annotations" {
   description = "Optional additional annotations to add to the webhook MutatingWebhookConfiguration"
+  type        = map(string)
   default     = {}
 }
 
 variable "validating_webhook_configuration_annotations" {
   description = "Optional additional annotations to add to the webhook ValidatingWebhookConfiguration"
+  type        = map(string)
   default     = {}
 }
 
 variable "webhook_extra_args" {
   description = "Extra args for webhook"
+  type        = any
   default     = []
 }
 
 variable "webhook_resources" {
   description = "Webhook pod resources"
+  type        = map(any)
   default = {
     requests = {
       cpu    = "100m"
@@ -895,6 +950,7 @@ variable "webhook_resources" {
 
 variable "webhook_liveness_probe" {
   description = "Liveness probe for webhook"
+  type        = map(any)
   default = {
     failureThreshold    = 3
     initialDelaySeconds = 60
@@ -906,6 +962,7 @@ variable "webhook_liveness_probe" {
 
 variable "webhook_readiness_probe" {
   description = "Readiness probe for webhook"
+  type        = map(any)
   default = {
     failureThreshold    = 3
     initialDelaySeconds = 5
@@ -917,52 +974,62 @@ variable "webhook_readiness_probe" {
 
 variable "webhook_node_selector" {
   description = "Node selector for webhook"
+  type        = map(string)
   default     = {}
 }
 
 
 variable "webhook_affinity" {
   description = "Affinity for webhook"
+  type        = map(string)
   default     = {}
 }
 
 variable "webhook_tolerations" {
   description = "Tolerations for webhook"
+  type        = list(any)
   default     = []
 }
 
 variable "webhook_image_repository" {
   description = "Image repository for webhook"
+  type        = string
   default     = "quay.io/jetstack/cert-manager-webhook"
 }
 
 variable "webhook_image_tag" {
   description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
+  type        = any
   default     = null
 }
 
 variable "webhook_service_account_create" {
   description = "Create Webhook service account"
+  type        = bool
   default     = true
 }
 
 variable "webhook_service_account_name" {
   description = "Name for webhook service account. If not set and create is true, a name is generated using the fullname template"
+  type        = string
   default     = ""
 }
 
 variable "webhook_service_account_annotations" {
   description = "Annotations for webhook service account"
+  type        = map(string)
   default     = {}
 }
 
 variable "webhook_port" {
   description = "Port used by webhook to listen for request from Kubernetes Master"
+  type        = number
   default     = 10250
 }
 
 variable "webhook_host_network" {
   description = "Whether webhook should use host network"
+  type        = bool
   default     = false
 }
 
@@ -972,16 +1039,19 @@ variable "webhook_host_network" {
 #####################################
 variable "ca_injector_enabled" {
   description = "Enable CA Injector."
+  type        = bool
   default     = true
 }
 
 variable "ca_injector_replica_count" {
   description = "Number of replica for injector"
+  type        = number
   default     = 1
 }
 
 variable "ca_injector_strategy" {
   description = "CA Injector deployment update strategy"
+  type        = any
   default = {
     type = "RollingUpdate"
     rollingUpdate = {
@@ -993,36 +1063,43 @@ variable "ca_injector_strategy" {
 
 variable "ca_injector_security_context" {
   description = "CA Injector Pod Security Context"
+  type        = map(any)
   default     = {}
 }
 
 variable "ca_injector_container_security_context" {
   description = "CA Injector Container Security Context"
+  type        = map(any)
   default     = {}
 }
 
 variable "ca_injector_deployment_annotations" {
   description = "Extra annotations for ca_injector deployment"
+  type        = map(string)
   default     = {}
 }
 
 variable "ca_injector_pod_annotations" {
   description = "Extra annotations for ca_injector pods"
+  type        = map(string)
   default     = {}
 }
 
 variable "ca_injector_pod_labels" {
   description = "Extra labels for ca_injector pods"
+  type        = map(string)
   default     = {}
 }
 
 variable "ca_injector_extra_args" {
   description = "Extra args for ca_injector"
+  type        = any
   default     = []
 }
 
 variable "ca_injector_resources" {
   description = "ca_injector pod resources"
+  type        = map(any)
   default = {
     requests = {
       cpu    = "100m"
@@ -1037,41 +1114,49 @@ variable "ca_injector_resources" {
 
 variable "ca_injector_node_selector" {
   description = "Node selector for ca_injector"
+  type        = map(string)
   default     = {}
 }
 
 variable "ca_injector_affinity" {
   description = "Affinity for ca_injector"
+  type        = map(string)
   default     = {}
 }
 
 variable "ca_injector_tolerations" {
   description = "Tolerations for ca_injector"
+  type        = list(any)
   default     = []
 }
 
 variable "ca_injector_image_repository" {
   description = "Image repository for ca_injector"
+  type        = string
   default     = "quay.io/jetstack/cert-manager-cainjector"
 }
 
 variable "ca_injector_image_tag" {
   description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
+  type        = any
   default     = null
 }
 
 variable "ca_injector_service_account_create" {
   description = "Create ca_injector service account"
+  type        = bool
   default     = true
 }
 
 variable "ca_injector_service_account_name" {
   description = "Name for ca_injector service account. If not set and create is true, a name is generated using the fullname template"
+  type        = string
   default     = ""
 }
 
 variable "ca_injector_service_account_annotations" {
   description = "Annotations for ca_injector service account"
+  type        = map(string)
   default     = {}
 }
 
@@ -1081,11 +1166,13 @@ variable "ca_injector_service_account_annotations" {
 
 variable "startupapicheck_enabled" {
   description = "Enable startupapicheck"
+  type        = bool
   default     = true
 }
 
 variable "startupapicheck_security_context" {
   description = "startupapicheck security context"
+  type        = map(any)
   default = {
     runAsNonRoot = true
   }
@@ -1093,26 +1180,31 @@ variable "startupapicheck_security_context" {
 
 variable "startupapicheck_timeout" {
   description = "startupapicheck timeout"
+  type        = string
   default     = "1m"
 }
 
 variable "startupapicheck_backoff_limit" {
   description = "startupapicheck backoff limit"
+  type        = number
   default     = 4
 }
 
 variable "startupapicheck_pod_labels" {
   description = "Extra labels for startupapicheck pods"
+  type        = map(string)
   default     = {}
 }
 
 variable "startupapicheck_extra_args" {
   description = "Extra args for startupapicheck"
+  type        = list(any)
   default     = []
 }
 
 variable "startupapicheck_resources" {
   description = "startupapicheck pod resources"
+  type        = map(any)
   default = {
     requests = {
       cpu    = "10m"
@@ -1127,25 +1219,30 @@ variable "startupapicheck_resources" {
 
 variable "startupapicheck_node_selector" {
   description = "Node selector for startupapicheck"
+  type        = map(string)
   default     = {}
 }
 
 variable "startupapicheck_affinity" {
   description = "Affinity for startupapicheck"
+  type        = map(string)
   default     = {}
 }
 
 variable "startupapicheck_tolerations" {
   description = "Tolerations for startupapicheck"
+  type        = any
   default     = []
 }
 
 variable "startupapicheck_image_repository" {
   description = "Image repository for startupapicheck"
+  type        = string
   default     = "quay.io/jetstack/cert-manager-ctl"
 }
 
 variable "startupapicheck_image_tag" {
   description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
+  type        = any
   default     = null
 }
