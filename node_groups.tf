@@ -36,10 +36,10 @@ locals {
       %{endif}
       EOT
 
-    labels = {
+    labels = merge({
       "lifecycle"                                  = "OnDemand"
       "bottlerocket.aws/updater-interface-version" = "2.0.0"
-    }
+    }, var.default_group_node_labels)
 
     taints = var.only_critical_addons_enabled ? [
       {

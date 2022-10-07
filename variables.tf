@@ -221,6 +221,12 @@ variable "default_group_subnet_ids" {
   default     = []
 }
 
+variable "default_group_node_labels" {
+  description = "Additional node label for default group"
+  type        = map(string)
+  default     = {}
+}
+
 variable "only_critical_addons_enabled" {
   description = "Enabling this option will taint default node group with CriticalAddonsOnly=true:NoSchedule taint. Changing this forces a new resource to be created."
   type        = bool
