@@ -1269,7 +1269,6 @@ variable "metrics_server_helm_config_defaults" {
   }
 }
 
-
 variable "metrics_server_helm_config" {
   description = "Helm provider config for Metrics Server."
   type        = any
