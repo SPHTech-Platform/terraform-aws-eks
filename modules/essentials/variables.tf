@@ -1246,3 +1246,18 @@ variable "startupapicheck_image_tag" {
   type        = any
   default     = null
 }
+
+#################
+# metrics-server
+#################
+variable "metrics_server_enabled" {
+  description = "Enable metrics-server helm charts installation."
+  type        = bool
+  default     = true
+}
+
+variable "metrics_server_helm_config" {
+  description = "Helm provider config for Metrics Server."
+  type        = any
+  default     = {}
+}
