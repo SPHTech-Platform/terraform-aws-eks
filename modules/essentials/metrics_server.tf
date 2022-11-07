@@ -6,8 +6,10 @@ locals {
 }
 
 module "helm_metrics_server" {
-  count  = var.metrics_server_enabled ? 1 : 0
-  source = "github.com/SPHTech-Platform/terraform-helm-release?ref=init"
+  count = var.metrics_server_enabled ? 1 : 0
+
+  source  = "SPHTech-Platform/release/helm"
+  version = "~> 0.1.0"
 
   helm_config = local.helm_config
 }
