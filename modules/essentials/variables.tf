@@ -1246,3 +1246,31 @@ variable "startupapicheck_image_tag" {
   type        = any
   default     = null
 }
+
+#################
+# metrics-server
+#################
+variable "metrics_server_enabled" {
+  description = "Enable metrics-server helm charts installation."
+  type        = bool
+  default     = true
+}
+
+variable "metrics_server_helm_config_defaults" {
+  description = "Helm provider default config for Metrics Server."
+  type        = any
+  default = {
+    name        = "metrics-server"
+    chart       = "metrics-server"
+    repository  = "https://kubernetes-sigs.github.io/metrics-server/"
+    version     = "3.8.2"
+    namespace   = "kube-system"
+    description = "Metric server helm Chart deployment configuration"
+  }
+}
+
+variable "metrics_server_helm_config" {
+  description = "Helm provider config for Metrics Server."
+  type        = any
+  default     = {}
+}
