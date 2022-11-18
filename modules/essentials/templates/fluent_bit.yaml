@@ -88,7 +88,7 @@ config:
         region ap-southeast-1
         log_group_name ${log_group_name}
         log_stream_prefix fluentbit-
-        auto_create_group true
+        auto_create_group false
 
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
