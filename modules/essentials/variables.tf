@@ -1322,3 +1322,9 @@ variable "firehose_role_arn" {
   type        = string
   default     = ""
 }
+
+variable "fluent_bit_log_group_retention" {
+  description = "Number of days to retain the cloudwatch logs"
+  type        = number
+  default     = 30
+}

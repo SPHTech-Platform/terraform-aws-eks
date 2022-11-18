@@ -96,7 +96,7 @@ config:
 
   ## https://docs.fluentbit.io/manual/pipeline/parsers
   # customParsers: |
-  
+
   extraFiles: {}
 #     upstream.conf: |
 #       [UPSTREAM]

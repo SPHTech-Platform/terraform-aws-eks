@@ -97,7 +97,7 @@ module "eks_essentials" {
 | [aws_eks_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_eks_cluster_auth.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_iam_policy_document.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.fluent_bit](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_sqs_queue.node_termination_handler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/sqs_queue) | data source |
@@ -186,6 +186,7 @@ module "eks_essentials" {
 | <a name="input_fluent_bit_helm_config_defaults"></a> [fluent\_bit\_helm\_config\_defaults](#input\_fluent\_bit\_helm\_config\_defaults) | Helm provider default config for Fluent Bit. | `any` | <pre>{<br>  "chart": "fluent-bit",<br>  "description": "Fluent Bit helm Chart deployment configuration",<br>  "name": "fluent-bit",<br>  "namespace": "logging",<br>  "repository": "https://fluent.github.io/helm-charts",<br>  "version": "0.21.1"<br>}</pre> | no |
 | <a name="input_fluent_bit_image_repository"></a> [fluent\_bit\_image\_repository](#input\_fluent\_bit\_image\_repository) | Fluent Bit Image repo | `string` | `"public.ecr.aws/aws-observability/aws-for-fluent-bit"` | no |
 | <a name="input_fluent_bit_image_tag"></a> [fluent\_bit\_image\_tag](#input\_fluent\_bit\_image\_tag) | Fluent Bit Image tag | `string` | `"2.21.5"` | no |
+| <a name="input_fluent_bit_log_group_retention"></a> [fluent\_bit\_log\_group\_retention](#input\_fluent\_bit\_log\_group\_retention) | Number of days to retain the cloudwatch logs | `number` | `30` | no |
 | <a name="input_helm_release_max_history"></a> [helm\_release\_max\_history](#input\_helm\_release\_max\_history) | The maximum number of history releases to keep track in each Helm release | `number` | `20` | no |
 | <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | Secrets for image pulling | `list(any)` | `[]` | no |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | Image repository | `string` | `"quay.io/jetstack/cert-manager-controller"` | no |
