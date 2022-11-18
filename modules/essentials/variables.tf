@@ -1274,3 +1274,51 @@ variable "metrics_server_helm_config" {
   type        = any
   default     = {}
 }
+
+
+#############
+# fluent-bit
+#############
+variable "fluent_bit_enabled" {
+  description = "Enable fluent-bit helm charts installation."
+  type        = bool
+  default     = true
+}
+
+variable "fluent_bit_helm_config_defaults" {
+  description = "Helm provider default config for Fluent Bit."
+  type        = any
+  default = {
+    name        = "fluent-bit"
+    chart       = "fluent-bit"
+    repository  = "https://fluent.github.io/helm-charts"
+    version     = "0.21.1"
+    namespace   = "logging"
+    description = "Fluent Bit helm Chart deployment configuration"
+  }
+}
+
+# Use aws fluentbit image which has firehose/cloudwatch plugins
+variable "fluent_bit_image_repository" {
+  description = "Fluent Bit Image repo"
+  type        = string
+  default     = "public.ecr.aws/aws-observability/aws-for-fluent-bit"
+}
+
+variable "fluent_bit_image_tag" {
+  description = "Fluent Bit Image tag"
+  type        = string
+  default     = "2.21.5"
+}
+
+variable "fluent_bit_helm_config" {
+  description = "Helm provider config for AWS for Fluent Bit."
+  type        = any
+  default     = {}
+}
+
+variable "firehose_role_arn" {
+  description = "IAM Role ARN to assume for firehose"
+  type        = string
+  default     = ""
+}
