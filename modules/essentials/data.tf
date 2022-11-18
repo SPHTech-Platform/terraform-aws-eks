@@ -24,7 +24,7 @@ data "aws_sqs_queue" "node_termination_handler" {
   name = data.aws_arn.node_termination_handler_sqs[0].resource
 }
 
-data "aws_iam_policy_document" "irsa" {
+data "aws_iam_policy_document" "fluent_bit" {
   statement {
     sid       = "PutLogEvents"
     effect    = "Allow"

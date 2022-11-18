@@ -60,5 +60,5 @@ module "helm_fluent_bit" {
 resource "aws_iam_policy" "fluent_bit_irsa" {
   name        = "${var.cluster_name}-fluentbit"
   description = "IAM Policy for AWS for FluentBit IRSA"
-  policy      = data.aws_iam_policy_document.irsa.json
+  policy      = data.aws_iam_policy_document.fluent_bit.json
 }
