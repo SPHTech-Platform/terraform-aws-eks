@@ -48,7 +48,7 @@ module "helm_fluent_bit" {
     kubernetes_service_account        = "${local.service_account_name}"
     oidc_providers = {
       bt_drupal = {
-        provider_arn = data.tfe_outputs.base.values.oidc_provider_arn
+        provider_arn = var.oidc_provider_arn
         namespace_service_accounts = [
           "${local.fluent_bit_helm_config.namespace}:${local.service_account_name}"
         ]
