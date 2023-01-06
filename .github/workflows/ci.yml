@@ -9,6 +9,7 @@ permissions:
   checks: read
   contents: read
   pull-requests: write
+  security-events: write
 jobs:
   ci:
     uses: SPHTech-Platform/reusable-workflows/.github/workflows/terraform.yaml@main
