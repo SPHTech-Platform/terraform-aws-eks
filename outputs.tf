@@ -1,6 +1,6 @@
-output "worker_iam_role_arn" {
-  description = "IAM Role ARN used by worker nodes"
-  value       = aws_iam_role.workers.arn
+output "cluster_iam_role_arn" {
+  description = "IAM Role ARN used by cluster"
+  value       = aws_iam_role.cluster.arn
 }
 
 output "worker_iam_role_name" {
