@@ -16,7 +16,7 @@ module "eks" {
   cluster_additional_security_group_ids = var.cluster_additional_security_group_ids
   cluster_service_ipv4_cidr             = var.cluster_service_ipv4_cidr
 
-  cluster_security_group_name        = var.cluster_name
+  cluster_security_group_name        = var.cluster_security_group_name != null ? var.cluster_security_group_name : var.cluster_name
   cluster_security_group_description = "EKS Cluster ${var.cluster_name} Master"
   cluster_security_group_additional_rules = merge({
     egress_nodes_ephemeral_ports_tcp = {
@@ -29,7 +29,7 @@ module "eks" {
     }
   }, var.cluster_security_group_additional_rules)
 
-  node_security_group_name        = join("_", [var.cluster_name, "worker"])
+  node_security_group_name        = var.worker_security_group_name != null ? var.cluster_security_group_name : join("_", [var.cluster_name, "worker"])
   node_security_group_description = "EKS Cluster ${var.cluster_name} Nodes"
   node_security_group_additional_rules = merge({
     ingress_self_all = {
