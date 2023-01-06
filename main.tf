@@ -29,7 +29,7 @@ module "eks" {
     }
   }, var.cluster_security_group_additional_rules)
 
-  node_security_group_name        = coalesce(var.worker_security_group_name , join("_", [var.cluster_name, "worker"]))
+  node_security_group_name        = coalesce(var.worker_security_group_name, join("_", [var.cluster_name, "worker"]))
   node_security_group_description = "EKS Cluster ${var.cluster_name} Nodes"
   node_security_group_additional_rules = merge({
     ingress_self_all = {
