@@ -1274,3 +1274,9 @@ variable "metrics_server_helm_config" {
   type        = any
   default     = {}
 }
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}

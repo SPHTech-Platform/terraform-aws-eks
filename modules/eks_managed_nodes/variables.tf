@@ -1,9 +1,3 @@
-variable "tags" {
-  description = "Tags for all resources"
-  type        = map(string)
-  default     = {}
-}
-
 ############################
 # K8S Cluster Information
 ############################
@@ -78,4 +72,10 @@ variable "force_irsa" {
   description = "Force usage of IAM Roles for Service Account"
   type        = bool
   default     = true
+}
+
+variable "tags" {
+  description = "Tags for all resources"
+  type        = map(string)
+  default     = {}
 }

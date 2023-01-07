@@ -68,7 +68,7 @@ module "eks_essentials" {
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 4.21.1 |
-| <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | github.com/SPHTech-Platform/terraform-helm-release | init |
+| <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.1.0 |
 | <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 4.21.1 |
 | <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 3.0 |
 
@@ -251,6 +251,7 @@ module "eks_essentials" {
 | <a name="input_startupapicheck_timeout"></a> [startupapicheck\_timeout](#input\_startupapicheck\_timeout) | startupapicheck timeout | `string` | `"1m"` | no |
 | <a name="input_startupapicheck_tolerations"></a> [startupapicheck\_tolerations](#input\_startupapicheck\_tolerations) | Tolerations for startupapicheck | `any` | `[]` | no |
 | <a name="input_strategy"></a> [strategy](#input\_strategy) | Update strategy of deployment | `any` | <pre>{<br>  "rollingUpdate": {<br>    "maxSurge": 1,<br>    "maxUnavailable": "50%"<br>  },<br>  "type": "RollingUpdate"<br>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_tolerations"></a> [tolerations](#input\_tolerations) | Pod tolerations | `list(any)` | `[]` | no |
 | <a name="input_validating_webhook_configuration_annotations"></a> [validating\_webhook\_configuration\_annotations](#input\_validating\_webhook\_configuration\_annotations) | Optional additional annotations to add to the webhook ValidatingWebhookConfiguration | `map(string)` | `{}` | no |
 | <a name="input_volume_mounts"></a> [volume\_mounts](#input\_volume\_mounts) | Extra volume mounts for the container | `any` | `[]` | no |

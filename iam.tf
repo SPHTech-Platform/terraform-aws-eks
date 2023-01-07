@@ -18,6 +18,8 @@ resource "aws_iam_role" "cluster" {
   assume_role_policy    = data.aws_iam_policy_document.eks_assume_role_policy.json
   permissions_boundary  = var.cluster_iam_boundary
   force_detach_policies = true
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "cluster" {
@@ -38,6 +40,8 @@ resource "aws_iam_role" "workers" {
   assume_role_policy    = data.aws_iam_policy_document.ec2_assume_role_policy.json
   permissions_boundary  = var.workers_iam_boundary
   force_detach_policies = true
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "workers" {
@@ -78,6 +82,8 @@ module "vpc_cni_irsa_role" {
       namespace_service_accounts = ["kube-system:aws-node"]
     }
   }
+
+  tags = var.tags
 }
 
 module "ebs_csi_irsa_role" {
@@ -95,6 +101,8 @@ module "ebs_csi_irsa_role" {
       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy" "ebs_csi_kms" {

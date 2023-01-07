@@ -80,4 +80,6 @@ module "eks" {
   aws_auth_roles                          = var.role_mapping
   aws_auth_users                          = var.user_mapping
   aws_auth_accounts                       = []
+
+  tags = var.tags
 }
