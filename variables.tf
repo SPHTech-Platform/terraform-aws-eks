@@ -285,3 +285,9 @@ variable "force_irsa" {
   type        = bool
   default     = true
 }
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}

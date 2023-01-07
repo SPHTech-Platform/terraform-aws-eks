@@ -16,6 +16,8 @@ resource "aws_eks_addon" "vpc_cni" {
   resolve_conflicts = "NONE"
 
   service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
+
+  tags = var.tags
 }
 
 resource "aws_eks_addon" "coredns" {
@@ -26,6 +28,8 @@ resource "aws_eks_addon" "coredns" {
   cluster_name      = module.eks.cluster_id
   addon_name        = "coredns"
   resolve_conflicts = "NONE"
+
+  tags = var.tags
 }
 
 resource "aws_eks_addon" "ebs_csi" {
@@ -38,4 +42,6 @@ resource "aws_eks_addon" "ebs_csi" {
   resolve_conflicts = "NONE"
 
   service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
+
+  tags = var.tags
 }

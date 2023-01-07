@@ -63,4 +63,6 @@ module "cluster_autoscaler_irsa_role" {
       namespace_service_accounts = ["${var.cluster_autoscaler_namespace}:${var.cluster_autoscaler_service_account_name}"]
     }
   }
+
+  tags = var.tags
 }

@@ -79,6 +79,7 @@ locals {
     var.eks_managed_node_groups,
   )
 }
+
 module "node_groups" {
   source = "./modules/eks_managed_nodes"
 
@@ -95,6 +96,8 @@ module "node_groups" {
 
   force_imdsv2 = var.force_imdsv2
   force_irsa   = var.force_irsa
+
+  tags = var.tags
 }
 
 ################################################

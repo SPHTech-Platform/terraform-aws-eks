@@ -4,6 +4,8 @@ module "kms_secret" {
 
   key_description = "Encrypt Kubernetes secret for EKS Cluster ${var.cluster_name}"
   alias           = "alias/${join("-", [var.cluster_name, "secrets"])}"
+
+  tags = var.tags
 }
 
 module "kms_ebs" {
@@ -15,4 +17,6 @@ module "kms_ebs" {
   key_policy_statements = [
     data.aws_iam_policy_document.kms_ebs.json,
   ]
+
+  tags = var.tags
 }
