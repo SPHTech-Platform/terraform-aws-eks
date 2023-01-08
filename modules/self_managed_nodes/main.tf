@@ -166,6 +166,5 @@ module "self_managed_group" {
   iam_role_attach_cni_policy    = try(each.value.iam_role_attach_cni_policy, local.self_managed_node_group_defaults.iam_role_attach_cni_policy, true)
   iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.self_managed_node_group_defaults.iam_role_additional_policies, {})
 
-  tags             = merge(var.tags, try(each.value.tags, local.self_managed_node_group_defaults.tags, {}))
-  use_default_tags = true
+  tags = merge(var.tags, try(each.value.tags, local.self_managed_node_group_defaults.tags, {}))
 }
