@@ -1,6 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 18.29.0"
+  version = "~> 19.5.1"
 
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
@@ -32,23 +32,6 @@ module "eks" {
   node_security_group_name        = coalesce(var.worker_security_group_name, join("_", [var.cluster_name, "worker"]))
   node_security_group_description = "EKS Cluster ${var.cluster_name} Nodes"
   node_security_group_additional_rules = merge({
-    ingress_self_all = {
-      description = "Node to node all ports/protocols"
-      protocol    = "-1"
-      from_port   = 0
-      to_port     = 0
-      type        = "ingress"
-      self        = true
-    }
-    egress_all = {
-      description      = "Node all egress"
-      protocol         = "-1"
-      from_port        = 0
-      to_port          = 0
-      type             = "egress"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = ["::/0"]
-    }
     ingress_allow_access_from_control_plane = {
       type                          = "ingress"
       protocol                      = "tcp"
@@ -59,10 +42,11 @@ module "eks" {
     }
   }, var.node_security_group_additional_rules)
 
-  cluster_encryption_config = [{
+  create_kms_key = false # Created in kms.tf
+  cluster_encryption_config = {
     provider_key_arn = module.kms_secret.key_arn
     resources        = ["secrets"]
-  }]
+  }
 
   # We decouple the creation so that we don't create a circular dependency
   create_iam_role = false

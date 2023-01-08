@@ -57,7 +57,7 @@ locals {
 
 module "self_managed_group" {
   source  = "terraform-aws-modules/eks/aws//modules/self-managed-node-group"
-  version = "~> 18.29.0"
+  version = "~> 19.5.1"
 
   for_each = local.self_managed_node_groups
 
@@ -132,7 +132,6 @@ module "self_managed_group" {
   key_name        = try(each.value.key_name, local.self_managed_node_group_defaults.key_name, null)
 
   vpc_security_group_ids                 = compact(concat([var.worker_security_group_id], try(each.value.vpc_security_group_ids, local.self_managed_node_group_defaults.vpc_security_group_ids, [])))
-  cluster_security_group_id              = var.cluster_security_group_id
   launch_template_default_version        = try(each.value.launch_template_default_version, local.self_managed_node_group_defaults.launch_template_default_version, null)
   update_launch_template_default_version = try(each.value.update_launch_template_default_version, local.self_managed_node_group_defaults.update_launch_template_default_version, true)
   disable_api_termination                = try(each.value.disable_api_termination, local.self_managed_node_group_defaults.disable_api_termination, null)
@@ -165,17 +164,7 @@ module "self_managed_group" {
   iam_role_permissions_boundary = try(each.value.iam_role_permissions_boundary, local.self_managed_node_group_defaults.iam_role_permissions_boundary, null)
   iam_role_tags                 = try(each.value.iam_role_tags, local.self_managed_node_group_defaults.iam_role_tags, {})
   iam_role_attach_cni_policy    = try(each.value.iam_role_attach_cni_policy, local.self_managed_node_group_defaults.iam_role_attach_cni_policy, true)
-  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.self_managed_node_group_defaults.iam_role_additional_policies, [])
+  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.self_managed_node_group_defaults.iam_role_additional_policies, {})
 
-  # Security group
-  create_security_group          = try(each.value.create_security_group, local.self_managed_node_group_defaults.create_security_group, true)
-  security_group_name            = try(each.value.security_group_name, local.self_managed_node_group_defaults.security_group_name, null)
-  security_group_use_name_prefix = try(each.value.security_group_use_name_prefix, local.self_managed_node_group_defaults.security_group_use_name_prefix, true)
-  security_group_description     = try(each.value.security_group_description, local.self_managed_node_group_defaults.security_group_description, "Self managed node group security group")
-  vpc_id                         = try(each.value.vpc_id, local.self_managed_node_group_defaults.vpc_id, data.aws_eks_cluster.this.vpc_config[0].vpc_id)
-  security_group_rules           = try(each.value.security_group_rules, local.self_managed_node_group_defaults.security_group_rules, {})
-  security_group_tags            = try(each.value.security_group_tags, local.self_managed_node_group_defaults.security_group_tags, {})
-
-  tags             = merge(var.tags, try(each.value.tags, local.self_managed_node_group_defaults.tags, {}))
-  use_default_tags = true
+  tags = merge(var.tags, try(each.value.tags, local.self_managed_node_group_defaults.tags, {}))
 }

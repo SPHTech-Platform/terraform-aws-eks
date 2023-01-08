@@ -50,7 +50,7 @@ variable "workers_iam_boundary" {
 
 variable "iam_role_additional_policies" {
   description = "Additional policies to be added to the IAM role"
-  type        = list(string)
+  type        = set(string)
   default     = []
 }
 
@@ -269,8 +269,7 @@ variable "eks_managed_node_group_defaults" {
     ebs_optimized     = true
     enable_monitoring = true
 
-    create_iam_role       = false
-    create_security_group = false
+    create_iam_role = false
   }
 }
 

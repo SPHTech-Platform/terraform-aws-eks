@@ -40,7 +40,7 @@ output "cluster_oidc_issuer_url" {
 
 output "cluster_name" {
   description = "EKS Cluster name created"
-  value       = module.eks.cluster_id
+  value       = module.eks.cluster_name
 }
 
 output "cluster_endpoint" {
