@@ -88,8 +88,7 @@ module "node_groups" {
 
   worker_iam_role_arn = aws_iam_role.workers.arn
 
-  cluster_security_group_id = module.eks.cluster_security_group_id
-  worker_security_group_id  = module.eks.node_security_group_id
+  worker_security_group_id = module.eks.node_security_group_id
 
   eks_managed_node_groups         = local.eks_managed_node_groups
   eks_managed_node_group_defaults = var.eks_managed_node_group_defaults

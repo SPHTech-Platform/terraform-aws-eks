@@ -59,10 +59,11 @@ module "eks" {
     }
   }, var.node_security_group_additional_rules)
 
-  cluster_encryption_config = [{
+  create_kms_key = false # Created in kms.tf
+  cluster_encryption_config = {
     provider_key_arn = module.kms_secret.key_arn
     resources        = ["secrets"]
-  }]
+  }
 
   # We decouple the creation so that we don't create a circular dependency
   create_iam_role = false

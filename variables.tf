@@ -269,8 +269,7 @@ variable "eks_managed_node_group_defaults" {
     ebs_optimized     = true
     enable_monitoring = true
 
-    create_iam_role       = false
-    create_security_group = false
+    create_iam_role = false
   }
 }
 
