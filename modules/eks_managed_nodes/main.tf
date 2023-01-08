@@ -53,7 +53,7 @@ locals {
 ################################################################################
 module "eks_managed_node_group" {
   source  = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
-  version = "~> 19.0.0"
+  version = "~> 19.5.1"
 
   for_each = local.eks_managed_node_groups
 
