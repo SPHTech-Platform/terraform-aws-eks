@@ -45,12 +45,12 @@ resource "aws_iam_role" "workers" {
 }
 
 resource "aws_iam_role_policy_attachment" "workers" {
-  for_each = toset(compact(distinct(concat([
+  for_each = toset(compact(concat([
     "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore",
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
-  ], var.iam_role_additional_policies))))
+  ], var.iam_role_additional_policies)))
 
   policy_arn = each.value
   role       = aws_iam_role.workers.name

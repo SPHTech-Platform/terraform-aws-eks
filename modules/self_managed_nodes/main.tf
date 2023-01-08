@@ -165,7 +165,7 @@ module "self_managed_group" {
   iam_role_permissions_boundary = try(each.value.iam_role_permissions_boundary, local.self_managed_node_group_defaults.iam_role_permissions_boundary, null)
   iam_role_tags                 = try(each.value.iam_role_tags, local.self_managed_node_group_defaults.iam_role_tags, {})
   iam_role_attach_cni_policy    = try(each.value.iam_role_attach_cni_policy, local.self_managed_node_group_defaults.iam_role_attach_cni_policy, true)
-  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.self_managed_node_group_defaults.iam_role_additional_policies, [])
+  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.self_managed_node_group_defaults.iam_role_additional_policies, {})
 
   # Security group
   create_security_group          = try(each.value.create_security_group, local.self_managed_node_group_defaults.create_security_group, true)

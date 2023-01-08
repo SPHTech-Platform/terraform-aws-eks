@@ -138,7 +138,7 @@ module "eks_managed_node_group" {
   iam_role_permissions_boundary = try(each.value.iam_role_permissions_boundary, local.eks_managed_node_group_defaults.iam_role_permissions_boundary, null)
   iam_role_tags                 = try(each.value.iam_role_tags, local.eks_managed_node_group_defaults.iam_role_tags, {})
   iam_role_attach_cni_policy    = try(each.value.iam_role_attach_cni_policy, local.eks_managed_node_group_defaults.iam_role_attach_cni_policy, true)
-  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.eks_managed_node_group_defaults.iam_role_additional_policies, [])
+  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.eks_managed_node_group_defaults.iam_role_additional_policies, {})
 
   # Security group
   vpc_security_group_ids            = compact(concat([var.worker_security_group_id], try(each.value.vpc_security_group_ids, local.eks_managed_node_group_defaults.vpc_security_group_ids, [])))
