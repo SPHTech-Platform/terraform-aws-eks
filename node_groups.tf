@@ -83,7 +83,7 @@ locals {
 module "node_groups" {
   source = "./modules/eks_managed_nodes"
 
-  cluster_name    = module.eks.cluster_id
+  cluster_name    = module.eks.cluster_name
   cluster_version = module.eks.cluster_version
 
   worker_iam_role_arn = aws_iam_role.workers.arn
