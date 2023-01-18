@@ -68,3 +68,21 @@ resource "kubernetes_cluster_role_binding" "ams_cluster" {
     api_group = ""
   }
 }
+
+resource "kubernetes_cluster_role_binding" "ams_lambda_connector" {
+  metadata {
+    name = "ams-lambda-connector-role-binding"
+  }
+
+  role_ref {
+    api_group = ""
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.ams_cluster.metadata.name
+  }
+
+  subject {
+    kind      = "User"
+    name      = "lambda-connector"
+    api_group = ""
+  }
+}
