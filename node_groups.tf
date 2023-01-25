@@ -82,7 +82,7 @@ locals {
 
 resource "null_resource" "depends" {
   depends_on = [
-    module.eks.cluster_id
+    module.eks.cluster_endpoint
   ]
   triggers = {
     name = module.eks.cluster_name
