@@ -80,19 +80,14 @@ locals {
   )
 }
 
-resource "null_resource" "depends" {
-  depends_on = [
-    module.eks.cluster_endpoint
-  ]
-  triggers = {
-    name = module.eks.cluster_name
-  }
+data "aws_arn" "cluster" {
+  arn = module.eks.cluster_arn
 }
 
 module "node_groups" {
   source = "./modules/eks_managed_nodes"
 
-  cluster_name    = [module.eks.cluster_name, module.eks.cluster_endpoint][0]
+  cluster_name    = split("/", data.aws_arn.cluster.resource)[1]
   cluster_version = module.eks.cluster_version
 
   worker_iam_role_arn = aws_iam_role.workers.arn
