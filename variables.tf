@@ -97,6 +97,12 @@ variable "user_mapping" {
   default = []
 }
 
+variable "aws_auth_fargate_profile_pod_execution_role_arns" {
+  description = "List of Fargate profile pod execution role ARNs to add to the aws-auth configmap"
+  type        = list(string)
+  default     = []
+}
+
 #######################
 # Cluster Networking
 #######################
