@@ -22,6 +22,11 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "cluster_arn" {
+  description = "EKS Cluster arn"
+  type        = string
+}
+
 variable "helm_release_max_history" {
   description = "The maximum number of history releases to keep track in each Helm release"
   type        = number

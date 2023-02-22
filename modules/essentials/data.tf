@@ -1,9 +1,13 @@
+data "aws_arn" "cluster" {
+  arn = var.cluster_arn
+}
+
 data "aws_eks_cluster" "this" {
-  name = var.cluster_name
+  name = split("/", data.aws_arn.cluster.resource)[1]
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = var.cluster_name
+  name = split("/", data.aws_arn.cluster.resource)[1]
 }
 
 data "aws_caller_identity" "current" {
