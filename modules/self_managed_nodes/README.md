@@ -33,7 +33,7 @@ the type of images:
 - `kube_taints`: Kubernetes taints to add to nodes.
   Will be automatically added to the kubelet arguments and ASG tags.
 
-<!-- BEGIN_TF_DOCS -->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
@@ -46,8 +46,8 @@ the type of images:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.0 |
-| <a name="provider_time"></a> [time](#provider\_time) | ~> 0.7 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.56.0 |
+| <a name="provider_time"></a> [time](#provider\_time) | 0.9.1 |
 
 ## Modules
 
@@ -84,4 +84,4 @@ the type of images:
 ## Outputs
 
 No outputs.
-<!-- END_TF_DOCS -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

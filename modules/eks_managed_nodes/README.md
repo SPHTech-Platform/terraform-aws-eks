@@ -1,4 +1,4 @@
-<!-- BEGIN_TF_DOCS -->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
@@ -10,7 +10,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.56.0 |
 
 ## Modules
 
@@ -53,4 +53,4 @@
 | <a name="output_node_group_resources"></a> [node\_group\_resources](#output\_node\_group\_resources) | Map of objects containing information about underlying resources |
 | <a name="output_node_group_status"></a> [node\_group\_status](#output\_node\_group\_status) | Map of EKS Node Group status |
 | <a name="output_node_group_taints"></a> [node\_group\_taints](#output\_node\_group\_taints) | Map objects containing information about taints applied to each node group |
-<!-- END_TF_DOCS -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

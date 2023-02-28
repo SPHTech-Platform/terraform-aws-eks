@@ -97,7 +97,7 @@ provider "helm" {
 }
 ```
 
-<!-- BEGIN_TF_DOCS -->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
@@ -110,8 +110,8 @@ provider "helm" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.56.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.18.1 |
 
 ## Modules
 
@@ -164,7 +164,7 @@ provider "helm" {
 | <a name="input_cluster_security_group_name"></a> [cluster\_security\_group\_name](#input\_cluster\_security\_group\_name) | Cluster security group name | `string` | `null` | no |
 | <a name="input_cluster_service_ipv4_cidr"></a> [cluster\_service\_ipv4\_cidr](#input\_cluster\_service\_ipv4\_cidr) | The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks | `string` | `null` | no |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | EKS Cluster Version | `string` | `"1.22"` | no |
-| <a name="input_create_aws_auth_configmap"></a> [create\_aws\_auth\_configmap](#input\_create\_aws\_auth\_configmap) | Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap` | `bool` | `true` | no |
+| <a name="input_create_aws_auth_configmap"></a> [create\_aws\_auth\_configmap](#input\_create\_aws\_auth\_configmap) | Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap` | `bool` | `false` | no |
 | <a name="input_default_group_ami_id"></a> [default\_group\_ami\_id](#input\_default\_group\_ami\_id) | The AMI from which to launch the defualt group instance. If not supplied, EKS will use its own default image | `string` | `""` | no |
 | <a name="input_default_group_instance_types"></a> [default\_group\_instance\_types](#input\_default\_group\_instance\_types) | Instance type for the default node group | `list(string)` | <pre>[<br>  "m5a.xlarge",<br>  "m5.xlarge",<br>  "m5n.xlarge",<br>  "m5zn.xlarge"<br>]</pre> | no |
 | <a name="input_default_group_launch_template_name"></a> [default\_group\_launch\_template\_name](#input\_default\_group\_launch\_template\_name) | Name of the default node group launch template | `string` | `"default"` | no |
@@ -211,4 +211,4 @@ provider "helm" {
 | <a name="output_worker_iam_role_arn"></a> [worker\_iam\_role\_arn](#output\_worker\_iam\_role\_arn) | IAM Role ARN used by worker nodes |
 | <a name="output_worker_iam_role_name"></a> [worker\_iam\_role\_name](#output\_worker\_iam\_role\_name) | IAM Role Name used by worker nodes |
 | <a name="output_worker_security_group_id"></a> [worker\_security\_group\_id](#output\_worker\_security\_group\_id) | Security Group ID of the worker nodes |
-<!-- END_TF_DOCS -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
