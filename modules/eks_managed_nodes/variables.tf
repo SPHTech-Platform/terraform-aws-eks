@@ -9,7 +9,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.22"
+  default     = "1.25"
 }
 
 variable "worker_iam_role_arn" {
