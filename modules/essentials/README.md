@@ -45,7 +45,7 @@ module "eks_essentials" {
 }
 ```
 
-<!-- BEGIN_TF_DOCS -->
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
@@ -59,9 +59,9 @@ module "eks_essentials" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.2 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.56.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.9.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.18.1 |
 
 ## Modules
 
@@ -285,4 +285,4 @@ module "eks_essentials" {
 | Name | Description |
 |------|-------------|
 | <a name="output_node_termination_handler_sqs_arn"></a> [node\_termination\_handler\_sqs\_arn](#output\_node\_termination\_handler\_sqs\_arn) | ARN of the SQS queue used to handle node termination events |
-<!-- END_TF_DOCS -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
