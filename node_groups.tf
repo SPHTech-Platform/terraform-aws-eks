@@ -153,7 +153,7 @@ locals {
   }
 }
 
-resource "kubernetes_config_map" "amazon_vpc_cni" {
+resource "kubernetes_config_map_v1" "amazon_vpc_cni" {
   count = var.enable_cluster_windows_support ? 1 : 0
 
   metadata {
