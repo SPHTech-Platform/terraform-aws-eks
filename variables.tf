@@ -308,3 +308,9 @@ variable "fargate_profiles" {
   type        = any
   default     = {}
 }
+
+variable "fargate_profile_defaults" {
+  description = "Map of Fargate Profile default configurations"
+  type        = any
+  default     = {}
+}

@@ -18,6 +18,12 @@ variable "fargate_profiles" {
   default     = {}
 }
 
+variable "fargate_profile_defaults" {
+  description = "Map of Fargate Profile default configurations"
+  type        = any
+  default     = {}
+}
+
 variable "tags" {
   description = "Tags for all resources"
   type        = map(string)

@@ -137,8 +137,9 @@ module "fargate_profiles" {
 
   count = var.fargate_cluster ? 1 : 0
 
-  cluster_name     = split("/", data.aws_arn.cluster.resource)[1]
-  fargate_profiles = local.fargate_profiles
+  cluster_name             = split("/", data.aws_arn.cluster.resource)[1]
+  fargate_profiles         = local.fargate_profiles
+  fargate_profile_defaults = var.fargate_profile_defaults
 
   tags = var.tags
 }
