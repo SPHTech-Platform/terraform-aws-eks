@@ -9,3 +9,5 @@ output:
       <!-- END_TF_DOCS -->
 settings:
   lockfile: false
+recursive:
+  enabled: true
