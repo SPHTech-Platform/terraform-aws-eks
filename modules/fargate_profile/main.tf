@@ -6,7 +6,7 @@ module "fargate_profile" {
 
   name         = lookup(each.value, "name", each.key)
   cluster_name = var.cluster_name
-  subnet_ids   = lookup(each.value, "subnet_ids", lookup(var.fargate_profile_defaults, "subnet_ids"))
+  subnet_ids   = each.value.subnet_ids
   selectors    = lookup(each.value, "selectors", lookup(var.fargate_profile_defaults, "selectors", []))
   timeouts     = lookup(each.value, "timeouts", lookup(var.fargate_profile_defaults, "timeouts", {}))
 
