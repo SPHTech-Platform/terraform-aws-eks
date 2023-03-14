@@ -82,7 +82,7 @@ locals {
   default_fargate_profiles = merge(
     {
       default = {
-        name = default
+        name = "default"
         selectors = [
           {
             namespace = "default"
