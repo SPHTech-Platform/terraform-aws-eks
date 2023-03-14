@@ -39,6 +39,47 @@ module "eks" {
     resources        = ["secrets"]
   }
 
+  cluster_addons = {
+    kube-proxy = {
+      most_recent = true
+      reserve     = true
+    }
+    vpc-cni = {
+      most_recent              = true
+      reserve                  = true
+      service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
+    }
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      reserve                  = true
+      service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
+    }
+    coredns = var.fargate_cluster ? {
+      most_recent = true
+      reserve     = true
+      configuration_values = jsonencode({
+        # https://github.com/aws-ia/terraform-aws-eks-blueprints/pull/1329
+        resources = {
+          limits = {
+            cpu = "0.25"
+            # We are targetting the smallest Task size of 512Mb, so we subtract 256Mb from the
+            # request/limit to ensure we can fit within that task
+            memory = "256M"
+          }
+          requests = {
+            cpu = "0.25"
+            # We are targetting the smallest Task size of 512Mb, so we subtract 256Mb from the
+            # request/limit to ensure we can fit within that task
+            memory = "256M"
+          }
+        }
+      })
+      } : {
+      most_recent = true
+      reserve     = true
+    }
+  }
+
   # We decouple the creation so that we don't create a circular dependency
   create_iam_role = false
   iam_role_arn    = aws_iam_role.cluster.arn
