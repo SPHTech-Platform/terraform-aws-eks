@@ -88,6 +88,7 @@ locals {
             namespace = "default"
           }
         ]
+        subnet_ids = var.subnet_ids
       }
     },
     { for subnet in var.subnet_ids :
