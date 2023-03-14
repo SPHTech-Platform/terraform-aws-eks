@@ -20,4 +20,5 @@ module "fargate_profile" {
   iam_role_attach_cni_policy    = lookup(each.value, "iam_role_attach_cni_policy", true)
   iam_role_additional_policies  = lookup(each.value, "iam_role_additional_policies", {})
   iam_role_tags                 = lookup(each.value, "iam_role_tags", {})
+  tags                          = merge(var.tags, lookup(each.value, "tags", {}))
 }

@@ -17,3 +17,9 @@ variable "fargate_profiles" {
   type        = any
   default     = {}
 }
+
+variable "tags" {
+  description = "Tags for all resources"
+  type        = map(string)
+  default     = {}
+}
