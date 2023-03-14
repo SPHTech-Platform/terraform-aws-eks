@@ -6,7 +6,6 @@ variable "cluster_name" {
   type        = string
 }
 
-
 ####################################
 # Fargate profiles
 # Refer to https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/fargate-profile
@@ -14,7 +13,7 @@ variable "cluster_name" {
 ####################################
 
 variable "fargate_profiles" {
-  description = "Map of maps of `eks_node_groups` to create"
+  description = "Map of maps of `fargate_profiles` to create"
   type        = any
   default     = {}
 }

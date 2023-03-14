@@ -296,3 +296,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "fargate_cluster" {
+  description = "Whether to create eks cluster with fargate mode. If true, default node group also will be fargate, otherwise managed"
+  type        = bool
+  default     = false
+}
+
+variable "fargate_profiles" {
+  description = "Map of maps of `fargate_profiles` to create"
+  type        = any
+  default     = {}
+}
