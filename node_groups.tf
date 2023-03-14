@@ -90,7 +90,7 @@ locals {
         ]
       }
     },
-    { for subnet in try(var.subnet_ids, data.aws_eks_cluster.this.vpc_config[0].subnet_ids) :
+    { for subnet in var.subnet_ids :
       "kube-system-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}" => {
         selectors = [
           { namespace = "kube-system" }
