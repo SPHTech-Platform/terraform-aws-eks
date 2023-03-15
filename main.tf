@@ -1,3 +1,13 @@
+locals {
+  aws_auth_fargate_profile_pod_execution_role_arns = var.fargate_cluster ? distinct(
+    compact(
+      concat(
+        [for profile in module.fargate_profiles[0] : profile.fargate_profile_pod_execution_role_arn],
+        var.aws_auth_fargate_profile_pod_execution_role_arns
+      )
+    )
+  ) : var.aws_auth_fargate_profile_pod_execution_role_arns
+}
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 #tfsec:ignore:aws-eks-no-public-cluster-access
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
@@ -102,7 +112,7 @@ module "eks" {
   aws_auth_roles                                   = var.role_mapping
   aws_auth_users                                   = var.user_mapping
   aws_auth_accounts                                = []
-  aws_auth_fargate_profile_pod_execution_role_arns = var.aws_auth_fargate_profile_pod_execution_role_arns
+  aws_auth_fargate_profile_pod_execution_role_arns = local.aws_auth_fargate_profile_pod_execution_role_arns
 
   tags = var.tags
 }
