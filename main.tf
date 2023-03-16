@@ -59,9 +59,9 @@ module "eks" {
       reserve     = true
     }
     vpc-cni = {
-      most_recent              = true
-      reserve                  = true
-      service_account_role_arn = var.fargate_cluster ? null : module.vpc_cni_irsa_role.iam_role_arn
+      most_recent = true
+      reserve     = true
+      # service_account_role_arn = var.fargate_cluster ? null : module.vpc_cni_irsa_role.iam_role_arn
     }
     aws-ebs-csi-driver = {
       most_recent              = true
