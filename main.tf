@@ -30,6 +30,7 @@ module "eks" {
   cluster_additional_security_group_ids = var.cluster_additional_security_group_ids
   cluster_service_ipv4_cidr             = var.cluster_service_ipv4_cidr
 
+  create_cluster_security_group      = var.create_cluster_security_group
   cluster_security_group_name        = coalesce(var.cluster_security_group_name, var.cluster_name)
   cluster_security_group_description = "EKS Cluster ${var.cluster_name} Master"
   cluster_security_group_additional_rules = merge({
@@ -43,6 +44,7 @@ module "eks" {
     }
   }, var.cluster_security_group_additional_rules)
 
+  create_node_security_group = var.create_node_security_group
   node_security_group_name             = coalesce(var.worker_security_group_name, join("_", [var.cluster_name, "worker"]))
   node_security_group_description      = "EKS Cluster ${var.cluster_name} Nodes"
   node_security_group_additional_rules = var.node_security_group_additional_rules

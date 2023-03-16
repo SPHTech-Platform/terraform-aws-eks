@@ -162,10 +162,22 @@ variable "cluster_service_ipv4_cidr" {
   default     = null
 }
 
+variable "create_cluster_security_group" {
+  description = "Determines if a security group is created for the cluster. Note: the EKS service creates a primary security group for the cluster by default"
+  type        = bool
+  default     = true
+}
+
 variable "cluster_security_group_name" {
   description = "Cluster security group name"
   type        = string
   default     = null
+}
+
+variable "create_node_security_group" {
+  description = "Determines whether to create a security group for the node groups or use the existing `node_security_group_id`"
+  type        = bool
+  default     = true
 }
 
 variable "worker_security_group_name" {
