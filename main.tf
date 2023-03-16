@@ -53,7 +53,7 @@ module "eks" {
     resources        = ["secrets"]
   }
 
-  cluster_addons = {
+  cluster_addons = merge({
     kube-proxy = {
       most_recent = true
       reserve     = true
@@ -61,13 +61,13 @@ module "eks" {
     vpc-cni = {
       most_recent              = true
       reserve                  = true
-      service_account_role_arn = var.fargate_cluster ? "" : module.vpc_cni_irsa_role.iam_role_arn
+      service_account_role_arn = var.fargate_cluster ? null : module.vpc_cni_irsa_role.iam_role_arn
     }
     aws-ebs-csi-driver = {
       most_recent              = true
       reserve                  = true
       resolve_conflicts        = "OVERWRITE"
-      service_account_role_arn = var.fargate_cluster ? "" : module.ebs_csi_irsa_role.iam_role_arn
+      service_account_role_arn = var.fargate_cluster ? null : module.ebs_csi_irsa_role.iam_role_arn
     }
     coredns = var.fargate_cluster ? {
       most_recent       = true
@@ -94,7 +94,11 @@ module "eks" {
       most_recent = true
       reserve     = true
     }
-  }
+    },
+    var.cluster_addons,
+  )
+
+  cluster_addons_timeouts = var.cluster_addons_timeouts
 
   # We decouple the creation so that we don't create a circular dependency
   create_iam_role = false
