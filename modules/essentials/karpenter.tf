@@ -30,7 +30,7 @@ resource "helm_release" "karpenter" {
 
   set {
     name  = "settings.aws.clusterEndpoint"
-    value = var.cluster_arn
+    value = var.cluster_endpoint
   }
 
   set {

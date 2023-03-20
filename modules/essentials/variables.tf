@@ -22,8 +22,8 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "cluster_arn" {
-  description = "EKS Cluster ARN"
+variable "cluster_endpoint" {
+  description = "EKS Cluster Endpoint"
   type        = string
 }
 
