@@ -69,6 +69,8 @@ module "eks_essentials" {
 |------|--------|---------|
 | <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.11.2 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.1.0 |
+| <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | terraform-aws-modules/eks/aws//modules/karpenter | ~> 19.10.0 |
+| <a name="module_karpenter_irsa_role"></a> [karpenter\_irsa\_role](#module\_karpenter\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.14.0 |
 | <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.11.2 |
 | <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 3.0 |
 
@@ -84,6 +86,7 @@ module "eks_essentials" {
 | [helm_release.brupop](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.cert_manager](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.karpenter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.node_termination_handler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_annotations.gp2_storage_class](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/annotations) | resource |
 | [kubernetes_namespace_v1.namespaces](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
@@ -91,8 +94,6 @@ module "eks_essentials" {
 | [kubernetes_storage_class_v1.default](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
 | [aws_arn.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_eks_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_iam_policy_document.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
@@ -103,6 +104,7 @@ module "eks_essentials" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_affinity"></a> [affinity](#input\_affinity) | Pod affinity | `map(string)` | `{}` | no |
+| <a name="input_autoscaling_mode"></a> [autoscaling\_mode](#input\_autoscaling\_mode) | Autoscaling mode: cluster\_autoscaler or karpenter | `string` | `"cluster_autoscaler"` | no |
 | <a name="input_brupop_chart_name"></a> [brupop\_chart\_name](#input\_brupop\_chart\_name) | Chart name for brupop | `string` | `"bottlerocket-brupop"` | no |
 | <a name="input_brupop_chart_repository"></a> [brupop\_chart\_repository](#input\_brupop\_chart\_repository) | Chart repository for brupop | `string` | `"oci://public.ecr.aws/sphmedia/helm/"` | no |
 | <a name="input_brupop_chart_version"></a> [brupop\_chart\_version](#input\_brupop\_chart\_version) | Chart version for brupop | `string` | `"1.0.3"` | no |
@@ -135,6 +137,7 @@ module "eks_essentials" {
 | <a name="input_cert_manager_max_history"></a> [cert\_manager\_max\_history](#input\_cert\_manager\_max\_history) | Max History for Helm | `number` | `20` | no |
 | <a name="input_cert_manager_release_name"></a> [cert\_manager\_release\_name](#input\_cert\_manager\_release\_name) | Helm release name | `string` | `"cert-manager"` | no |
 | <a name="input_certmanager_namespace"></a> [certmanager\_namespace](#input\_certmanager\_namespace) | Namespace to install the chart into | `string` | `"cert-manager"` | no |
+| <a name="input_cluster_arn"></a> [cluster\_arn](#input\_cluster\_arn) | EKS Cluster ARN | `string` | n/a | yes |
 | <a name="input_cluster_autoscaler_affinity"></a> [cluster\_autoscaler\_affinity](#input\_cluster\_autoscaler\_affinity) | Affinity for Cluster Autoscaler | `any` | <pre>{<br>  "nodeAffinity": {<br>    "requiredDuringSchedulingIgnoredDuringExecution": {<br>      "nodeSelectorTerms": [<br>        {<br>          "matchExpressions": [<br>            {<br>              "key": "node.kubernetes.io/lifecycle",<br>              "operator": "NotIn",<br>              "values": [<br>                "spot"<br>              ]<br>            }<br>          ]<br>        }<br>      ]<br>    }<br>  },<br>  "podAntiAffinity": {<br>    "preferredDuringSchedulingIgnoredDuringExecution": [<br>      {<br>        "podAffinityTerm": {<br>          "labelSelector": {<br>            "matchExpressions": [<br>              {<br>                "key": "app.kubernetes.io/instance",<br>                "operator": "In",<br>                "values": [<br>                  "cluster-autoscaler"<br>                ]<br>              }<br>            ]<br>          },<br>          "topologyKey": "kubernetes.io/hostname"<br>        },<br>        "weight": 100<br>      }<br>    ]<br>  }<br>}</pre> | no |
 | <a name="input_cluster_autoscaler_chart_name"></a> [cluster\_autoscaler\_chart\_name](#input\_cluster\_autoscaler\_chart\_name) | Chart name for Cluster Autoscaler | `string` | `"cluster-autoscaler"` | no |
 | <a name="input_cluster_autoscaler_chart_repository"></a> [cluster\_autoscaler\_chart\_repository](#input\_cluster\_autoscaler\_chart\_repository) | Chart repository for Cluster Autoscaler | `string` | `"https://kubernetes.github.io/autoscaler"` | no |
@@ -182,6 +185,12 @@ module "eks_essentials" {
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `string` | `null` | no |
 | <a name="input_ingress_shim"></a> [ingress\_shim](#input\_ingress\_shim) | Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/ | `map(any)` | `{}` | no |
 | <a name="input_install_crds"></a> [install\_crds](#input\_install\_crds) | Install CRDs with chart | `bool` | `true` | no |
+| <a name="input_karpenter_chart_name"></a> [karpenter\_chart\_name](#input\_karpenter\_chart\_name) | Chart name for Cluster Autoscaler | `string` | `"karpenter"` | no |
+| <a name="input_karpenter_chart_repository"></a> [karpenter\_chart\_repository](#input\_karpenter\_chart\_repository) | Chart repository for Cluster Autoscaler | `string` | `"oci://public.ecr.aws/karpenter"` | no |
+| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"v0.27.0"` | no |
+| <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | Namespace to deploy karpenter | `string` | `"karpenter"` | no |
+| <a name="input_karpenter_release_name"></a> [karpenter\_release\_name](#input\_karpenter\_release\_name) | Release name for Cluster Autoscaler | `string` | `"karpenter"` | no |
+| <a name="input_karpenter_service_account_name"></a> [karpenter\_service\_account\_name](#input\_karpenter\_service\_account\_name) | K8S sevice account name for Karpenter | `string` | `"karpenter"` | no |
 | <a name="input_kubernetes_annotations"></a> [kubernetes\_annotations](#input\_kubernetes\_annotations) | Annotations for Kubernetes resources | `map(string)` | <pre>{<br>  "terraform": "true"<br>}</pre> | no |
 | <a name="input_kubernetes_labels"></a> [kubernetes\_labels](#input\_kubernetes\_labels) | Labels for resources | `map(string)` | <pre>{<br>  "app.kubernetes.io/managed-by": "Terraform"<br>}</pre> | no |
 | <a name="input_leader_election_lease_duration"></a> [leader\_election\_lease\_duration](#input\_leader\_election\_lease\_duration) | Duration that non-leader candidates will wait after observing a leadership renewal | `string` | `"60s"` | no |
@@ -218,11 +227,8 @@ module "eks_essentials" {
 | <a name="input_node_termination_handler_sqs_name"></a> [node\_termination\_handler\_sqs\_name](#input\_node\_termination\_handler\_sqs\_name) | Override the name for the SQS used in Node Termination Handler | `string` | `""` | no |
 | <a name="input_node_termination_handler_tag"></a> [node\_termination\_handler\_tag](#input\_node\_termination\_handler\_tag) | Docker image tag for Node Termination Handler. This should correspond to the Kubernetes version | `string` | `"v1.16.0"` | no |
 | <a name="input_node_termination_handler_taint_node"></a> [node\_termination\_handler\_taint\_node](#input\_node\_termination\_handler\_taint\_node) | Taint node upon spot interruption termination notice | `bool` | `true` | no |
-| <a name="input_node_termination_iam_role"></a> [node\_termination\_iam\_role](#input\_node\_termination\_iam\_role) | Name of the IAM Role for Node Termination Handler | `string` | `"bedrock_node_termination_handler"` | no |
-| <a name="input_node_termination_iam_role_boundary"></a> [node\_termination\_iam\_role\_boundary](#input\_node\_termination\_iam\_role\_boundary) | IAM Role boundary for Node Termination Handler | `string` | `null` | no |
 | <a name="input_node_termination_namespace"></a> [node\_termination\_namespace](#input\_node\_termination\_namespace) | Namespace to deploy Node Termination Handler | `string` | `"kube-system"` | no |
 | <a name="input_node_termination_service_account"></a> [node\_termination\_service\_account](#input\_node\_termination\_service\_account) | Service account for Node Termination Handler pods | `string` | `"node-termination-handler"` | no |
-| <a name="input_node_termination_sqs"></a> [node\_termination\_sqs](#input\_node\_termination\_sqs) | SQS Queue for node termination handler | <pre>object({<br>    url = string<br>    arn = string<br>  })</pre> | `null` | no |
 | <a name="input_oidc_provider_arn"></a> [oidc\_provider\_arn](#input\_oidc\_provider\_arn) | ARN of the OIDC Provider for IRSA | `string` | n/a | yes |
 | <a name="input_pod_annotations"></a> [pod\_annotations](#input\_pod\_annotations) | Extra annotations for pods | `map(string)` | `{}` | no |
 | <a name="input_pod_labels"></a> [pod\_labels](#input\_pod\_labels) | Extra labels for pods | `map(string)` | `{}` | no |
@@ -278,6 +284,7 @@ module "eks_essentials" {
 | <a name="input_webhook_tolerations"></a> [webhook\_tolerations](#input\_webhook\_tolerations) | Tolerations for webhook | `list(any)` | `[]` | no |
 | <a name="input_webook_container_security_context"></a> [webook\_container\_security\_context](#input\_webook\_container\_security\_context) | Security context for webhook containers | `map(any)` | `{}` | no |
 | <a name="input_webook_strategy"></a> [webook\_strategy](#input\_webook\_strategy) | Update strategy for admission webhook | `any` | <pre>{<br>  "rollingUpdate": {<br>    "maxSurge": 1,<br>    "maxUnavailable": "50%"<br>  },<br>  "type": "RollingUpdate"<br>}</pre> | no |
+| <a name="input_worker_iam_role_arn"></a> [worker\_iam\_role\_arn](#input\_worker\_iam\_role\_arn) | Worker Nodes IAM Role arn | `string` | n/a | yes |
 | <a name="input_worker_iam_role_name"></a> [worker\_iam\_role\_name](#input\_worker\_iam\_role\_name) | Worker Nodes IAM Role name | `string` | n/a | yes |
 
 ## Outputs

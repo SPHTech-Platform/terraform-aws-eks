@@ -22,6 +22,11 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "cluster_arn" {
+  description = "EKS Cluster ARN"
+  type        = string
+}
+
 variable "helm_release_max_history" {
   description = "The maximum number of history releases to keep track in each Helm release"
   type        = number
@@ -37,6 +42,12 @@ variable "worker_iam_role_name" {
   description = "Worker Nodes IAM Role name"
   type        = string
 }
+
+variable "worker_iam_role_arn" {
+  description = "Worker Nodes IAM Role arn"
+  type        = string
+}
+
 
 ############################
 # K8S Resources
@@ -54,8 +65,54 @@ variable "namespaces" {
 }
 
 ############################
+# Karpenter
+############################
+
+variable "karpenter_namespace" {
+  description = "Namespace to deploy karpenter"
+  type        = string
+  default     = "karpenter"
+}
+
+variable "karpenter_service_account_name" {
+  description = "K8S sevice account name for Karpenter"
+  type        = string
+  default     = "karpenter"
+}
+
+variable "karpenter_release_name" {
+  description = "Release name for Cluster Autoscaler"
+  type        = string
+  default     = "karpenter"
+}
+
+variable "karpenter_chart_name" {
+  description = "Chart name for Cluster Autoscaler"
+  type        = string
+  default     = "karpenter"
+}
+
+variable "karpenter_chart_repository" {
+  description = "Chart repository for Cluster Autoscaler"
+  type        = string
+  default     = "oci://public.ecr.aws/karpenter"
+}
+
+variable "karpenter_chart_version" {
+  description = "Chart version for Cluster Autoscaler"
+  type        = string
+  default     = "v0.27.0"
+}
+
+############################
 # Cluster Autoscaler
 ############################
+variable "autoscaling_mode" {
+  description = "Autoscaling mode: cluster_autoscaler or karpenter"
+  type        = string
+  default     = "cluster_autoscaler"
+}
+
 variable "cluster_autoscaler_iam_role" {
   description = "Override name of the IAM role for autoscaler"
   type        = string
@@ -498,27 +555,6 @@ variable "node_termination_handler_dry_run" {
   description = "Only log calls to kubernetes control plane"
   type        = bool
   default     = false
-}
-
-variable "node_termination_sqs" {
-  description = "SQS Queue for node termination handler"
-  type = object({
-    url = string
-    arn = string
-  })
-  default = null
-}
-
-variable "node_termination_iam_role" {
-  description = "Name of the IAM Role for Node Termination Handler"
-  type        = string
-  default     = "bedrock_node_termination_handler"
-}
-
-variable "node_termination_iam_role_boundary" {
-  description = "IAM Role boundary for Node Termination Handler"
-  type        = string
-  default     = null
 }
 
 variable "node_termination_namespace" {
