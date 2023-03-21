@@ -116,6 +116,19 @@ variable "karpenter_provisioner_label_value" {
   default     = ""
 }
 
+variable "karpenter_subnet_selector_key" {
+  description = "Subnet Tag selector key"
+  type        = string
+  default     = ""
+}
+
+variable "karpenter_subnet_selector_value" {
+  description = "Subnet Tag selector value."
+  type        = string
+  default     = ""
+}
+
+
 ############################
 # Cluster Autoscaler
 ############################

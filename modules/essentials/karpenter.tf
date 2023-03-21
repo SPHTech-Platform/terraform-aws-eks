@@ -110,9 +110,9 @@ resource "kubectl_manifest" "karpenter_node_template" {
       name: default
     spec:
       subnetSelector:
-        karpenter.sh/discovery: ${var.cluster_name}
+        ${var.karpenter_subnet_selector_key}: ${var.karpenter_subnet_selector_value}
       securityGroupSelector:
-        karpenter.sh/discovery: ${var.cluster_name}
+        aws:eks:cluster-name: ${var.cluster_name}
       tags:
         karpenter.sh/discovery: ${var.cluster_name}
   YAML
