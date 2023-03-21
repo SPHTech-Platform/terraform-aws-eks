@@ -65,9 +65,19 @@ resource "kubectl_manifest" "karpenter_provisioner" {
       name: default
     spec:
       requirements:
+        - key: node.kubernetes.io/instance-type
+          operator: In
+          values:
+          - m5a.xlarge
+          - m6.xlarge
         - key: karpenter.sh/capacity-type
           operator: In
-          values: ["spot"]
+          values:
+          - on-demand
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+          - amd64
       limits:
         resources:
           cpu: 1000
