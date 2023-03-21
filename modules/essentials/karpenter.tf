@@ -53,6 +53,57 @@ resource "helm_release" "karpenter" {
   ]
 }
 
+################
+##### CRD ######
+################
+
+resource "kubectl_manifest" "karpenter_provisioner" {
+  yaml_body = <<-YAML
+    apiVersion: karpenter.sh/v1alpha5
+    kind: Provisioner
+    metadata:
+      name: default
+    spec:
+      requirements:
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: ["spot"]
+      limits:
+        resources:
+          cpu: 1000
+      providerRef:
+        name: default
+      ttlSecondsAfterEmpty: 30
+  YAML
+
+  depends_on = [
+    helm_release.karpenter
+  ]
+}
+
+resource "kubectl_manifest" "karpenter_node_template" {
+  yaml_body = <<-YAML
+    apiVersion: karpenter.k8s.aws/v1alpha1
+    kind: AWSNodeTemplate
+    metadata:
+      name: default
+    spec:
+      subnetSelector:
+        karpenter.sh/discovery: ${var.cluster_name}
+      securityGroupSelector:
+        karpenter.sh/discovery: ${var.cluster_name}
+      tags:
+        karpenter.sh/discovery: ${var.cluster_name}
+  YAML
+
+  depends_on = [
+    helm_release.karpenter
+  ]
+}
+
+################
+##### ROLE #####
+################
 module "karpenter_irsa_role" {
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
