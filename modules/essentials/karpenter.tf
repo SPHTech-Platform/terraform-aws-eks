@@ -60,67 +60,67 @@ resource "helm_release" "karpenter" {
 ##### CRD ######
 ################
 
-# resource "kubectl_manifest" "karpenter_provisioner" {
+resource "kubectl_manifest" "karpenter_provisioner" {
 
-#   count = var.autoscaling_mode == "karpenter" ? 1 : 0
+  count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
-#   yaml_body = <<-YAML
-#     apiVersion: karpenter.sh/v1alpha5
-#     kind: Provisioner
-#     metadata:
-#       name: default
-#     spec:
-#       labels:
-#         ${var.karpenter_provisioner_label_key}: ${var.karpenter_provisioner_label_value}
-#       requirements:
-#         - key: node.kubernetes.io/instance-type
-#           operator: In
-#           values:
-#           - m5a.xlarge
-#           - m6.xlarge
-#         - key: karpenter.sh/capacity-type
-#           operator: In
-#           values:
-#           - on-demand
-#         - key: kubernetes.io/arch
-#           operator: In
-#           values:
-#           - amd64
-#       limits:
-#         resources:
-#           cpu: 1000
-#       providerRef:
-#         name: default
-#       ttlSecondsAfterEmpty: 30
-#   YAML
+  yaml_body = <<-YAML
+    apiVersion: karpenter.sh/v1alpha5
+    kind: Provisioner
+    metadata:
+      name: default
+    spec:
+      labels:
+        ${var.karpenter_provisioner_label_key}: ${var.karpenter_provisioner_label_value}
+      requirements:
+        - key: node.kubernetes.io/instance-type
+          operator: In
+          values:
+          - m5a.xlarge
+          - m6.xlarge
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values:
+          - on-demand
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+          - amd64
+      limits:
+        resources:
+          cpu: 1000
+      providerRef:
+        name: default
+      ttlSecondsAfterEmpty: 30
+  YAML
 
-#   depends_on = [
-#     helm_release.karpenter
-#   ]
-# }
+  depends_on = [
+    helm_release.karpenter
+  ]
+}
 
-# resource "kubectl_manifest" "karpenter_node_template" {
+resource "kubectl_manifest" "karpenter_node_template" {
 
-#   count = var.autoscaling_mode == "karpenter" ? 1 : 0
+  count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
-#   yaml_body = <<-YAML
-#     apiVersion: karpenter.k8s.aws/v1alpha1
-#     kind: AWSNodeTemplate
-#     metadata:
-#       name: default
-#     spec:
-#       subnetSelector:
-#         karpenter.sh/discovery: ${var.cluster_name}
-#       securityGroupSelector:
-#         karpenter.sh/discovery: ${var.cluster_name}
-#       tags:
-#         karpenter.sh/discovery: ${var.cluster_name}
-#   YAML
+  yaml_body = <<-YAML
+    apiVersion: karpenter.k8s.aws/v1alpha1
+    kind: AWSNodeTemplate
+    metadata:
+      name: default
+    spec:
+      subnetSelector:
+        karpenter.sh/discovery: ${var.cluster_name}
+      securityGroupSelector:
+        karpenter.sh/discovery: ${var.cluster_name}
+      tags:
+        karpenter.sh/discovery: ${var.cluster_name}
+  YAML
 
-#   depends_on = [
-#     helm_release.karpenter
-#   ]
-# }
+  depends_on = [
+    helm_release.karpenter
+  ]
+}
 
 ################
 ##### ROLE #####
