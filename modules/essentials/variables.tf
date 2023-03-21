@@ -101,7 +101,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "v0.27.0"
+  default     = "v0.16.3"
 }
 
 ############################

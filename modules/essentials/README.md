@@ -187,7 +187,7 @@ module "eks_essentials" {
 | <a name="input_install_crds"></a> [install\_crds](#input\_install\_crds) | Install CRDs with chart | `bool` | `true` | no |
 | <a name="input_karpenter_chart_name"></a> [karpenter\_chart\_name](#input\_karpenter\_chart\_name) | Chart name for Cluster Autoscaler | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_chart_repository"></a> [karpenter\_chart\_repository](#input\_karpenter\_chart\_repository) | Chart repository for Cluster Autoscaler | `string` | `"oci://public.ecr.aws/karpenter"` | no |
-| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"v0.27.0"` | no |
+| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"v0.16.3"` | no |
 | <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | Namespace to deploy karpenter | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_release_name"></a> [karpenter\_release\_name](#input\_karpenter\_release\_name) | Release name for Cluster Autoscaler | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_service_account_name"></a> [karpenter\_service\_account\_name](#input\_karpenter\_service\_account\_name) | K8S sevice account name for Karpenter | `string` | `"karpenter"` | no |
