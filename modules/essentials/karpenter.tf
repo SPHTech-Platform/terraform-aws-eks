@@ -15,6 +15,9 @@ module "karpenter" {
 }
 
 resource "helm_release" "karpenter" {
+
+  count = var.autoscaling_mode == "karpenter" ? 1 : 0
+
   namespace        = "karpenter"
   create_namespace = true
 
@@ -49,7 +52,7 @@ resource "helm_release" "karpenter" {
   }
 
   depends_on = [
-    module.karpenter.irsa_arn
+    module.karpenter[0].irsa_arn
   ]
 }
 
@@ -58,12 +61,17 @@ resource "helm_release" "karpenter" {
 ################
 
 resource "kubectl_manifest" "karpenter_provisioner" {
+
+  count = var.autoscaling_mode == "karpenter" ? 1 : 0
+
   yaml_body = <<-YAML
     apiVersion: karpenter.sh/v1alpha5
     kind: Provisioner
     metadata:
       name: default
     spec:
+      labels:
+        ${var.karpenter_provisioner_label_key}: ${var.karpenter_provisioner_label_value}
       requirements:
         - key: node.kubernetes.io/instance-type
           operator: In
@@ -92,6 +100,9 @@ resource "kubectl_manifest" "karpenter_provisioner" {
 }
 
 resource "kubectl_manifest" "karpenter_node_template" {
+
+  count = var.autoscaling_mode == "karpenter" ? 1 : 0
+
   yaml_body = <<-YAML
     apiVersion: karpenter.k8s.aws/v1alpha1
     kind: AWSNodeTemplate

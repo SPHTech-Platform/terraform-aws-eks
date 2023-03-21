@@ -104,6 +104,18 @@ variable "karpenter_chart_version" {
   default     = "v0.27.0"
 }
 
+variable "karpenter_provisioner_label_key" {
+  description = "Label Key"
+  type        = string
+  default     = ""
+}
+
+variable "karpenter_provisioner_label_value" {
+  description = "Label Value"
+  type        = string
+  default     = ""
+}
+
 ############################
 # Cluster Autoscaler
 ############################
