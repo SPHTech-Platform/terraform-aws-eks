@@ -53,7 +53,6 @@ module "eks_essentials" {
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.7 |
-| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.14 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
@@ -62,7 +61,6 @@ module "eks_essentials" {
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0 |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.7 |
-| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.14 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
@@ -90,9 +88,9 @@ module "eks_essentials" {
 | [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.karpenter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.node_termination_handler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [kubectl_manifest.karpenter_node_template](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
-| [kubectl_manifest.karpenter_provisioner](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [kubernetes_annotations.gp2_storage_class](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/annotations) | resource |
+| [kubernetes_manifest.karpenter_node_template](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.karpenter_provisioner](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_namespace_v1.namespaces](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
 | [kubernetes_pod_disruption_budget_v1.coredns](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/pod_disruption_budget_v1) | resource |
 | [kubernetes_storage_class_v1.default](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
@@ -189,12 +187,15 @@ module "eks_essentials" {
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `string` | `null` | no |
 | <a name="input_ingress_shim"></a> [ingress\_shim](#input\_ingress\_shim) | Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/ | `map(any)` | `{}` | no |
 | <a name="input_install_crds"></a> [install\_crds](#input\_install\_crds) | Install CRDs with chart | `bool` | `true` | no |
+| <a name="input_karpenter_arch_list"></a> [karpenter\_arch\_list](#input\_karpenter\_arch\_list) | List of architectures | `list(string)` | <pre>[<br>  "amd64"<br>]</pre> | no |
+| <a name="input_karpenter_capacity_type_list"></a> [karpenter\_capacity\_type\_list](#input\_karpenter\_capacity\_type\_list) | List of capacity type of karpenter nodes | `list(string)` | <pre>[<br>  "on-demand"<br>]</pre> | no |
 | <a name="input_karpenter_chart_name"></a> [karpenter\_chart\_name](#input\_karpenter\_chart\_name) | Chart name for Cluster Autoscaler | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_chart_repository"></a> [karpenter\_chart\_repository](#input\_karpenter\_chart\_repository) | Chart repository for Cluster Autoscaler | `string` | `"oci://public.ecr.aws/karpenter"` | no |
 | <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"v0.27.0"` | no |
+| <a name="input_karpenter_instance_types_list"></a> [karpenter\_instance\_types\_list](#input\_karpenter\_instance\_types\_list) | List of instance types | `list(string)` | <pre>[<br>  "m5a.xlarge",<br>  "m6.xlarge"<br>]</pre> | no |
 | <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | Namespace to deploy karpenter | `string` | `"karpenter"` | no |
-| <a name="input_karpenter_provisioner_label_key"></a> [karpenter\_provisioner\_label\_key](#input\_karpenter\_provisioner\_label\_key) | Label Key | `string` | `""` | no |
-| <a name="input_karpenter_provisioner_label_value"></a> [karpenter\_provisioner\_label\_value](#input\_karpenter\_provisioner\_label\_value) | Label Value | `string` | `""` | no |
+| <a name="input_karpenter_provisioner_node_labels"></a> [karpenter\_provisioner\_node\_labels](#input\_karpenter\_provisioner\_node\_labels) | Map of labels | `map(string)` | `{}` | no |
+| <a name="input_karpenter_provisioner_node_taints"></a> [karpenter\_provisioner\_node\_taints](#input\_karpenter\_provisioner\_node\_taints) | List of map of | `list(map(string))` | <pre>[<br>  {}<br>]</pre> | no |
 | <a name="input_karpenter_release_name"></a> [karpenter\_release\_name](#input\_karpenter\_release\_name) | Release name for Cluster Autoscaler | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_service_account_name"></a> [karpenter\_service\_account\_name](#input\_karpenter\_service\_account\_name) | K8S sevice account name for Karpenter | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_subnet_selector_name_value"></a> [karpenter\_subnet\_selector\_name\_value](#input\_karpenter\_subnet\_selector\_name\_value) | Subnet Tag selector name value. | `string` | `""` | no |

@@ -104,24 +104,41 @@ variable "karpenter_chart_version" {
   default     = "v0.27.0"
 }
 
-variable "karpenter_provisioner_label_key" {
-  description = "Label Key"
-  type        = string
-  default     = ""
-}
-
-variable "karpenter_provisioner_label_value" {
-  description = "Label Value"
-  type        = string
-  default     = ""
-}
-
 variable "karpenter_subnet_selector_name_value" {
   description = "Subnet Tag selector name value."
   type        = string
   default     = ""
 }
 
+variable "karpenter_instance_types_list" {
+  description = "List of instance types"
+  type        = list(string)
+  default     = ["m5a.xlarge", "m6.xlarge"]
+}
+
+variable "karpenter_capacity_type_list" {
+  description = "List of capacity type of karpenter nodes"
+  type        = list(string)
+  default     = ["on-demand"]
+}
+
+variable "karpenter_arch_list" {
+  description = "List of architectures"
+  type        = list(string)
+  default     = ["amd64"]
+}
+
+variable "karpenter_provisioner_node_taints" {
+  description = "List of map of "
+  type        = list(map(string))
+  default     = [{}]
+}
+
+variable "karpenter_provisioner_node_labels" {
+  description = "Map of labels"
+  type        = map(string)
+  default     = {}
+}
 
 ############################
 # Cluster Autoscaler
