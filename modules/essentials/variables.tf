@@ -104,12 +104,6 @@ variable "karpenter_chart_version" {
   default     = "v0.27.0"
 }
 
-variable "karpenter_subnet_selector_name_value" {
-  description = "Subnet Tag selector name value."
-  type        = string
-  default     = ""
-}
-
 variable "karpenter_instance_types_list" {
   description = "List of instance types"
   type        = list(string)
@@ -136,6 +130,24 @@ variable "karpenter_provisioner_node_taints" {
 
 variable "karpenter_provisioner_node_labels" {
   description = "Map of labels"
+  type        = map(string)
+  default     = {}
+}
+
+variable "karpenter_subnet_selector_map" {
+  description = "Map of subnet selectors: key and value"
+  type        = map(string)
+  default     = {}
+}
+
+variable "karpenter_security_group_selector_map" {
+  description = "Map of security group selectors: key and value"
+  type        = map(string)
+  default     = {}
+}
+
+variable "karpenter_nodetemplate_tag_map" {
+  description = "Map of tags: key and value"
   type        = map(string)
   default     = {}
 }

@@ -194,11 +194,13 @@ module "eks_essentials" {
 | <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"v0.27.0"` | no |
 | <a name="input_karpenter_instance_types_list"></a> [karpenter\_instance\_types\_list](#input\_karpenter\_instance\_types\_list) | List of instance types | `list(string)` | <pre>[<br>  "m5a.xlarge",<br>  "m6.xlarge"<br>]</pre> | no |
 | <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | Namespace to deploy karpenter | `string` | `"karpenter"` | no |
+| <a name="input_karpenter_nodetemplate_tag_map"></a> [karpenter\_nodetemplate\_tag\_map](#input\_karpenter\_nodetemplate\_tag\_map) | Map of tags: key and value | `map(string)` | `{}` | no |
 | <a name="input_karpenter_provisioner_node_labels"></a> [karpenter\_provisioner\_node\_labels](#input\_karpenter\_provisioner\_node\_labels) | Map of labels | `map(string)` | `{}` | no |
 | <a name="input_karpenter_provisioner_node_taints"></a> [karpenter\_provisioner\_node\_taints](#input\_karpenter\_provisioner\_node\_taints) | List of map of | `list(map(string))` | <pre>[<br>  {}<br>]</pre> | no |
 | <a name="input_karpenter_release_name"></a> [karpenter\_release\_name](#input\_karpenter\_release\_name) | Release name for Cluster Autoscaler | `string` | `"karpenter"` | no |
+| <a name="input_karpenter_security_group_selector_map"></a> [karpenter\_security\_group\_selector\_map](#input\_karpenter\_security\_group\_selector\_map) | Map of security group selectors: key and value | `map(string)` | `{}` | no |
 | <a name="input_karpenter_service_account_name"></a> [karpenter\_service\_account\_name](#input\_karpenter\_service\_account\_name) | K8S sevice account name for Karpenter | `string` | `"karpenter"` | no |
-| <a name="input_karpenter_subnet_selector_name_value"></a> [karpenter\_subnet\_selector\_name\_value](#input\_karpenter\_subnet\_selector\_name\_value) | Subnet Tag selector name value. | `string` | `""` | no |
+| <a name="input_karpenter_subnet_selector_map"></a> [karpenter\_subnet\_selector\_map](#input\_karpenter\_subnet\_selector\_map) | Map of subnet selectors: key and value | `map(string)` | `{}` | no |
 | <a name="input_kubernetes_annotations"></a> [kubernetes\_annotations](#input\_kubernetes\_annotations) | Annotations for Kubernetes resources | `map(string)` | <pre>{<br>  "terraform": "true"<br>}</pre> | no |
 | <a name="input_kubernetes_labels"></a> [kubernetes\_labels](#input\_kubernetes\_labels) | Labels for resources | `map(string)` | <pre>{<br>  "app.kubernetes.io/managed-by": "Terraform"<br>}</pre> | no |
 | <a name="input_leader_election_lease_duration"></a> [leader\_election\_lease\_duration](#input\_leader\_election\_lease\_duration) | Duration that non-leader candidates will wait after observing a leadership renewal | `string` | `"60s"` | no |

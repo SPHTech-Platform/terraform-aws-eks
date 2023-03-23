@@ -118,15 +118,9 @@ resource "kubernetes_manifest" "karpenter_node_template" {
       name = "default"
     }
     spec = {
-      subnetSelector = {
-        "Name" = var.karpenter_subnet_selector_name_value
-      }
-      securityGroupSelector = {
-        "aws:eks:cluster-name" = var.cluster_name
-      }
-      tags = {
-        "karpenter.sh/discovery" = var.cluster_name
-      }
+      subnetSelector        = var.karpenter_subnet_selector_map
+      securityGroupSelector = var.karpenter_security_group_selector_map
+      tags                  = var.karpenter_nodetemplate_tag_map
     }
   }
 }
