@@ -99,7 +99,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
       ]
       limits = {
         resources = {
-          cpu = 1000
+          cpu = "1k"
         }
       }
       providerRef = {
