@@ -72,7 +72,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
     }
     spec = {
       labels = var.karpenter_provisioner_node_labels
-      # taints = var.karpenter_provisioner_node_taints
+      taints = var.karpenter_provisioner_node_taints
       requirements = [
         {
           key      = "node.kubernetes.io/instance-type"
