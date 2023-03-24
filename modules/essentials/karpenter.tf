@@ -71,7 +71,9 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
       name = "default"
     }
     spec = {
-      # labels = var.karpenter_provisioner_node_labels
+      labels = {
+        "dedicated" : "enterprise_runners"
+      }
       # taints = var.karpenter_provisioner_node_taints
       requirements = [
         {
