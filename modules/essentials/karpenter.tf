@@ -71,8 +71,8 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
       name = "default"
     }
     spec = {
-      labels = var.karpenter_provisioner_node_labels
-      taints = var.karpenter_provisioner_node_taints
+      labels      = var.karpenter_provisioner_node_labels
+      tolerations = var.karpenter_provisioner_node_tolerations
       requirements = [
         {
           key      = "node.kubernetes.io/instance-type"
