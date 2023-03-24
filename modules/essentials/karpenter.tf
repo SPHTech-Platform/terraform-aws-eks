@@ -96,6 +96,11 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
           operator = "In"
           values   = var.karpenter_arch_list
         },
+        {
+          key      = "kubernetes.io/os"
+          operator = "In"
+          values   = ["linux"]
+        },
       ]
       limits = {
         resources = {
