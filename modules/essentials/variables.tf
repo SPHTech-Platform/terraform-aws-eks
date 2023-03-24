@@ -122,8 +122,8 @@ variable "karpenter_arch_list" {
   default     = ["amd64"]
 }
 
-variable "karpenter_provisioner_node_tolerations" {
-  description = "List of map of "
+variable "karpenter_provisioner_node_taints" {
+  description = "List of map of taints"
   type        = list(map(string))
   default     = [{}]
 }

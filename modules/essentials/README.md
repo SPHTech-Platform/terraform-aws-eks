@@ -196,7 +196,7 @@ module "eks_essentials" {
 | <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | Namespace to deploy karpenter | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_nodetemplate_tag_map"></a> [karpenter\_nodetemplate\_tag\_map](#input\_karpenter\_nodetemplate\_tag\_map) | Map of tags: key and value | `map(string)` | `{}` | no |
 | <a name="input_karpenter_provisioner_node_labels"></a> [karpenter\_provisioner\_node\_labels](#input\_karpenter\_provisioner\_node\_labels) | Map of labels | `map(string)` | `{}` | no |
-| <a name="input_karpenter_provisioner_node_tolerations"></a> [karpenter\_provisioner\_node\_tolerations](#input\_karpenter\_provisioner\_node\_tolerations) | List of map of | `list(map(string))` | <pre>[<br>  {}<br>]</pre> | no |
+| <a name="input_karpenter_provisioner_node_taints"></a> [karpenter\_provisioner\_node\_taints](#input\_karpenter\_provisioner\_node\_taints) | List of map of taints | `list(map(string))` | <pre>[<br>  {}<br>]</pre> | no |
 | <a name="input_karpenter_release_name"></a> [karpenter\_release\_name](#input\_karpenter\_release\_name) | Release name for Cluster Autoscaler | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_security_group_selector_map"></a> [karpenter\_security\_group\_selector\_map](#input\_karpenter\_security\_group\_selector\_map) | Map of security group selectors: key and value | `map(string)` | `{}` | no |
 | <a name="input_karpenter_service_account_name"></a> [karpenter\_service\_account\_name](#input\_karpenter\_service\_account\_name) | K8S sevice account name for Karpenter | `string` | `"karpenter"` | no |
