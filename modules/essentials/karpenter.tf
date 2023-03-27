@@ -73,13 +73,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
     spec = {
       labels = var.karpenter_provisioner_node_labels
       taints = var.karpenter_provisioner_node_taints
-      # taints = [
-      #   {
-      #     key    = "dedicated"
-      #     value  = "enterprise_runners"
-      #     effect = "NoSchedule"
-      #   }
-      # ]
+
       requirements = [
         {
           key      = "node.kubernetes.io/instance-type"
@@ -135,30 +129,8 @@ resource "kubernetes_manifest" "karpenter_node_template" {
       tags                  = var.karpenter_nodetemplate_tag_map
     }
   }
-}
 
-################
-##### ROLE #####
-################
-module "karpenter_irsa_role" {
-  count = var.autoscaling_mode == "karpenter" ? 1 : 0
-
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14.0"
-
-  role_name                          = "karpenter_controller"
-  attach_karpenter_controller_policy = true
-
-  karpenter_controller_cluster_id         = var.cluster_name
-  karpenter_controller_node_iam_role_arns = [var.worker_iam_role_arn]
-
-  attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = var.oidc_provider_arn
-      namespace_service_accounts = ["${var.karpenter_namespace}:${var.karpenter_service_account_name}"]
-    }
-  }
+  depends_on = [
+    helm_release.karpenter
+  ]
 }
