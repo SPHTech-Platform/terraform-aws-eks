@@ -106,7 +106,14 @@ variable "karpenter_chart_version" {
 
 variable "karpenter_provisioners" {
   description = "List of Provisioner maps"
-  type        = list(map(any))
+  type = list(object({
+    name                              = string
+    karpenter_provisioner_node_labels = map(string)
+    karpenter_provisioner_node_taints = list(map(string))
+    karpenter_instance_types_list     = list(string)
+    karpenter_capacity_type_list      = list(string)
+    karpenter_arch_list               = list(string)
+  }))
   default = [{
     name                              = "default"
     karpenter_provisioner_node_labels = {}
@@ -121,7 +128,12 @@ variable "karpenter_provisioners" {
 
 variable "karpenter_nodetemplates" {
   description = "List of nodetemplate maps"
-  type        = list(map(any))
+  type = list(object({
+    name                                  = string
+    karpenter_subnet_selector_map         = map(string)
+    karpenter_security_group_selector_map = map(string)
+    karpenter_nodetemplate_tag_map        = map(string)
+  }))
   default = [{
     name                                  = "default"
     karpenter_subnet_selector_map         = {}
