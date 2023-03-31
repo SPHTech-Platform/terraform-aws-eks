@@ -62,33 +62,33 @@ resource "helm_release" "karpenter" {
 
 resource "kubernetes_manifest" "karpenter_provisioner" {
 
-  count = var.autoscaling_mode == "karpenter" ? 1 : 0
+  for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner if var.autoscaling_mode == "karpenter" }
 
   manifest = {
     apiVersion = "karpenter.sh/v1alpha5"
     kind       = "Provisioner"
     metadata = {
-      name = "default"
+      name = each.value.name
     }
     spec = {
-      labels = var.karpenter_provisioner_node_labels
-      taints = var.karpenter_provisioner_node_taints
+      labels = each.value.karpenter_provisioner_node_labels
+      taints = each.value.karpenter_provisioner_node_taints
 
       requirements = [
         {
           key      = "node.kubernetes.io/instance-type"
           operator = "In"
-          values   = var.karpenter_instance_types_list
+          values   = each.value.karpenter_instance_types_list
         },
         {
           key      = "karpenter.sh/capacity-type"
           operator = "In"
-          values   = var.karpenter_capacity_type_list
+          values   = each.value.karpenter_capacity_type_list
         },
         {
           key      = "kubernetes.io/arch"
           operator = "In"
-          values   = var.karpenter_arch_list
+          values   = each.value.karpenter_arch_list
         },
         {
           key      = "kubernetes.io/os"
@@ -115,18 +115,18 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
 
 resource "kubernetes_manifest" "karpenter_node_template" {
 
-  count = var.autoscaling_mode == "karpenter" ? 1 : 0
+  for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate if var.autoscaling_mode == "karpenter" }
 
   manifest = {
     apiVersion = "karpenter.k8s.aws/v1alpha1"
     kind       = "AWSNodeTemplate"
     metadata = {
-      name = "default"
+      name = each.value.name
     }
     spec = {
-      subnetSelector        = var.karpenter_subnet_selector_map
-      securityGroupSelector = var.karpenter_security_group_selector_map
-      tags                  = var.karpenter_nodetemplate_tag_map
+      subnetSelector        = each.value.karpenter_subnet_selector_map
+      securityGroupSelector = each.value.karpenter_security_group_selector_map
+      tags                  = each.value.karpenter_nodetemplate_tag_map
     }
   }
 
