@@ -108,7 +108,7 @@ variable "karpenter_provisioners" {
   description = "List of Provisioner maps"
   type = list(object({
     name                              = string
-    provider_ref_name                 = string
+    provider_ref_nodetemplate_name    = string
     karpenter_provisioner_node_labels = map(string)
     karpenter_provisioner_node_taints = list(map(string))
     karpenter_instance_types_list     = list(string)
@@ -117,7 +117,7 @@ variable "karpenter_provisioners" {
   }))
   default = [{
     name                              = "default"
-    provider_ref_name                 = "default"
+    provider_ref_nodetemplate_name    = "default"
     karpenter_provisioner_node_labels = {}
     karpenter_provisioner_node_taints = []
     karpenter_instance_types_list     = ["m5a.xlarge", "m6.xlarge"]
