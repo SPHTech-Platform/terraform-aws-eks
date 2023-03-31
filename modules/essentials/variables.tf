@@ -106,7 +106,7 @@ variable "karpenter_chart_version" {
 
 variable "karpenter_provisioners" {
   description = "List of Provisioner maps"
-  type        = list(map(string))
+  type        = list(map(any))
   default = [{
     name                              = "default"
     karpenter_provisioner_node_labels = {}
@@ -121,7 +121,7 @@ variable "karpenter_provisioners" {
 
 variable "karpenter_nodetemplates" {
   description = "List of nodetemplate maps"
-  type        = list(map(string))
+  type        = list(map(any))
   default = [{
     name                                  = "default"
     karpenter_subnet_selector_map         = {}
