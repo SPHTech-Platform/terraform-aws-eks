@@ -76,7 +76,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
 
       requirements = [
         {
-          key      = "node.kubernetes.io/instance-type"
+          key      = "node.ifkubernetes.io/instance-type"
           operator = "In"
           values   = each.value.karpenter_instance_types_list
         },
@@ -108,7 +108,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
     }
   }
 
-  computed_fields = ["spec.taints.timeAdded"]
+  computed_fields = ["spec.taints"]
 
   depends_on = [
     helm_release.karpenter
