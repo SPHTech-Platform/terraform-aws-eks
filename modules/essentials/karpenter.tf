@@ -108,7 +108,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
     }
   }
 
-  computed_fields = ["spec.taints"]
+  computed_fields = ["spec.taints.*.timeAdded"]
 
   depends_on = [
     helm_release.karpenter
