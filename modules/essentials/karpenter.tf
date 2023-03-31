@@ -102,7 +102,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
         }
       }
       providerRef = {
-        name = "default"
+        name = each.value.provider_ref_name
       }
       ttlSecondsAfterEmpty = 30
     }
