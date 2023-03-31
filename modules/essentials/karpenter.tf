@@ -76,7 +76,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
 
       requirements = [
         {
-          key      = "node.ifkubernetes.io/instance-type"
+          key      = "node.kubernetes.io/instance-type"
           operator = "In"
           values   = each.value.karpenter_instance_types_list
         },
