@@ -24,9 +24,7 @@ repos:
           - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
       - id: terraform_docs
         args:
-          - --hook-config=--path-to-file=README.md
-          - --hook-config=--add-to-existing-file=true
-          - --hook-config=--recursive=true
+          - --args=--config=.terraform-docs.yaml
       - id: terraform_tfsec
         args:
           - --args=--exclude-downloaded-modules

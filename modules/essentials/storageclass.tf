@@ -1,4 +1,4 @@
-resource "kubernetes_storage_class" "default" {
+resource "kubernetes_storage_class_v1" "default" {
   count = var.csi_default_storage_class ? 1 : 0
 
   metadata {
@@ -31,7 +31,7 @@ resource "kubernetes_storage_class" "default" {
 resource "kubernetes_annotations" "gp2_storage_class" {
   count = var.csi_default_storage_class ? 1 : 0
   depends_on = [
-    kubernetes_storage_class.default,
+    kubernetes_storage_class_v1.default,
   ]
 
   api_version = "storage.k8s.io/v1"

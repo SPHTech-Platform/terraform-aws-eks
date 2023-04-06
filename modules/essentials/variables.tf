@@ -95,7 +95,7 @@ variable "cluster_autoscaler_chart_repository" {
 variable "cluster_autoscaler_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "9.15.0"
+  default     = "9.26.0"
 }
 
 variable "cluster_autoscaler_namespace" {
@@ -107,13 +107,13 @@ variable "cluster_autoscaler_namespace" {
 variable "cluster_autoscaler_image" {
   description = "Docker image for Cluster Autoscaler"
   type        = string
-  default     = "asia.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler"
+  default     = "registry.k8s.io/autoscaling/cluster-autoscaler"
 }
 
 variable "cluster_autoscaler_tag" {
   description = "Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.22.2"
+  default     = "v1.25.0"
 }
 
 variable "cluster_autoscaler_replica" {
