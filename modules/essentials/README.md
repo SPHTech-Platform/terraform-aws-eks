@@ -45,7 +45,7 @@ module "eks_essentials" {
 }
 ```
 
-## To use Karpenter instead of cluster autoscaler
+## To use Karpenter instead of cluster autoscaler [for managed_nodegroups only for now]
 
 Provider the following required Karpenter configs
 ```
