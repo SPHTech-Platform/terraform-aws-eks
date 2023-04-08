@@ -45,6 +45,83 @@ module "eks_essentials" {
 }
 ```
 
+## To use Karpenter instead of cluster autoscaler
+
+Provider the following required Karpenter configs
+```
+locals {
+  # Karpenter Provisioners Config
+  karpenter_provisioners = [
+    {
+      name                           = "default"
+      provider_ref_nodetemplate_name = "default"
+      karpenter_provisioner_node_labels = {
+        "key" = "value"
+      }
+
+      karpenter_provisioner_node_taints = [
+        {
+          key       = "key",
+          value     = "value",
+          effect    = "NoSchedule"
+          timeAdded = timestamp() # required if not terraform plan complains
+        }
+      ]
+
+      karpenter_instance_types_list = ["m5a.xlarge", "m6.xlarge"]
+      karpenter_capacity_type_list  = ["on-demand"]
+      karpenter_arch_list           = ["amd64"]
+    },
+    {
+      name                           = "default-2xlarge"
+      provider_ref_nodetemplate_name = "default"
+      karpenter_provisioner_node_labels = {
+        "key" = "value"
+      }
+
+      karpenter_provisioner_node_taints = [
+        {
+          key       = "taint_key",
+          value     = "taint_value",
+          effect    = "NoSchedule"
+          timeAdded = timestamp() # required if not terraform plan complains
+        }
+      ]
+
+      karpenter_instance_types_list = ["m5a.2xlarge", "m6.2xlarge"]
+      karpenter_capacity_type_list  = ["on-demand"]
+      karpenter_arch_list           = ["amd64"]
+    },
+  ]
+  # Karpenter Nodetemplate Config
+  karpenter_nodetemplates = [
+    {
+      name = "default"
+      karpenter_subnet_selector_map = {
+        "Name" = "subnet-name-here-*"
+      }
+      karpenter_security_group_selector_map = {
+        "aws-ids" = nonsensitive("sg-111,sg-222")
+      }
+      karpenter_nodetemplate_tag_map = {
+        "karpenter.sh/discovery" = nonsensitive(data.tfe_outputs.base.values.cluster_name)
+      }
+    },
+  ]
+}
+```
+
+Then pass it to the essentials module
+
+```
+module "eks_essentials" {
+  autoscaling_mode        = "karpenter"
+  karpenter_provisioners  = local.karpenter_provisioners
+  karpenter_nodetemplates = local.karpenter_nodetemplates
+   # ...
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
