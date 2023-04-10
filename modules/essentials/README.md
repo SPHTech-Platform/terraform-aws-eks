@@ -47,6 +47,8 @@ module "eks_essentials" {
 
 ## To use Karpenter instead of cluster autoscaler [for managed_nodegroups only for now]
 
+> The key difference between nodegroups and fargate profiles Karpenter config is, the latter sets the IAM role at EKS cluster level using Karpenter's Role, while nodegroups gives its IAM roles to the Karpenter to assume. Note the config diff at https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/karpenter
+
 Provider the following required Karpenter configs
 ```
 locals {
