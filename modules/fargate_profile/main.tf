@@ -44,7 +44,7 @@ resource "kubernetes_config_map_v1" "aws_logging" {
 
   metadata {
     name      = "aws-logging"
-    namespace = kubernetes_namespace.aws_observability.id
+    namespace = kubernetes_namespace_v1.aws_observability[0].id
   }
 
   data = {
@@ -53,4 +53,3 @@ resource "kubernetes_config_map_v1" "aws_logging" {
     "output.conf"  = local.config["output_conf"]
   }
 }
-
