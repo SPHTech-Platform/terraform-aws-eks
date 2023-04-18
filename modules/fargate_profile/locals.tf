@@ -7,10 +7,11 @@ locals {
     output_conf  = <<-EOF
     [OUTPUT]
       Name cloudwatch_logs
-      Match *
+      Match   kube.*
       region ${data.aws_region.current.name}
       log_group_name ${local.cwlog_group}
       log_stream_prefix ${local.cwlog_stream_prefix}
+      log_retention_days 60
       auto_create_group true
     EOF
     filters_conf = <<-EOF

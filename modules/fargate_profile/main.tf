@@ -33,6 +33,14 @@ resource "aws_cloudwatch_log_group" "fargate_logging" {
   retention_in_days = 90
 }
 
+resource "aws_cloudwatch_log_stream" "fargate_logging" {
+
+  count = var.fargate_logging_enabled ? 1 : 0
+
+  name           = local.cwlog_stream_prefix
+  log_group_name = aws_cloudwatch_log_group.fargate_logging[0].name
+}
+
 resource "kubernetes_namespace_v1" "aws_observability" {
 
   count = var.fargate_logging_enabled ? 1 : 0
