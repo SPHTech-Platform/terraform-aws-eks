@@ -23,6 +23,15 @@ module "fargate_profile" {
   tags                          = merge(var.tags, lookup(each.value, "tags", {}))
 }
 
+#tfsec:ignore:aws-cloudwatch-log-group-customer-key
+resource "aws_cloudwatch_log_group" "fargate_logging" {
+  #checkov:skip=CKV_AWS_158:No KMS key required
+
+  count = var.fargate_logging_enabled ? 1 : 0
+
+  name              = "/${var.cluster_name}/fargate-fluentbit-logs"
+  retention_in_days = 90
+}
 
 resource "kubernetes_namespace_v1" "aws_observability" {
 
@@ -52,4 +61,8 @@ resource "kubernetes_config_map_v1" "aws_logging" {
     "filters.conf" = local.config["filters_conf"]
     "output.conf"  = local.config["output_conf"]
   }
+
+  depends_on = [
+    aws_cloudwatch_log_group.fargate_logging
+  ]
 }
