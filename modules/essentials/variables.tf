@@ -74,12 +74,6 @@ variable "karpenter_namespace" {
   default     = "karpenter"
 }
 
-variable "karpenter_service_account_name" {
-  description = "K8S sevice account name for Karpenter"
-  type        = string
-  default     = "karpenter"
-}
-
 variable "karpenter_release_name" {
   description = "Release name for Cluster Autoscaler"
   type        = string

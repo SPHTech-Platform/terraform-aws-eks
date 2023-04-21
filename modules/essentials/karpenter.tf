@@ -18,7 +18,7 @@ resource "helm_release" "karpenter" {
 
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
-  namespace        = "karpenter"
+  namespace        = var.karpenter_namespace
   create_namespace = true
 
   name       = var.karpenter_release_name
