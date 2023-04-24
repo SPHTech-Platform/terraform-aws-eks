@@ -148,7 +148,6 @@ module "eks_essentials" {
 |------|--------|---------|
 | <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.11.2 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.1.0 |
-| <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | terraform-aws-modules/eks/aws//modules/karpenter | ~> 19.10.0 |
 | <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.11.2 |
 | <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 3.0 |
 
@@ -164,11 +163,8 @@ module "eks_essentials" {
 | [helm_release.brupop](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.cert_manager](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [helm_release.karpenter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.node_termination_handler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_annotations.gp2_storage_class](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/annotations) | resource |
-| [kubernetes_manifest.karpenter_node_template](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
-| [kubernetes_manifest.karpenter_provisioner](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_namespace_v1.namespaces](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
 | [kubernetes_pod_disruption_budget_v1.coredns](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/pod_disruption_budget_v1) | resource |
 | [kubernetes_storage_class_v1.default](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
@@ -238,7 +234,6 @@ module "eks_essentials" {
 | <a name="input_cluster_autoscaler_tag"></a> [cluster\_autoscaler\_tag](#input\_cluster\_autoscaler\_tag) | Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version | `string` | `"v1.25.0"` | no |
 | <a name="input_cluster_autoscaler_tolerations"></a> [cluster\_autoscaler\_tolerations](#input\_cluster\_autoscaler\_tolerations) | Tolerations for Cluster Autoscaler | `any` | `[]` | no |
 | <a name="input_cluster_autoscaler_topology_spread_constraints"></a> [cluster\_autoscaler\_topology\_spread\_constraints](#input\_cluster\_autoscaler\_topology\_spread\_constraints) | Topology spread constraints for Cluster Autoscaler | `any` | <pre>[<br>  {<br>    "labelSelector": {<br>      "matchLabels": {<br>        "app.kubernetes.io/instance": "cluster-autoscaler"<br>      }<br>    },<br>    "maxSkew": 1,<br>    "topologyKey": "topology.kubernetes.io/zone",<br>    "whenUnsatisfiable": "DoNotSchedule"<br>  }<br>]</pre> | no |
-| <a name="input_cluster_endpoint"></a> [cluster\_endpoint](#input\_cluster\_endpoint) | EKS Cluster Endpoint | `string` | n/a | yes |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_cluster_resource_namespace"></a> [cluster\_resource\_namespace](#input\_cluster\_resource\_namespace) | Override the namespace used to store DNS provider credentials etc. for ClusterIssuer resources. By default, the same namespace as cert-manager is deployed within is used. This namespace will not be automatically created by the Helm chart. | `string` | `""` | no |
 | <a name="input_configure_ecr_pull_through"></a> [configure\_ecr\_pull\_through](#input\_configure\_ecr\_pull\_through) | Configure ECR Pull Through Cache. | `bool` | `true` | no |
@@ -265,13 +260,6 @@ module "eks_essentials" {
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `string` | `null` | no |
 | <a name="input_ingress_shim"></a> [ingress\_shim](#input\_ingress\_shim) | Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/ | `map(any)` | `{}` | no |
 | <a name="input_install_crds"></a> [install\_crds](#input\_install\_crds) | Install CRDs with chart | `bool` | `true` | no |
-| <a name="input_karpenter_chart_name"></a> [karpenter\_chart\_name](#input\_karpenter\_chart\_name) | Chart name for Cluster Autoscaler | `string` | `"karpenter"` | no |
-| <a name="input_karpenter_chart_repository"></a> [karpenter\_chart\_repository](#input\_karpenter\_chart\_repository) | Chart repository for Cluster Autoscaler | `string` | `"oci://public.ecr.aws/karpenter"` | no |
-| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"v0.27.0"` | no |
-| <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | Namespace to deploy karpenter | `string` | `"karpenter"` | no |
-| <a name="input_karpenter_nodetemplates"></a> [karpenter\_nodetemplates](#input\_karpenter\_nodetemplates) | List of nodetemplate maps | <pre>list(object({<br>    name                                  = string<br>    karpenter_subnet_selector_map         = map(string)<br>    karpenter_security_group_selector_map = map(string)<br>    karpenter_nodetemplate_tag_map        = map(string)<br>  }))</pre> | <pre>[<br>  {<br>    "karpenter_nodetemplate_tag_map": {},<br>    "karpenter_security_group_selector_map": {},<br>    "karpenter_subnet_selector_map": {},<br>    "name": "default"<br>  }<br>]</pre> | no |
-| <a name="input_karpenter_provisioners"></a> [karpenter\_provisioners](#input\_karpenter\_provisioners) | List of Provisioner maps | <pre>list(object({<br>    name                              = string<br>    provider_ref_nodetemplate_name    = string<br>    karpenter_provisioner_node_labels = map(string)<br>    karpenter_provisioner_node_taints = list(map(string))<br>    karpenter_instance_types_list     = list(string)<br>    karpenter_capacity_type_list      = list(string)<br>    karpenter_arch_list               = list(string)<br>  }))</pre> | <pre>[<br>  {<br>    "karpenter_arch_list": [<br>      "amd64"<br>    ],<br>    "karpenter_capacity_type_list": [<br>      "on-demand"<br>    ],<br>    "karpenter_instance_types_list": [<br>      "m5a.xlarge",<br>      "m6.xlarge"<br>    ],<br>    "karpenter_provisioner_node_labels": {},<br>    "karpenter_provisioner_node_taints": [],<br>    "name": "default",<br>    "provider_ref_nodetemplate_name": "default"<br>  }<br>]</pre> | no |
-| <a name="input_karpenter_release_name"></a> [karpenter\_release\_name](#input\_karpenter\_release\_name) | Release name for Cluster Autoscaler | `string` | `"karpenter"` | no |
 | <a name="input_kubernetes_annotations"></a> [kubernetes\_annotations](#input\_kubernetes\_annotations) | Annotations for Kubernetes resources | `map(string)` | <pre>{<br>  "terraform": "true"<br>}</pre> | no |
 | <a name="input_kubernetes_labels"></a> [kubernetes\_labels](#input\_kubernetes\_labels) | Labels for resources | `map(string)` | <pre>{<br>  "app.kubernetes.io/managed-by": "Terraform"<br>}</pre> | no |
 | <a name="input_leader_election_lease_duration"></a> [leader\_election\_lease\_duration](#input\_leader\_election\_lease\_duration) | Duration that non-leader candidates will wait after observing a leadership renewal | `string` | `"60s"` | no |
@@ -365,7 +353,6 @@ module "eks_essentials" {
 | <a name="input_webhook_tolerations"></a> [webhook\_tolerations](#input\_webhook\_tolerations) | Tolerations for webhook | `list(any)` | `[]` | no |
 | <a name="input_webook_container_security_context"></a> [webook\_container\_security\_context](#input\_webook\_container\_security\_context) | Security context for webhook containers | `map(any)` | `{}` | no |
 | <a name="input_webook_strategy"></a> [webook\_strategy](#input\_webook\_strategy) | Update strategy for admission webhook | `any` | <pre>{<br>  "rollingUpdate": {<br>    "maxSurge": 1,<br>    "maxUnavailable": "50%"<br>  },<br>  "type": "RollingUpdate"<br>}</pre> | no |
-| <a name="input_worker_iam_role_arn"></a> [worker\_iam\_role\_arn](#input\_worker\_iam\_role\_arn) | Worker Nodes IAM Role arn | `string` | n/a | yes |
 | <a name="input_worker_iam_role_name"></a> [worker\_iam\_role\_name](#input\_worker\_iam\_role\_name) | Worker Nodes IAM Role name | `string` | n/a | yes |
 
 ## Outputs
