@@ -30,13 +30,11 @@ locals {
     EOF
     parsers_conf = <<-EOF
     [PARSER]
-      Name regex
-      Format regex
-      Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
+      Name crio
+      Format Regex
+      Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
       Time_Key time
       Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-      Time_Keep On
-      Decode_Field_As json message
     EOF
   }
 
