@@ -49,77 +49,10 @@ module "eks_essentials" {
 
 > The key difference between nodegroups and fargate profiles Karpenter config is, the latter sets the IAM role at EKS cluster level using Karpenter's Role, while nodegroups gives its IAM roles to the Karpenter to assume. Note the config diff at https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/karpenter
 
-Provider the following required Karpenter configs
-```
-locals {
-  # Karpenter Provisioners Config
-  karpenter_provisioners = [
-    {
-      name                           = "default"
-      provider_ref_nodetemplate_name = "default"
-      karpenter_provisioner_node_labels = {
-        "key" = "value"
-      }
-
-      karpenter_provisioner_node_taints = [
-        {
-          key       = "key",
-          value     = "value",
-          effect    = "NoSchedule"
-          timeAdded = timestamp() # required if not terraform plan complains
-        }
-      ]
-
-      karpenter_instance_types_list = ["m5a.xlarge", "m6.xlarge"]
-      karpenter_capacity_type_list  = ["on-demand"]
-      karpenter_arch_list           = ["amd64"]
-    },
-    {
-      name                           = "default-2xlarge"
-      provider_ref_nodetemplate_name = "default"
-      karpenter_provisioner_node_labels = {
-        "key" = "value"
-      }
-
-      karpenter_provisioner_node_taints = [
-        {
-          key       = "taint_key",
-          value     = "taint_value",
-          effect    = "NoSchedule"
-          timeAdded = timestamp() # required if not terraform plan complains
-        }
-      ]
-
-      karpenter_instance_types_list = ["m5a.2xlarge", "m6.2xlarge"]
-      karpenter_capacity_type_list  = ["on-demand"]
-      karpenter_arch_list           = ["amd64"]
-    },
-  ]
-  # Karpenter Nodetemplate Config
-  karpenter_nodetemplates = [
-    {
-      name = "default"
-      karpenter_subnet_selector_map = {
-        "Name" = "subnet-name-here-*"
-      }
-      karpenter_security_group_selector_map = {
-        "aws-ids" = nonsensitive("sg-111,sg-222")
-      }
-      karpenter_nodetemplate_tag_map = {
-        "karpenter.sh/discovery" = nonsensitive(data.tfe_outputs.base.values.cluster_name)
-      }
-    },
-  ]
-}
-```
-
-Then pass it to the essentials module
-
+Set the autoscaling mode so that essentials module will skip creation of autoscaler resources
 ```
 module "eks_essentials" {
   autoscaling_mode        = "karpenter"
-  karpenter_provisioners  = local.karpenter_provisioners
-  karpenter_nodetemplates = local.karpenter_nodetemplates
    # ...
 }
 ```
