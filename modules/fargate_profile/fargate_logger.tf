@@ -16,19 +16,17 @@ locals {
     EOF
     filters_conf = <<-EOF
     [FILTER]
-      Name parser
-      Match *
-      Key_Name log
-      Parser regex
-      Preserve_Key True
-      Reserve_Data True
+        Name parser
+        Match *
+        Key_name log
+        Parser crio
     [FILTER]
-      Name kubernetes
-      Match kube.*
-      Merge_Log On
-      Keep_Log Off
-      Buffer_Size 0
-      Kube_Meta_Cache_TTL 300s
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log Off
+        Buffer_Size 0
+        Kube_Meta_Cache_TTL 300s
     EOF
     parsers_conf = <<-EOF
     [PARSER]
