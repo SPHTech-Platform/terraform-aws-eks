@@ -11,8 +11,8 @@ locals {
       region ${data.aws_region.current.name}
       log_group_name ${local.cwlog_group}
       log_stream_prefix ${local.cwlog_stream_prefix}
+      log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
       log_retention_days 60
-      auto_create_group true
     EOF
     filters_conf = <<-EOF
     [FILTER]
