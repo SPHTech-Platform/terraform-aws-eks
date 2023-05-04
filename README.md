@@ -48,6 +48,8 @@ provider "aws" {
 
 module "eks" {
   # ...
+  create_aws_auth_configmap = false
+  manage_aws_auth_configmap = false # set this to true after cluster creation is completed and reapply to set IRSA
 }
 
 data "aws_eks_cluster_auth" "this" {

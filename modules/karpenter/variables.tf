@@ -43,15 +43,17 @@ variable "karpenter_provisioners" {
     karpenter_capacity_type_list      = list(string)
     karpenter_arch_list               = list(string)
   }))
-  default = [{
-    name                              = "default"
-    provider_ref_nodetemplate_name    = "default"
-    karpenter_provisioner_node_labels = {}
-    karpenter_provisioner_node_taints = []
-    karpenter_instance_types_list     = ["m5a.xlarge", "m6.xlarge"]
-    karpenter_capacity_type_list      = ["on-demand"]
-    karpenter_arch_list               = ["amd64"]
-  }]
+  default = []
+  ## Sample Below
+  #[{
+  #   name                              = "default"
+  #   provider_ref_nodetemplate_name    = "default"
+  #   karpenter_provisioner_node_labels = {}
+  #   karpenter_provisioner_node_taints = []
+  #   karpenter_instance_types_list     = ["m5a.xlarge", "m6.xlarge"]
+  #   karpenter_capacity_type_list      = ["on-demand"]
+  #   karpenter_arch_list               = ["amd64"]
+  # }]
 }
 
 variable "karpenter_nodetemplates" {
@@ -62,12 +64,14 @@ variable "karpenter_nodetemplates" {
     karpenter_security_group_selector_map = map(string)
     karpenter_nodetemplate_tag_map        = map(string)
   }))
-  default = [{
-    name                                  = "default"
-    karpenter_subnet_selector_map         = {}
-    karpenter_security_group_selector_map = {}
-    karpenter_nodetemplate_tag_map        = {}
-  }]
+  default = []
+  ## sample below
+  # [{
+  #   name                                  = "default"
+  #   karpenter_subnet_selector_map         = {}
+  #   karpenter_security_group_selector_map = {}
+  #   karpenter_nodetemplate_tag_map        = {}
+  # }]
 }
 
 
