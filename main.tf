@@ -44,9 +44,10 @@ module "eks" {
     }
   }, var.cluster_security_group_additional_rules)
 
-  node_security_group_name             = coalesce(var.worker_security_group_name, join("_", [var.cluster_name, "worker"]))
-  node_security_group_description      = "EKS Cluster ${var.cluster_name} Nodes"
-  node_security_group_additional_rules = var.node_security_group_additional_rules
+  node_security_group_name                     = coalesce(var.worker_security_group_name, join("_", [var.cluster_name, "worker"]))
+  node_security_group_description              = "EKS Cluster ${var.cluster_name} Nodes"
+  node_security_group_additional_rules         = var.node_security_group_additional_rules
+  node_security_group_enable_recommended_rules = var.node_security_group_enable_recommended_rules
 
   create_kms_key = false # Created in kms.tf
   cluster_encryption_config = {
