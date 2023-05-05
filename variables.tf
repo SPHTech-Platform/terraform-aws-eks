@@ -198,6 +198,12 @@ variable "node_security_group_additional_rules" {
   default     = {}
 }
 
+variable "node_security_group_enable_recommended_rules" {
+  description = "Determines whether to enable recommended security group rules for the node security group created. This includes node-to-node TCP ingress on ephemeral ports and allows all egress traffic"
+  type        = bool
+  default     = true
+}
+
 #######################
 # Other IAM
 #######################
