@@ -25,6 +25,7 @@ locals {
 
 resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
   #checkov:skip=CKV_AWS_158:Not using CMK to save cost
+  #checkov:skip=CKV_AWS_338: "Ensure CloudWatch log groups retains logs for at least 1 year"
   name              = local.log_group_name
   retention_in_days = var.fluent_bit_log_group_retention
 }
