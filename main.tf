@@ -7,6 +7,13 @@ locals {
       )
     )
   ) : var.aws_auth_fargate_profile_pod_execution_role_arns
+
+  adot_addon = var.enable_adot_operator_addon ? {
+    adot = {
+      most_recent = true
+      preserve    = true
+    }
+  } : {}
 }
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 #tfsec:ignore:aws-eks-no-public-cluster-access
@@ -98,6 +105,7 @@ module "eks" {
       reserve     = true
     }
     },
+    local.adot_addon,
     var.cluster_addons,
   )
 
