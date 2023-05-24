@@ -1,9 +1,3 @@
-variable "tags" {
-  description = "Tags for all resources"
-  type        = map(string)
-  default     = {}
-}
-
 ############################
 # K8S Cluster Information
 ############################
@@ -14,11 +8,6 @@ variable "cluster_name" {
 
 variable "worker_iam_instance_profile_arn" {
   description = "Worker Nodes IAM Instance Profile ARN"
-  type        = string
-}
-
-variable "cluster_security_group_id" {
-  description = "Security Group ID of the master nodes"
   type        = string
 }
 
@@ -47,6 +36,9 @@ variable "self_managed_node_group_defaults" {
 
     instance_refresh = {
       strategy = "Rolling"
+      preferences = {
+        min_healthy_percentage = 66
+      }
     }
 
     ebs_optimized     = true
@@ -55,8 +47,7 @@ variable "self_managed_node_group_defaults" {
     update_launch_template_default_version = true
     protect_from_scale_in                  = false
 
-    create_iam_role       = false
-    create_security_group = false
+    create_iam_role = false
   }
 }
 
@@ -87,4 +78,10 @@ variable "force_irsa" {
   description = "Force usage of IAM Roles for Service Account"
   type        = bool
   default     = true
+}
+
+variable "tags" {
+  description = "Tags for all resources"
+  type        = map(string)
+  default     = {}
 }

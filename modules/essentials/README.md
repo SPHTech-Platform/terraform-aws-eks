@@ -67,10 +67,10 @@ module "eks_essentials" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 4.21.1 |
+| <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.11.2 |
 | <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 0.1.3 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.1.0 |
-| <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 4.21.1 |
+| <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.11.2 |
 | <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 3.0 |
 
 ## Resources
@@ -89,9 +89,9 @@ module "eks_essentials" {
 | [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.node_termination_handler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_annotations.gp2_storage_class](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/annotations) | resource |
-| [kubernetes_namespace.namespaces](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [kubernetes_pod_disruption_budget.coredns](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/pod_disruption_budget) | resource |
-| [kubernetes_storage_class.default](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class) | resource |
+| [kubernetes_namespace_v1.namespaces](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
+| [kubernetes_pod_disruption_budget_v1.coredns](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/pod_disruption_budget_v1) | resource |
+| [kubernetes_storage_class_v1.default](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
 | [aws_arn.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_eks_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
@@ -142,10 +142,10 @@ module "eks_essentials" {
 | <a name="input_cluster_autoscaler_affinity"></a> [cluster\_autoscaler\_affinity](#input\_cluster\_autoscaler\_affinity) | Affinity for Cluster Autoscaler | `any` | <pre>{<br>  "nodeAffinity": {<br>    "requiredDuringSchedulingIgnoredDuringExecution": {<br>      "nodeSelectorTerms": [<br>        {<br>          "matchExpressions": [<br>            {<br>              "key": "node.kubernetes.io/lifecycle",<br>              "operator": "NotIn",<br>              "values": [<br>                "spot"<br>              ]<br>            }<br>          ]<br>        }<br>      ]<br>    }<br>  },<br>  "podAntiAffinity": {<br>    "preferredDuringSchedulingIgnoredDuringExecution": [<br>      {<br>        "podAffinityTerm": {<br>          "labelSelector": {<br>            "matchExpressions": [<br>              {<br>                "key": "app.kubernetes.io/instance",<br>                "operator": "In",<br>                "values": [<br>                  "cluster-autoscaler"<br>                ]<br>              }<br>            ]<br>          },<br>          "topologyKey": "kubernetes.io/hostname"<br>        },<br>        "weight": 100<br>      }<br>    ]<br>  }<br>}</pre> | no |
 | <a name="input_cluster_autoscaler_chart_name"></a> [cluster\_autoscaler\_chart\_name](#input\_cluster\_autoscaler\_chart\_name) | Chart name for Cluster Autoscaler | `string` | `"cluster-autoscaler"` | no |
 | <a name="input_cluster_autoscaler_chart_repository"></a> [cluster\_autoscaler\_chart\_repository](#input\_cluster\_autoscaler\_chart\_repository) | Chart repository for Cluster Autoscaler | `string` | `"https://kubernetes.github.io/autoscaler"` | no |
-| <a name="input_cluster_autoscaler_chart_version"></a> [cluster\_autoscaler\_chart\_version](#input\_cluster\_autoscaler\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"9.15.0"` | no |
+| <a name="input_cluster_autoscaler_chart_version"></a> [cluster\_autoscaler\_chart\_version](#input\_cluster\_autoscaler\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"9.26.0"` | no |
 | <a name="input_cluster_autoscaler_expander"></a> [cluster\_autoscaler\_expander](#input\_cluster\_autoscaler\_expander) | Expander to use for Cluster Autoscaler. See https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders | `string` | `"least-waste"` | no |
 | <a name="input_cluster_autoscaler_iam_role"></a> [cluster\_autoscaler\_iam\_role](#input\_cluster\_autoscaler\_iam\_role) | Override name of the IAM role for autoscaler | `string` | `""` | no |
-| <a name="input_cluster_autoscaler_image"></a> [cluster\_autoscaler\_image](#input\_cluster\_autoscaler\_image) | Docker image for Cluster Autoscaler | `string` | `"asia.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler"` | no |
+| <a name="input_cluster_autoscaler_image"></a> [cluster\_autoscaler\_image](#input\_cluster\_autoscaler\_image) | Docker image for Cluster Autoscaler | `string` | `"registry.k8s.io/autoscaling/cluster-autoscaler"` | no |
 | <a name="input_cluster_autoscaler_namespace"></a> [cluster\_autoscaler\_namespace](#input\_cluster\_autoscaler\_namespace) | Namespace to deploy the cluster autoscaler | `string` | `"kube-system"` | no |
 | <a name="input_cluster_autoscaler_pdb"></a> [cluster\_autoscaler\_pdb](#input\_cluster\_autoscaler\_pdb) | PDB for Cluster AutoScaler | `any` | <pre>{<br>  "maxUnavailable": 1<br>}</pre> | no |
 | <a name="input_cluster_autoscaler_permissions_boundary"></a> [cluster\_autoscaler\_permissions\_boundary](#input\_cluster\_autoscaler\_permissions\_boundary) | Permissions boundary ARN to use for autoscaler's IAM role | `string` | `null` | no |
@@ -157,7 +157,7 @@ module "eks_essentials" {
 | <a name="input_cluster_autoscaler_resources"></a> [cluster\_autoscaler\_resources](#input\_cluster\_autoscaler\_resources) | Resources for Cluster Autoscaler | `any` | <pre>{<br>  "limits": {<br>    "memory": "700Mi"<br>  },<br>  "requests": {<br>    "cpu": "100m",<br>    "memory": "700Mi"<br>  }<br>}</pre> | no |
 | <a name="input_cluster_autoscaler_service_account_name"></a> [cluster\_autoscaler\_service\_account\_name](#input\_cluster\_autoscaler\_service\_account\_name) | K8S sevice account name for Cluster Autoscaler | `string` | `"cluster-autoscaler"` | no |
 | <a name="input_cluster_autoscaler_service_annotations"></a> [cluster\_autoscaler\_service\_annotations](#input\_cluster\_autoscaler\_service\_annotations) | Service annotations for Cluster Autoscaler | `map(string)` | <pre>{<br>  "prometheus.io/scrape": "true"<br>}</pre> | no |
-| <a name="input_cluster_autoscaler_tag"></a> [cluster\_autoscaler\_tag](#input\_cluster\_autoscaler\_tag) | Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version | `string` | `"v1.22.2"` | no |
+| <a name="input_cluster_autoscaler_tag"></a> [cluster\_autoscaler\_tag](#input\_cluster\_autoscaler\_tag) | Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version | `string` | `"v1.25.0"` | no |
 | <a name="input_cluster_autoscaler_tolerations"></a> [cluster\_autoscaler\_tolerations](#input\_cluster\_autoscaler\_tolerations) | Tolerations for Cluster Autoscaler | `any` | `[]` | no |
 | <a name="input_cluster_autoscaler_topology_spread_constraints"></a> [cluster\_autoscaler\_topology\_spread\_constraints](#input\_cluster\_autoscaler\_topology\_spread\_constraints) | Topology spread constraints for Cluster Autoscaler | `any` | <pre>[<br>  {<br>    "labelSelector": {<br>      "matchLabels": {<br>        "app.kubernetes.io/instance": "cluster-autoscaler"<br>      }<br>    },<br>    "maxSkew": 1,<br>    "topologyKey": "topology.kubernetes.io/zone",<br>    "whenUnsatisfiable": "DoNotSchedule"<br>  }<br>]</pre> | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | EKS Cluster name | `string` | n/a | yes |
@@ -262,6 +262,7 @@ module "eks_essentials" {
 | <a name="input_startupapicheck_timeout"></a> [startupapicheck\_timeout](#input\_startupapicheck\_timeout) | startupapicheck timeout | `string` | `"1m"` | no |
 | <a name="input_startupapicheck_tolerations"></a> [startupapicheck\_tolerations](#input\_startupapicheck\_tolerations) | Tolerations for startupapicheck | `any` | `[]` | no |
 | <a name="input_strategy"></a> [strategy](#input\_strategy) | Update strategy of deployment | `any` | <pre>{<br>  "rollingUpdate": {<br>    "maxSurge": 1,<br>    "maxUnavailable": "50%"<br>  },<br>  "type": "RollingUpdate"<br>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_tolerations"></a> [tolerations](#input\_tolerations) | Pod tolerations | `list(any)` | `[]` | no |
 | <a name="input_validating_webhook_configuration_annotations"></a> [validating\_webhook\_configuration\_annotations](#input\_validating\_webhook\_configuration\_annotations) | Optional additional annotations to add to the webhook ValidatingWebhookConfiguration | `map(string)` | `{}` | no |
 | <a name="input_volume_mounts"></a> [volume\_mounts](#input\_volume\_mounts) | Extra volume mounts for the container | `any` | `[]` | no |

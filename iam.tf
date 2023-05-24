@@ -18,6 +18,8 @@ resource "aws_iam_role" "cluster" {
   assume_role_policy    = data.aws_iam_policy_document.eks_assume_role_policy.json
   permissions_boundary  = var.cluster_iam_boundary
   force_detach_policies = true
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "cluster" {
@@ -38,15 +40,17 @@ resource "aws_iam_role" "workers" {
   assume_role_policy    = data.aws_iam_policy_document.ec2_assume_role_policy.json
   permissions_boundary  = var.workers_iam_boundary
   force_detach_policies = true
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "workers" {
-  for_each = toset(compact(distinct(concat([
+  for_each = setunion(toset([
     "${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
     "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
     "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore",
     "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
-  ], var.iam_role_additional_policies))))
+  ]), var.iam_role_additional_policies)
 
   policy_arn = each.value
   role       = aws_iam_role.workers.name
@@ -64,7 +68,7 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 ############################
 module "vpc_cni_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 4.21.1"
+  version = "~> 5.11.2"
 
   role_name_prefix = "${var.cluster_name}-cni-"
   role_description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
@@ -78,11 +82,13 @@ module "vpc_cni_irsa_role" {
       namespace_service_accounts = ["kube-system:aws-node"]
     }
   }
+
+  tags = var.tags
 }
 
 module "ebs_csi_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 4.21.1"
+  version = "~> 5.11.2"
 
   role_name_prefix = "${var.cluster_name}-ebs-csi-"
   role_description = "EKS Cluster ${var.cluster_name} EBS CSI Addon"
@@ -95,6 +101,8 @@ module "ebs_csi_irsa_role" {
       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy" "ebs_csi_kms" {

@@ -1,9 +1,3 @@
-variable "tags" {
-  description = "Tags for all resources"
-  type        = map(string)
-  default     = {}
-}
-
 ############################
 # K8S Cluster Information
 ############################
@@ -15,16 +9,11 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.22"
+  default     = "1.25"
 }
 
 variable "worker_iam_role_arn" {
   description = "Worker Nodes IAM Role ARN"
-  type        = string
-}
-
-variable "cluster_security_group_id" {
-  description = "Security Group ID of the master nodes"
   type        = string
 }
 
@@ -60,8 +49,7 @@ variable "eks_managed_node_group_defaults" {
     ebs_optimized     = true
     enable_monitoring = true
 
-    create_iam_role       = false
-    create_security_group = false
+    create_iam_role = false
   }
 }
 
@@ -78,4 +66,10 @@ variable "force_irsa" {
   description = "Force usage of IAM Roles for Service Account"
   type        = bool
   default     = true
+}
+
+variable "tags" {
+  description = "Tags for all resources"
+  type        = map(string)
+  default     = {}
 }

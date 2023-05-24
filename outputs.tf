@@ -1,3 +1,13 @@
+output "cluster_iam_role_arn" {
+  description = "IAM Role ARN used by cluster"
+  value       = aws_iam_role.cluster.arn
+}
+
+output "cluster_iam_role_name" {
+  description = "IAM Role Name used by Cluster"
+  value       = aws_iam_role.cluster.name
+}
+
 output "worker_iam_role_arn" {
   description = "IAM Role ARN used by worker nodes"
   value       = aws_iam_role.workers.arn
@@ -30,7 +40,12 @@ output "cluster_oidc_issuer_url" {
 
 output "cluster_name" {
   description = "EKS Cluster name created"
-  value       = module.eks.cluster_id
+  value       = module.eks.cluster_name
+}
+
+output "cluster_arn" {
+  description = "The ARN of the EKS cluster"
+  value       = module.eks.cluster_arn
 }
 
 output "cluster_endpoint" {

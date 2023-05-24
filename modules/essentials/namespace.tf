@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "namespaces" {
+resource "kubernetes_namespace_v1" "namespaces" {
   for_each = { for ns in var.namespaces : ns.name => ns }
 
   metadata {

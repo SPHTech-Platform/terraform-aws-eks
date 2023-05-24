@@ -53,14 +53,13 @@ locals {
 ################################################################################
 module "eks_managed_node_group" {
   source  = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
-  version = "~> 18.29.0"
+  version = "~> 19.10.0"
 
   for_each = local.eks_managed_node_groups
 
-  cluster_name              = var.cluster_name
-  cluster_version           = try(each.value.cluster_version, local.eks_managed_node_group_defaults.cluster_version, data.aws_eks_cluster.this.version)
-  cluster_security_group_id = var.cluster_security_group_id
-  cluster_ip_family         = "ipv4"
+  cluster_name      = var.cluster_name
+  cluster_version   = try(each.value.cluster_version, local.eks_managed_node_group_defaults.cluster_version, data.aws_eks_cluster.this.version)
+  cluster_ip_family = "ipv4"
 
   # EKS Managed Node Group
   name            = try(each.value.name, each.key)
@@ -138,18 +137,11 @@ module "eks_managed_node_group" {
   iam_role_permissions_boundary = try(each.value.iam_role_permissions_boundary, local.eks_managed_node_group_defaults.iam_role_permissions_boundary, null)
   iam_role_tags                 = try(each.value.iam_role_tags, local.eks_managed_node_group_defaults.iam_role_tags, {})
   iam_role_attach_cni_policy    = try(each.value.iam_role_attach_cni_policy, local.eks_managed_node_group_defaults.iam_role_attach_cni_policy, true)
-  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.eks_managed_node_group_defaults.iam_role_additional_policies, [])
+  iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.eks_managed_node_group_defaults.iam_role_additional_policies, {})
 
   # Security group
   vpc_security_group_ids            = compact(concat([var.worker_security_group_id], try(each.value.vpc_security_group_ids, local.eks_managed_node_group_defaults.vpc_security_group_ids, [])))
   cluster_primary_security_group_id = try(each.value.attach_cluster_primary_security_group, local.eks_managed_node_group_defaults.attach_cluster_primary_security_group, false) ? data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id : null
-  create_security_group             = try(each.value.create_security_group, local.eks_managed_node_group_defaults.create_security_group, true)
-  security_group_name               = try(each.value.security_group_name, local.eks_managed_node_group_defaults.security_group_name, null)
-  security_group_use_name_prefix    = try(each.value.security_group_use_name_prefix, local.eks_managed_node_group_defaults.security_group_use_name_prefix, true)
-  security_group_description        = try(each.value.security_group_description, local.eks_managed_node_group_defaults.security_group_description, "EKS managed node group security group")
-  vpc_id                            = try(each.value.vpc_id, local.eks_managed_node_group_defaults.vpc_id, data.aws_eks_cluster.this.vpc_config[0].vpc_id)
-  security_group_rules              = try(each.value.security_group_rules, local.eks_managed_node_group_defaults.security_group_rules, {})
-  security_group_tags               = try(each.value.security_group_tags, local.eks_managed_node_group_defaults.security_group_tags, {})
 
   tags = merge(var.tags, try(each.value.tags, local.eks_managed_node_group_defaults.tags, {}))
 }

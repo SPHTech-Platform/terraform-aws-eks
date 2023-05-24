@@ -9,7 +9,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.22"
+  default     = "1.25"
 }
 
 variable "cluster_enabled_log_types" {
@@ -50,7 +50,7 @@ variable "workers_iam_boundary" {
 
 variable "iam_role_additional_policies" {
   description = "Additional policies to be added to the IAM role"
-  type        = list(string)
+  type        = set(string)
   default     = []
 }
 
@@ -62,7 +62,7 @@ variable "iam_role_additional_policies" {
 variable "create_aws_auth_configmap" {
   description = "Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap`"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "manage_aws_auth_configmap" {
@@ -95,6 +95,27 @@ variable "user_mapping" {
     groups   = list(string)
   }))
   default = []
+}
+
+variable "aws_auth_fargate_profile_pod_execution_role_arns" {
+  description = "List of Fargate profile pod execution role ARNs to add to the aws-auth configmap"
+  type        = list(string)
+  default     = []
+}
+
+#############
+# EKS Addons
+#############
+variable "cluster_addons" {
+  description = "Map of cluster addon configurations to enable for the cluster. Addon name can be the map keys or set with `name`"
+  type        = any
+  default     = {}
+}
+
+variable "cluster_addons_timeouts" {
+  description = "Create, update, and delete timeout configurations for the cluster addons"
+  type        = map(string)
+  default     = {}
 }
 
 #######################
@@ -141,6 +162,29 @@ variable "cluster_service_ipv4_cidr" {
   default     = null
 }
 
+variable "create_cluster_security_group" {
+  description = "Determines if a security group is created for the cluster. Note: the EKS service creates a primary security group for the cluster by default"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_security_group_name" {
+  description = "Cluster security group name"
+  type        = string
+  default     = null
+}
+
+variable "create_node_security_group" {
+  description = "Determines whether to create a security group for the node groups or use the existing `node_security_group_id`"
+  type        = bool
+  default     = true
+}
+
+variable "worker_security_group_name" {
+  description = "Worker security group name"
+  type        = string
+  default     = null
+}
 
 variable "cluster_security_group_additional_rules" {
   description = "List of additional security group rules to add to the cluster security group created. Set `source_node_security_group = true` inside rules to set the `node_security_group` as source"
@@ -152,6 +196,12 @@ variable "node_security_group_additional_rules" {
   description = "List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source"
   type        = any
   default     = {}
+}
+
+variable "node_security_group_enable_recommended_rules" {
+  description = "Determines whether to enable recommended security group rules for the node security group created. This includes node-to-node TCP ingress on ephemeral ports and allows all egress traffic"
+  type        = bool
+  default     = true
 }
 
 #######################
@@ -258,8 +308,7 @@ variable "eks_managed_node_group_defaults" {
     ebs_optimized     = true
     enable_monitoring = true
 
-    create_iam_role       = false
-    create_security_group = false
+    create_iam_role = false
   }
 }
 
@@ -273,4 +322,28 @@ variable "force_irsa" {
   description = "Force usage of IAM Roles for Service Account"
   type        = bool
   default     = true
+}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "fargate_cluster" {
+  description = "Whether to create eks cluster with fargate mode. If true, default node group also will be fargate, otherwise managed"
+  type        = bool
+  default     = false
+}
+
+variable "fargate_profiles" {
+  description = "Map of maps of `fargate_profiles` to create"
+  type        = any
+  default     = {}
+}
+
+variable "fargate_profile_defaults" {
+  description = "Map of Fargate Profile default configurations"
+  type        = any
+  default     = {}
 }

@@ -48,7 +48,7 @@ locals {
 
 module "cluster_autoscaler_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 4.21.1"
+  version = "~> 5.11.2"
 
   role_name_prefix              = coalesce(var.cluster_autoscaler_iam_role, "${var.cluster_name}-autoscaler-")
   role_description              = "EKS Cluster ${var.cluster_name} Autoscaler"
@@ -63,4 +63,6 @@ module "cluster_autoscaler_irsa_role" {
       namespace_service_accounts = ["${var.cluster_autoscaler_namespace}:${var.cluster_autoscaler_service_account_name}"]
     }
   }
+
+  tags = var.tags
 }
