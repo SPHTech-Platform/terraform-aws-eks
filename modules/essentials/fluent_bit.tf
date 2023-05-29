@@ -1,5 +1,5 @@
 locals {
-  log_group_name       = "fluent-bit"
+  log_group_name       = "/aws/eks/${var.cluster_name}/fluent-bit"
   service_account_name = "fluentbit-sa"
   default_helm_config = merge(
     var.fluent_bit_helm_config_defaults,
@@ -21,6 +21,8 @@ locals {
     local.default_helm_config,
     var.fluent_bit_helm_config
   )
+
+  oidc_provider_name = join("_", slice(split("-", var.cluster_name), 1, 3))
 }
 
 resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
@@ -48,7 +50,7 @@ module "helm_fluent_bit" {
     kubernetes_namespace              = "${local.fluent_bit_helm_config.namespace}"
     kubernetes_service_account        = "${local.service_account_name}"
     oidc_providers = {
-      bt_drupal = {
+      "${local.oidc_provider_name}" = {
         provider_arn = var.oidc_provider_arn
         namespace_service_accounts = [
           "${local.fluent_bit_helm_config.namespace}:${local.service_account_name}"

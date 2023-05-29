@@ -83,11 +83,12 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
-        Name cloudwatch
-        Match *
+        Name cloudwatch_logs
+        Match kube.*
         region ap-southeast-1
         log_group_name ${log_group_name}
         log_stream_prefix fluentbit-
+        log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
         auto_create_group false
 
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers

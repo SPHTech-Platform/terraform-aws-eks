@@ -1297,7 +1297,7 @@ variable "fluent_bit_helm_config_defaults" {
     name        = "fluent-bit"
     chart       = "fluent-bit"
     repository  = "https://fluent.github.io/helm-charts"
-    version     = "0.21.1"
+    version     = "0.30.2"
     namespace   = "logging"
     description = "Fluent Bit helm Chart deployment configuration"
   }
@@ -1313,7 +1313,7 @@ variable "fluent_bit_image_repository" {
 variable "fluent_bit_image_tag" {
   description = "Fluent Bit Image tag"
   type        = string
-  default     = "2.21.5"
+  default     = "2.31.8"
 }
 
 variable "fluent_bit_helm_config" {
