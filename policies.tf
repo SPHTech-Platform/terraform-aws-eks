@@ -27,6 +27,7 @@ data "aws_iam_policy_document" "kms_ebs" {
   # Required for EKS
   #checkov:skip=CKV_AWS_109:The is a resource policy
   #checkov:skip=CKV_AWS_111:The is a resource policy
+  #checkov:skip=CKV_AWS_356:Ensure IAM policies limit resource access
   statement {
     sid = "Allow service-linked role use of the CMK"
     actions = [
