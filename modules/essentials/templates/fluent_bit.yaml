@@ -96,9 +96,17 @@ config:
   upstream: {}
 
   ## https://docs.fluentbit.io/manual/pipeline/parsers
-  # customParsers: |
+  ## Default parsers are from : https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf
+  customParsers: |
+    [PARSER]
+        Name custom_apache
+        Format regex
+        Regex ^(?<client_ip>[^ ]*) \<(?<x_forwarded_for>[^\"]*)\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<latency>[^\"]*)" "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Keep Off
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
 
-  extraFiles: {}
+#  extraFiles: {}
 #     upstream.conf: |
 #       [UPSTREAM]
 #           upstream1
