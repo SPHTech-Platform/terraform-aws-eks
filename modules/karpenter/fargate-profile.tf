@@ -1,4 +1,4 @@
-module "gha_fargate_profile" {
+module "karpenter_fargate_profile" {
   # source  = "SPHTech-Platform/eks/aws//modules/fargate_profile"
   # version = "~> 0.11.0"
 
@@ -10,7 +10,7 @@ module "gha_fargate_profile" {
     default = {
       iam_role_name = "fargate_profile_karpente"
       iam_role_additional_policies = {
-        additional = aws_iam_policy.fargate_logging.arn
+        additional = aws_iam_policy.karpenter_fargate_logging.arn
       }
       #   subnet_ids = local.app_subnets
       subnet_ids = var.subnet_ids
@@ -25,7 +25,7 @@ module "gha_fargate_profile" {
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
-data "aws_iam_policy_document" "fargate_logging" {
+data "aws_iam_policy_document" "karpenter_fargate_logging" {
   #checkov:skip=CKV_AWS_111:Restricted to Cloudwatch Actions only
   #checkov:skip=CKV_AWS_356: Only logs actions
   statement {
@@ -42,10 +42,10 @@ data "aws_iam_policy_document" "fargate_logging" {
   }
 }
 
-resource "aws_iam_policy" "fargate_logging" {
+resource "aws_iam_policy" "karpenter_fargate_logging" {
   name        = "fargate_logging_cloudwatch"
   path        = "/"
   description = "AWS recommended cloudwatch perms policy"
 
-  policy = data.aws_iam_policy_document.fargate_logging.json
+  policy = data.aws_iam_policy_document.karpenter_fargate_logging.json
 }
