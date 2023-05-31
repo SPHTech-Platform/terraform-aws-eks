@@ -106,3 +106,12 @@ variable "autoscaling_mode" {
   type        = string
   default     = "cluster_autoscaler"
 }
+
+##############
+## FARGATE ###
+##############
+variable "subnet_ids" {
+  description = "For Fargate subnet selection"
+  type        = list(string)
+  default     = []
+}
