@@ -88,6 +88,7 @@ module "fargate_profile" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_addon_config"></a> [addon\_config](#input\_addon\_config) | Fargate fluentbit configuration | `any` | `{}` | no |
+| <a name="input_aws_observability_ns_created"></a> [aws\_observability\_ns\_created](#input\_aws\_observability\_ns\_created) | value to determine if aws-observability namespace is created | `bool` | `false` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_fargate_logging_enabled"></a> [fargate\_logging\_enabled](#input\_fargate\_logging\_enabled) | Toggle flag for fargate logging | `bool` | `true` | no |
 | <a name="input_fargate_profile_defaults"></a> [fargate\_profile\_defaults](#input\_fargate\_profile\_defaults) | Map of Fargate Profile default configurations | `any` | `{}` | no |
