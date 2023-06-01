@@ -64,7 +64,7 @@ resource "kubernetes_namespace_v1" "aws_observability" {
 # fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
 resource "kubernetes_config_map_v1" "aws_logging" {
 
-  count = var.fargate_logging_enabled ? 1 : 0
+  count = var.fargate_logging_enabled && var.create_fargate_logger_configmap ? 1 : 0
 
   metadata {
     name      = "aws-logging"
