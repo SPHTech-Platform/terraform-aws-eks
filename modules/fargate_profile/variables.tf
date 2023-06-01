@@ -39,12 +39,6 @@ variable "addon_config" {
   default     = {}
 }
 
-variable "fargate_logging_enabled" {
-  description = "Toggle flag for fargate logging"
-  type        = bool
-  default     = true
-}
-
 variable "create_aws_observability_ns" {
   description = "value to determine if aws-observability namespace is created"
   type        = bool
