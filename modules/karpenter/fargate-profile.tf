@@ -4,7 +4,8 @@ module "karpenter_fargate_profile" {
 
   source = "git::https://github.com/SPHTech-Platform/terraform-aws-eks.git//modules/fargate_profile?ref=fargate-logging"
 
-  create_aws_observability_ns = var.create_aws_observability_ns
+  create_aws_observability_ns     = var.create_aws_observability_ns
+  create_fargate_logger_configmap = var.create_fargate_logger_configmap
   #   cluster_name = local.cluster_name
   cluster_name = var.cluster_name
   fargate_profiles = {
