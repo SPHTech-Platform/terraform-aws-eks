@@ -50,7 +50,7 @@ locals {
 
 resource "kubernetes_namespace_v1" "aws_observability" {
 
-  count = var.fargate_logging_enabled && var.aws_observability_ns_created ? 1 : 0
+  count = var.fargate_logging_enabled && var.create_aws_observability_ns ? 1 : 0
 
   metadata {
     name = "aws-observability"

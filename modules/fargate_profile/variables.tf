@@ -45,7 +45,7 @@ variable "fargate_logging_enabled" {
   default     = true
 }
 
-variable "aws_observability_ns_created" {
+variable "create_aws_observability_ns" {
   description = "value to determine if aws-observability namespace is created"
   type        = bool
   default     = false
