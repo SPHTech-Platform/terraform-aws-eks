@@ -115,3 +115,9 @@ variable "subnet_ids" {
   type        = list(string)
   default     = []
 }
+
+variable "aws_observability_ns_created" {
+  description = "Create aws-observability namespace"
+  type        = bool
+  default     = true
+}
