@@ -9,27 +9,27 @@ variable "karpenter_namespace" {
 }
 
 variable "karpenter_release_name" {
-  description = "Release name for Cluster Autoscaler"
+  description = "Release name for Karpenter"
   type        = string
   default     = "karpenter"
 }
 
 variable "karpenter_chart_name" {
-  description = "Chart name for Cluster Autoscaler"
+  description = "Chart name for Karpenter"
   type        = string
   default     = "karpenter"
 }
 
 variable "karpenter_chart_repository" {
-  description = "Chart repository for Cluster Autoscaler"
+  description = "Chart repository for Karpenter"
   type        = string
   default     = "oci://public.ecr.aws/karpenter"
 }
 
 variable "karpenter_chart_version" {
-  description = "Chart version for Cluster Autoscaler"
+  description = "Chart version for Karpenter"
   type        = string
-  default     = "v0.27.0"
+  default     = "v0.27.5"
 }
 
 variable "karpenter_provisioners" {

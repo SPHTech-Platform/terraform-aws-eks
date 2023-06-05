@@ -1,8 +1,6 @@
 module "karpenter_fargate_profile" {
-  # source  = "SPHTech-Platform/eks/aws//modules/fargate_profile"
-  # version = "~> 0.11.0"
-
-  source = "git::https://github.com/SPHTech-Platform/terraform-aws-eks.git//modules/fargate_profile?ref=fargate-logging"
+  source  = "SPHTech-Platform/eks/aws//modules/fargate_profile"
+  version = "~> 0.12.0"
 
   create_aws_observability_ns     = var.create_aws_observability_ns
   create_fargate_logger_configmap = var.create_fargate_logger_configmap

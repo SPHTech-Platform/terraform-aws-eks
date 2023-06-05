@@ -26,6 +26,8 @@ resource "helm_release" "karpenter" {
   chart      = var.karpenter_chart_name
   version    = var.karpenter_chart_version
 
+  skip_crds = true # CRDs are managed by module.karpenter-crds
+
   set {
     name  = "settings.aws.clusterName"
     value = var.cluster_name
@@ -52,7 +54,23 @@ resource "helm_release" "karpenter" {
   }
 
   depends_on = [
-    module.karpenter[0].irsa_arn
+    module.karpenter[0].irsa_arn,
+    module.karpenter-crds,
+  ]
+}
+
+###################
+## UPDATING CRDS ##
+###################
+
+module "karpenter-crds" {
+  source  = "rpadovani/helm-crds/kubectl"
+  version = "0.3.0"
+
+  crds_urls = [
+    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_provisioners.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_awsnodetemplates.yaml",
+    # "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_machines.yaml", #not part of release yet
   ]
 }
 
