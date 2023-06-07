@@ -347,6 +347,10 @@ variable "ecr_pull_through_cache_rules" {
       prefix   = "quay.io"
       registry = "quay.io"
     }
+    kubernetes = {
+      prefix   = "registry.k8s.io"
+      registry = "registry.k8s.io"
+    }
   }
 }
 
