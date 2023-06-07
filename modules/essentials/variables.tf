@@ -38,6 +38,7 @@ variable "worker_iam_role_name" {
   type        = string
 }
 
+
 ############################
 # K8S Resources
 ############################
@@ -56,6 +57,12 @@ variable "namespaces" {
 ############################
 # Cluster Autoscaler
 ############################
+variable "autoscaling_mode" {
+  description = "Autoscaling mode: cluster_autoscaler or karpenter"
+  type        = string
+  default     = "cluster_autoscaler"
+}
+
 variable "cluster_autoscaler_iam_role" {
   description = "Override name of the IAM role for autoscaler"
   type        = string
@@ -340,6 +347,10 @@ variable "ecr_pull_through_cache_rules" {
       prefix   = "quay.io"
       registry = "quay.io"
     }
+    kubernetes = {
+      prefix   = "registry.k8s.io"
+      registry = "registry.k8s.io"
+    }
   }
 }
 
@@ -498,27 +509,6 @@ variable "node_termination_handler_dry_run" {
   description = "Only log calls to kubernetes control plane"
   type        = bool
   default     = false
-}
-
-variable "node_termination_sqs" {
-  description = "SQS Queue for node termination handler"
-  type = object({
-    url = string
-    arn = string
-  })
-  default = null
-}
-
-variable "node_termination_iam_role" {
-  description = "Name of the IAM Role for Node Termination Handler"
-  type        = string
-  default     = "bedrock_node_termination_handler"
-}
-
-variable "node_termination_iam_role_boundary" {
-  description = "IAM Role boundary for Node Termination Handler"
-  type        = string
-  default     = null
 }
 
 variable "node_termination_namespace" {

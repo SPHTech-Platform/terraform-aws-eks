@@ -45,6 +45,18 @@ module "eks_essentials" {
 }
 ```
 
+## To use Karpenter instead of cluster autoscaler [for managed_nodegroups only for now]
+
+> The key difference between nodegroups and fargate profiles Karpenter config is, the latter sets the IAM role at EKS cluster level using Karpenter's Role, while nodegroups gives its IAM roles to the Karpenter to assume. Note the config diff at https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/karpenter
+
+Set the autoscaling mode so that essentials module will skip creation of autoscaler resources
+```
+module "eks_essentials" {
+  autoscaling_mode        = "karpenter"
+   # ...
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -52,7 +64,7 @@ module "eks_essentials" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.2 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.7 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
 ## Providers
@@ -60,7 +72,7 @@ module "eks_essentials" {
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.2 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.7 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
 
 ## Modules
@@ -94,8 +106,6 @@ module "eks_essentials" {
 | [kubernetes_storage_class_v1.default](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
 | [aws_arn.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_eks_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_iam_policy_document.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.fluent_bit](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -107,6 +117,7 @@ module "eks_essentials" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_affinity"></a> [affinity](#input\_affinity) | Pod affinity | `map(string)` | `{}` | no |
+| <a name="input_autoscaling_mode"></a> [autoscaling\_mode](#input\_autoscaling\_mode) | Autoscaling mode: cluster\_autoscaler or karpenter | `string` | `"cluster_autoscaler"` | no |
 | <a name="input_brupop_chart_name"></a> [brupop\_chart\_name](#input\_brupop\_chart\_name) | Chart name for brupop | `string` | `"bottlerocket-brupop"` | no |
 | <a name="input_brupop_chart_repository"></a> [brupop\_chart\_repository](#input\_brupop\_chart\_repository) | Chart repository for brupop | `string` | `"oci://public.ecr.aws/sphmedia/helm/"` | no |
 | <a name="input_brupop_chart_version"></a> [brupop\_chart\_version](#input\_brupop\_chart\_version) | Chart version for brupop | `string` | `"1.0.3"` | no |
@@ -176,7 +187,7 @@ module "eks_essentials" {
 | <a name="input_csi_volume_binding_mode"></a> [csi\_volume\_binding\_mode](#input\_csi\_volume\_binding\_mode) | Volume binding mode of the StorageClass for CSI. Can be Immediate or WaitForFirstConsumer | `string` | `"WaitForFirstConsumer"` | no |
 | <a name="input_deployment_annotations"></a> [deployment\_annotations](#input\_deployment\_annotations) | Extra annotations for the deployment | `map(string)` | `{}` | no |
 | <a name="input_ecr_cache_iam_cache_policy"></a> [ecr\_cache\_iam\_cache\_policy](#input\_ecr\_cache\_iam\_cache\_policy) | Name of ECR Cache IAM Policy | `string` | `"EcrCachePullThrough"` | no |
-| <a name="input_ecr_pull_through_cache_rules"></a> [ecr\_pull\_through\_cache\_rules](#input\_ecr\_pull\_through\_cache\_rules) | ECR Pull Through Cache Rules | <pre>map(object({<br>    registry = string<br>    prefix   = string<br>  }))</pre> | <pre>{<br>  "aws_public": {<br>    "prefix": "public.ecr.aws",<br>    "registry": "public.ecr.aws"<br>  },<br>  "quay": {<br>    "prefix": "quay.io",<br>    "registry": "quay.io"<br>  }<br>}</pre> | no |
+| <a name="input_ecr_pull_through_cache_rules"></a> [ecr\_pull\_through\_cache\_rules](#input\_ecr\_pull\_through\_cache\_rules) | ECR Pull Through Cache Rules | <pre>map(object({<br>    registry = string<br>    prefix   = string<br>  }))</pre> | <pre>{<br>  "aws_public": {<br>    "prefix": "public.ecr.aws",<br>    "registry": "public.ecr.aws"<br>  },<br>  "kubernetes": {<br>    "prefix": "registry.k8s.io",<br>    "registry": "registry.k8s.io"<br>  },<br>  "quay": {<br>    "prefix": "quay.io",<br>    "registry": "quay.io"<br>  }<br>}</pre> | no |
 | <a name="input_extra_args"></a> [extra\_args](#input\_extra\_args) | Extra arguments | `list(any)` | `[]` | no |
 | <a name="input_extra_env"></a> [extra\_env](#input\_extra\_env) | Extra environment variables | `list(any)` | `[]` | no |
 | <a name="input_feature_gates"></a> [feature\_gates](#input\_feature\_gates) | Feature gates to enable on the pod | `list(any)` | `[]` | no |
@@ -229,11 +240,8 @@ module "eks_essentials" {
 | <a name="input_node_termination_handler_sqs_name"></a> [node\_termination\_handler\_sqs\_name](#input\_node\_termination\_handler\_sqs\_name) | Override the name for the SQS used in Node Termination Handler | `string` | `""` | no |
 | <a name="input_node_termination_handler_tag"></a> [node\_termination\_handler\_tag](#input\_node\_termination\_handler\_tag) | Docker image tag for Node Termination Handler. This should correspond to the Kubernetes version | `string` | `"v1.16.0"` | no |
 | <a name="input_node_termination_handler_taint_node"></a> [node\_termination\_handler\_taint\_node](#input\_node\_termination\_handler\_taint\_node) | Taint node upon spot interruption termination notice | `bool` | `true` | no |
-| <a name="input_node_termination_iam_role"></a> [node\_termination\_iam\_role](#input\_node\_termination\_iam\_role) | Name of the IAM Role for Node Termination Handler | `string` | `"bedrock_node_termination_handler"` | no |
-| <a name="input_node_termination_iam_role_boundary"></a> [node\_termination\_iam\_role\_boundary](#input\_node\_termination\_iam\_role\_boundary) | IAM Role boundary for Node Termination Handler | `string` | `null` | no |
 | <a name="input_node_termination_namespace"></a> [node\_termination\_namespace](#input\_node\_termination\_namespace) | Namespace to deploy Node Termination Handler | `string` | `"kube-system"` | no |
 | <a name="input_node_termination_service_account"></a> [node\_termination\_service\_account](#input\_node\_termination\_service\_account) | Service account for Node Termination Handler pods | `string` | `"node-termination-handler"` | no |
-| <a name="input_node_termination_sqs"></a> [node\_termination\_sqs](#input\_node\_termination\_sqs) | SQS Queue for node termination handler | <pre>object({<br>    url = string<br>    arn = string<br>  })</pre> | `null` | no |
 | <a name="input_oidc_provider_arn"></a> [oidc\_provider\_arn](#input\_oidc\_provider\_arn) | ARN of the OIDC Provider for IRSA | `string` | n/a | yes |
 | <a name="input_pod_annotations"></a> [pod\_annotations](#input\_pod\_annotations) | Extra annotations for pods | `map(string)` | `{}` | no |
 | <a name="input_pod_labels"></a> [pod\_labels](#input\_pod\_labels) | Extra labels for pods | `map(string)` | `{}` | no |

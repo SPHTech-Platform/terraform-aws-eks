@@ -48,6 +48,8 @@ provider "aws" {
 
 module "eks" {
   # ...
+  create_aws_auth_configmap = false
+  manage_aws_auth_configmap = false # set this to true after cluster creation is completed and reapply to set IRSA
 }
 
 data "aws_eks_cluster_auth" "this" {
@@ -94,6 +96,99 @@ provider "helm" {
   experiments {
     manifest = true
   }
+}
+```
+
+## Karpenter
+
+We need to allow Karpenter controller to start EC2 instances hence, we need to add role mapping for it:
+```
+role_mapping = local.autoscaling_mode == "karpenter" ? concat([
+    for role in local.eks_master_roles :
+    {
+      rolearn  = role.arn
+      groups   = ["system:masters"]
+      username = role.user
+    }],
+    [
+      {
+        rolearn = module.eks.worker_iam_role_arn
+        groups = [
+          "system:bootstrappers",
+          "system:nodes",
+        ]
+        username = "system:node:{{EC2PrivateDNSName}}"
+      }
+    ]
+    ) : [
+    for role in local.eks_master_roles :
+    {
+      rolearn  = role.arn
+      groups   = ["system:masters"]
+      username = role.user
+    }
+  ]
+```
+
+Then we create Karpenter module with configuration as follows:
+
+```
+locals {
+  # Karpenter Provisioners Config
+  karpenter_provisioners = [
+    {
+      name                           = "provisioner_name"
+      provider_ref_nodetemplate_name = "default"
+      karpenter_provisioner_node_labels = {
+        "label_key" = "label_value"
+      }
+
+      karpenter_provisioner_node_taints = [
+        {
+          key       = "taintkey",
+          value     = "taintvalue",
+          effect    = "NoSchedule"
+          timeAdded = timestamp() # required if not terraform plan complains
+        }
+      ]
+
+      karpenter_instance_types_list = ["m5a.large"]
+      karpenter_capacity_type_list  = ["on-demand"]
+      karpenter_arch_list           = ["amd64"]
+    },
+  ]
+  # Karpenter Nodetemplate Config
+  karpenter_nodetemplates = [
+    {
+      name = "default"
+      karpenter_subnet_selector_map = {
+        "Name" = "subnet-name-here-*"
+      }
+      karpenter_security_group_selector_map = {
+        "aws-ids" = module.eks.worker_security_group_id
+      }
+      karpenter_nodetemplate_tag_map = {
+        "karpenter.sh/discovery" = module.eks.cluster_name
+      }
+    },
+  ]
+}
+
+module "karpenter" {
+  # source  = "SPHTech-Platform/eks/aws//modules/essentials"
+  # version = "~> 0.8.0"
+
+  source = "git::https://github.com/SPHTech-Platform/terraform-aws-eks.git//modules/karpenter?ref=karpenter"
+
+  cluster_name        = local.cluster_name
+  cluster_endpoint    = data.aws_eks_cluster.this.endpoint
+  oidc_provider_arn   = module.eks.oidc_provider_arn
+  worker_iam_role_arn = module.eks.worker_iam_role_arn
+
+  autoscaling_mode        = local.autoscaling_mode
+  karpenter_provisioners  = local.karpenter_provisioners
+  karpenter_nodetemplates = local.karpenter_nodetemplates
+
 }
 ```
 

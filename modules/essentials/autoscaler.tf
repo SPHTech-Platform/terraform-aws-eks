@@ -1,4 +1,6 @@
 resource "helm_release" "cluster_autoscaler" {
+  count = var.autoscaling_mode == "cluster_autoscaler" ? 1 : 0
+
   name       = var.cluster_autoscaler_release_name
   chart      = var.cluster_autoscaler_chart_name
   repository = var.cluster_autoscaler_chart_repository
@@ -20,7 +22,7 @@ locals {
     aws_region   = data.aws_region.current.name
 
     service_account_name = var.cluster_autoscaler_service_account_name
-    role_arn             = module.cluster_autoscaler_irsa_role.iam_role_arn
+    role_arn             = try(module.cluster_autoscaler_irsa_role[0].iam_role_arn, "")
 
     image          = var.cluster_autoscaler_image
     tag            = var.cluster_autoscaler_tag
@@ -47,6 +49,8 @@ locals {
 }
 
 module "cluster_autoscaler_irsa_role" {
+  count = var.autoscaling_mode == "cluster_autoscaler" ? 1 : 0
+
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.11.2"
 
