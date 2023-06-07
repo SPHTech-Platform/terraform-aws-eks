@@ -146,7 +146,9 @@ resource "kubernetes_manifest" "karpenter_node_template" {
     spec = {
       subnetSelector        = each.value.karpenter_subnet_selector_map
       securityGroupSelector = each.value.karpenter_security_group_selector_map
-      tags                  = each.value.karpenter_nodetemplate_tag_map
+      amiFamily             = each.value.karpenter_ami_family
+
+      tags = each.value.karpenter_nodetemplate_tag_map
     }
   }
 
