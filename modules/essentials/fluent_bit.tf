@@ -4,18 +4,19 @@ locals {
   default_helm_config = merge(
     var.fluent_bit_helm_config_defaults,
     {
-      values = local.default_helm_values
+      values = [
+        local.default_helm_values,
+        var.fluent_bit_helm_values,
+      ]
     }
   )
 
-  default_helm_values = [
-    templatefile("${path.module}/templates/fluent_bit.yaml", {
-      log_group_name       = local.log_group_name,
-      service_account_name = local.service_account_name,
-      image_repository     = var.fluent_bit_image_repository,
-      image_tag            = var.fluent_bit_image_tag,
-    })
-  ]
+  default_helm_values = templatefile("${path.module}/templates/fluent_bit.yaml", {
+    log_group_name       = local.log_group_name,
+    service_account_name = local.service_account_name,
+    image_repository     = var.fluent_bit_image_repository,
+    image_tag            = var.fluent_bit_image_tag,
+  })
 
   fluent_bit_helm_config = merge(
     local.default_helm_config,

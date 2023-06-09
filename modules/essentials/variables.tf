@@ -1323,3 +1323,9 @@ variable "fluent_bit_log_group_retention" {
   type        = number
   default     = 30
 }
+
+variable "fluent_bit_helm_values" {
+  description = "Helm values for extra configuration"
+  type        = string
+  default     = ""
+}
