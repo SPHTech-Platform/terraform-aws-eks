@@ -6,7 +6,7 @@ locals {
     {
       values = [
         local.default_helm_values,
-        var.fluent_bit_helm_values,
+        var.fluent_bit_extra_helm_values,
       ]
     }
   )
@@ -48,8 +48,8 @@ module "helm_fluent_bit" {
 
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
-    kubernetes_namespace              = "${local.fluent_bit_helm_config.namespace}"
-    kubernetes_service_account        = "${local.service_account_name}"
+    kubernetes_namespace              = local.fluent_bit_helm_config.namespace
+    kubernetes_service_account        = local.service_account_name
     oidc_providers = {
       "${local.oidc_provider_name}" = {
         provider_arn = var.oidc_provider_arn

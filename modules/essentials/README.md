@@ -71,9 +71,9 @@ module "eks_essentials" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.7 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.0.1 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.9.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.20.0 |
 
 ## Modules
 
@@ -193,10 +193,11 @@ module "eks_essentials" {
 | <a name="input_feature_gates"></a> [feature\_gates](#input\_feature\_gates) | Feature gates to enable on the pod | `list(any)` | `[]` | no |
 | <a name="input_firehose_role_arn"></a> [firehose\_role\_arn](#input\_firehose\_role\_arn) | IAM Role ARN to assume for firehose | `string` | `""` | no |
 | <a name="input_fluent_bit_enabled"></a> [fluent\_bit\_enabled](#input\_fluent\_bit\_enabled) | Enable fluent-bit helm charts installation. | `bool` | `true` | no |
+| <a name="input_fluent_bit_extra_helm_values"></a> [fluent\_bit\_extra\_helm\_values](#input\_fluent\_bit\_extra\_helm\_values) | Helm values for extra configuration | `string` | `""` | no |
 | <a name="input_fluent_bit_helm_config"></a> [fluent\_bit\_helm\_config](#input\_fluent\_bit\_helm\_config) | Helm provider config for AWS for Fluent Bit. | `any` | `{}` | no |
-| <a name="input_fluent_bit_helm_config_defaults"></a> [fluent\_bit\_helm\_config\_defaults](#input\_fluent\_bit\_helm\_config\_defaults) | Helm provider default config for Fluent Bit. | `any` | <pre>{<br>  "chart": "fluent-bit",<br>  "description": "Fluent Bit helm Chart deployment configuration",<br>  "name": "fluent-bit",<br>  "namespace": "logging",<br>  "repository": "https://fluent.github.io/helm-charts",<br>  "version": "0.21.1"<br>}</pre> | no |
+| <a name="input_fluent_bit_helm_config_defaults"></a> [fluent\_bit\_helm\_config\_defaults](#input\_fluent\_bit\_helm\_config\_defaults) | Helm provider default config for Fluent Bit. | `any` | <pre>{<br>  "chart": "fluent-bit",<br>  "description": "Fluent Bit helm Chart deployment configuration",<br>  "name": "fluent-bit",<br>  "namespace": "logging",<br>  "repository": "https://fluent.github.io/helm-charts",<br>  "version": "0.30.2"<br>}</pre> | no |
 | <a name="input_fluent_bit_image_repository"></a> [fluent\_bit\_image\_repository](#input\_fluent\_bit\_image\_repository) | Fluent Bit Image repo | `string` | `"public.ecr.aws/aws-observability/aws-for-fluent-bit"` | no |
-| <a name="input_fluent_bit_image_tag"></a> [fluent\_bit\_image\_tag](#input\_fluent\_bit\_image\_tag) | Fluent Bit Image tag | `string` | `"2.21.5"` | no |
+| <a name="input_fluent_bit_image_tag"></a> [fluent\_bit\_image\_tag](#input\_fluent\_bit\_image\_tag) | Fluent Bit Image tag | `string` | `"2.31.8"` | no |
 | <a name="input_fluent_bit_log_group_retention"></a> [fluent\_bit\_log\_group\_retention](#input\_fluent\_bit\_log\_group\_retention) | Number of days to retain the cloudwatch logs | `number` | `30` | no |
 | <a name="input_helm_release_max_history"></a> [helm\_release\_max\_history](#input\_helm\_release\_max\_history) | The maximum number of history releases to keep track in each Helm release | `number` | `20` | no |
 | <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | Secrets for image pulling | `list(any)` | `[]` | no |
