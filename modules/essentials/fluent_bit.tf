@@ -43,7 +43,7 @@ module "helm_fluent_bit" {
   irsa_config = {
     role_name = "${var.cluster_name}-irsa-fluentbit"
     role_policy_arns = {
-      "fluent-bit" = aws_iam_policy.fluent_bit_irsa.arn
+      "fluent-bit" = one(aws_iam_policy.fluent_bit_irsa[*].arn)
     }
 
     create_kubernetes_namespace       = true
@@ -62,6 +62,8 @@ module "helm_fluent_bit" {
 }
 
 resource "aws_iam_policy" "fluent_bit_irsa" {
+  count = var.fluent_bit_enabled ? 1 : 0
+
   name        = "${var.cluster_name}-fluentbit"
   description = "IAM Policy for AWS for FluentBit IRSA"
   policy      = data.aws_iam_policy_document.fluent_bit.json
