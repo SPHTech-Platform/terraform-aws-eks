@@ -71,15 +71,16 @@ module "eks_essentials" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.7 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.0.1 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.9.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.20.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.11.2 |
+| <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 0.1.3 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.1.0 |
 | <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.11.2 |
 | <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 3.0 |
@@ -90,8 +91,10 @@ module "eks_essentials" {
 |------|------|
 | [aws_cloudwatch_event_rule.node_termination_handler_spot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
 | [aws_cloudwatch_event_target.node_termination_handler_spot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
+| [aws_cloudwatch_log_group.aws_for_fluent_bit](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_ecr_pull_through_cache_rule.cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_pull_through_cache_rule) | resource |
 | [aws_iam_policy.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.fluent_bit_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role_policy_attachment.worker_ecr_pullthrough](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [helm_release.brupop](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.cert_manager](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
@@ -104,6 +107,7 @@ module "eks_essentials" {
 | [aws_arn.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.fluent_bit](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_sqs_queue.node_termination_handler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/sqs_queue) | data source |
@@ -187,6 +191,14 @@ module "eks_essentials" {
 | <a name="input_extra_args"></a> [extra\_args](#input\_extra\_args) | Extra arguments | `list(any)` | `[]` | no |
 | <a name="input_extra_env"></a> [extra\_env](#input\_extra\_env) | Extra environment variables | `list(any)` | `[]` | no |
 | <a name="input_feature_gates"></a> [feature\_gates](#input\_feature\_gates) | Feature gates to enable on the pod | `list(any)` | `[]` | no |
+| <a name="input_firehose_role_arn"></a> [firehose\_role\_arn](#input\_firehose\_role\_arn) | IAM Role ARN to assume for firehose | `string` | `""` | no |
+| <a name="input_fluent_bit_enabled"></a> [fluent\_bit\_enabled](#input\_fluent\_bit\_enabled) | Enable fluent-bit helm charts installation. | `bool` | `true` | no |
+| <a name="input_fluent_bit_extra_helm_values"></a> [fluent\_bit\_extra\_helm\_values](#input\_fluent\_bit\_extra\_helm\_values) | Helm values for extra configuration | `string` | `""` | no |
+| <a name="input_fluent_bit_helm_config"></a> [fluent\_bit\_helm\_config](#input\_fluent\_bit\_helm\_config) | Helm provider config for AWS for Fluent Bit. | `any` | `{}` | no |
+| <a name="input_fluent_bit_helm_config_defaults"></a> [fluent\_bit\_helm\_config\_defaults](#input\_fluent\_bit\_helm\_config\_defaults) | Helm provider default config for Fluent Bit. | `any` | <pre>{<br>  "chart": "fluent-bit",<br>  "description": "Fluent Bit helm Chart deployment configuration",<br>  "name": "fluent-bit",<br>  "namespace": "logging",<br>  "repository": "https://fluent.github.io/helm-charts",<br>  "version": "0.30.2"<br>}</pre> | no |
+| <a name="input_fluent_bit_image_repository"></a> [fluent\_bit\_image\_repository](#input\_fluent\_bit\_image\_repository) | Fluent Bit Image repo | `string` | `"public.ecr.aws/aws-observability/aws-for-fluent-bit"` | no |
+| <a name="input_fluent_bit_image_tag"></a> [fluent\_bit\_image\_tag](#input\_fluent\_bit\_image\_tag) | Fluent Bit Image tag | `string` | `"2.31.8"` | no |
+| <a name="input_fluent_bit_log_group_retention"></a> [fluent\_bit\_log\_group\_retention](#input\_fluent\_bit\_log\_group\_retention) | Number of days to retain the cloudwatch logs | `number` | `30` | no |
 | <a name="input_helm_release_max_history"></a> [helm\_release\_max\_history](#input\_helm\_release\_max\_history) | The maximum number of history releases to keep track in each Helm release | `number` | `20` | no |
 | <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | Secrets for image pulling | `list(any)` | `[]` | no |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | Image repository | `string` | `"quay.io/jetstack/cert-manager-controller"` | no |

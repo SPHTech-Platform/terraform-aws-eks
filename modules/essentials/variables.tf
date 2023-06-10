@@ -1270,3 +1270,62 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+#############
+# fluent-bit
+#############
+variable "fluent_bit_enabled" {
+  description = "Enable fluent-bit helm charts installation."
+  type        = bool
+  default     = true
+}
+
+variable "fluent_bit_helm_config_defaults" {
+  description = "Helm provider default config for Fluent Bit."
+  type        = any
+  default = {
+    name        = "fluent-bit"
+    chart       = "fluent-bit"
+    repository  = "https://fluent.github.io/helm-charts"
+    version     = "0.30.2"
+    namespace   = "logging"
+    description = "Fluent Bit helm Chart deployment configuration"
+  }
+}
+
+# Use aws fluentbit image which has firehose/cloudwatch plugins
+variable "fluent_bit_image_repository" {
+  description = "Fluent Bit Image repo"
+  type        = string
+  default     = "public.ecr.aws/aws-observability/aws-for-fluent-bit"
+}
+
+variable "fluent_bit_image_tag" {
+  description = "Fluent Bit Image tag"
+  type        = string
+  default     = "2.31.8"
+}
+
+variable "fluent_bit_helm_config" {
+  description = "Helm provider config for AWS for Fluent Bit."
+  type        = any
+  default     = {}
+}
+
+variable "firehose_role_arn" {
+  description = "IAM Role ARN to assume for firehose"
+  type        = string
+  default     = ""
+}
+
+variable "fluent_bit_log_group_retention" {
+  description = "Number of days to retain the cloudwatch logs"
+  type        = number
+  default     = 30
+}
+
+variable "fluent_bit_extra_helm_values" {
+  description = "Helm values for extra configuration"
+  type        = string
+  default     = ""
+}

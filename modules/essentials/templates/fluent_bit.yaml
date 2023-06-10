@@ -1,0 +1,122 @@
+# Default values for fluent-bit.
+
+# kind -- DaemonSet or Deployment
+kind: DaemonSet
+
+# replicaCount -- Only applicable if kind=Deployment
+replicaCount: 1
+
+image:
+  repository: ${image_repository}
+  # Overrides the image tag whose default is {{ .Chart.AppVersion }}
+  tag: ${image_tag}
+  pullPolicy: Always
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ${service_account_name}
+
+rbac:
+  create: true
+  nodeAccess: false
+
+service:
+  type: ClusterIP
+  port: 2020
+  labels: {}
+  # nodePort: 30020
+  # clusterIP: 172.16.10.1
+  annotations: {}
+#   prometheus.io/path: "/api/v1/metrics/prometheus"
+#   prometheus.io/port: "2020"
+#   prometheus.io/scrape: "true"
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+
+readinessProbe:
+  httpGet:
+    path: /api/v1/health
+    port: http
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+flush: 1
+
+metricsPort: 2020
+
+## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file
+config:
+  ## https://docs.fluentbit.io/manual/pipeline/inputs
+  inputs: |
+    [INPUT]
+        Name tail
+        Tag kube.*
+        Path /var/log/containers/*.log
+        DB /var/log/flb_kube.db
+        multiline.parser docker, cri
+        Docker_Mode On
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+
+  ## https://docs.fluentbit.io/manual/pipeline/filters
+  filters: |
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        Kube_URL https://kubernetes.default.svc.cluster.local:443
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+        K8S-Logging.Exclude On
+        Buffer_Size 31k
+
+  ## https://docs.fluentbit.io/manual/pipeline/outputs
+  outputs: |
+    [OUTPUT]
+        Name cloudwatch_logs
+        Match kube.*
+        region ap-southeast-1
+        log_group_name ${log_group_name}
+        log_stream_prefix fluentbit-
+        log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
+        auto_create_group false
+
+  ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
+  ## This configuration is deprecated, please use `extraFiles` instead.
+  upstream: {}
+
+  ## https://docs.fluentbit.io/manual/pipeline/parsers
+  ## Default parsers are from : https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf
+  customParsers: |
+    [PARSER]
+        Name custom_apache
+        Format regex
+        Regex ^(?<client_ip>[^ ]*) \<(?<x_forwarded_for>[^\"]*)\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<latency>[^\"]*)" "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Keep Off
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+#  extraFiles: {}
+#     upstream.conf: |
+#       [UPSTREAM]
+#           upstream1
+#
+#       [NODE]
+#           name       node-1
+#           host       127.0.0.1
+#           port       43000
+#     example.conf: |
+#       [OUTPUT]
+#           Name example
+#           Match foo.*
+#           Host bar
