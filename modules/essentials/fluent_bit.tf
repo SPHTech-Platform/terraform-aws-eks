@@ -23,7 +23,6 @@ locals {
     var.fluent_bit_helm_config
   )
 
-  oidc_provider_name = join("_", slice(split("-", var.cluster_name), 1, 3))
 }
 
 resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
@@ -51,7 +50,7 @@ module "helm_fluent_bit" {
     kubernetes_namespace              = local.fluent_bit_helm_config.namespace
     kubernetes_service_account        = local.service_account_name
     oidc_providers = {
-      "${local.oidc_provider_name}" = {
+      fluent_bit = {
         provider_arn = var.oidc_provider_arn
         namespace_service_accounts = [
           "${local.fluent_bit_helm_config.namespace}:${local.service_account_name}"
