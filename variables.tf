@@ -365,5 +365,3 @@ variable "create_fargate_logger_configmap" {
   type        = bool
   default     = true
 }
-
-
