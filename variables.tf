@@ -353,3 +353,17 @@ variable "fargate_profile_defaults" {
   type        = any
   default     = {}
 }
+
+variable "create_aws_observability_ns" {
+  description = "Whether to create AWS Observability Namespace."
+  type        = bool
+  default     = true
+}
+
+variable "create_fargate_logger_configmap" {
+  description = "Whether to create AWS Fargate logger configmap."
+  type        = bool
+  default     = true
+}
+
+
