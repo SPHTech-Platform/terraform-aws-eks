@@ -1312,10 +1312,10 @@ variable "fluent_bit_helm_config" {
   default     = {}
 }
 
-variable "firehose_role_arn" {
-  description = "IAM Role ARN to assume for firehose"
-  type        = string
-  default     = ""
+variable "fluent_bit_role_policy_arns" {
+  description = "ARNs of any policies to attach to the IAM role"
+  type        = map(string)
+  default     = {}
 }
 
 variable "fluent_bit_log_group_retention" {
