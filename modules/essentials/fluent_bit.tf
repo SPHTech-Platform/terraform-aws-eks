@@ -41,9 +41,12 @@ module "helm_fluent_bit" {
   helm_config = local.fluent_bit_helm_config
   irsa_config = {
     role_name = "${var.cluster_name}-irsa-fluentbit"
-    role_policy_arns = {
-      "fluent-bit" = one(aws_iam_policy.fluent_bit_irsa[*].arn)
-    }
+    role_policy_arns = merge(
+      {
+        "fluent-bit" = one(aws_iam_policy.fluent_bit_irsa[*].arn)
+      },
+      var.fluent_bit_role_policy_arns,
+    )
 
     create_kubernetes_namespace       = true
     create_kubernetes_service_account = true
