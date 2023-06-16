@@ -2,7 +2,7 @@ locals {
   aws_auth_fargate_profile_pod_execution_role_arns = var.fargate_cluster ? distinct(
     compact(
       concat(
-        values(module.fargate_profiles.fargate_profile_pod_execution_role_arn),
+        values(module.fargate_profiles[0].fargate_profile_pod_execution_role_arn),
         var.aws_auth_fargate_profile_pod_execution_role_arns,
       )
     )
