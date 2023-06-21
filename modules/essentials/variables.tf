@@ -1277,7 +1277,7 @@ variable "tags" {
 variable "kube_state_metrics_enabled" {
   description = "Enable kube-state-metrics helm charts installation."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "kube_state_metrics_helm_config_defaults" {
@@ -1305,7 +1305,7 @@ variable "kube_state_metrics_helm_config" {
 variable "node_exporter_enabled" {
   description = "Enable prometheus-node-exporters helm charts installation."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "node_exporter_helm_config_defaults" {
