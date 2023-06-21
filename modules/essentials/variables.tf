@@ -1253,7 +1253,7 @@ variable "metrics_server_helm_config_defaults" {
     name        = "metrics-server"
     chart       = "metrics-server"
     repository  = "https://kubernetes-sigs.github.io/metrics-server/"
-    version     = "3.8.2"
+    version     = "3.10.0"
     namespace   = "kube-system"
     description = "Metric server helm Chart deployment configuration"
   }
@@ -1268,6 +1268,62 @@ variable "metrics_server_helm_config" {
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
+  default     = {}
+}
+
+#####################
+# kube-state-metrics
+#####################
+variable "kube_state_metrics_enabled" {
+  description = "Enable kube-state-metrics helm charts installation."
+  type        = bool
+  default     = true
+}
+
+variable "kube_state_metrics_helm_config_defaults" {
+  description = "Helm provider default config for kube-state-metrics."
+  type        = any
+  default = {
+    name        = "kube-state-metrics"
+    chart       = "kube-state-metrics"
+    repository  = "https://prometheus-community.github.io/helm-charts"
+    version     = "5.8.0"
+    namespace   = "kube-system"
+    description = "kube-state-metrics helm Chart deployment configuration"
+  }
+}
+
+variable "kube_state_metrics_helm_config" {
+  description = "Helm provider config for kube-state-metrics."
+  type        = any
+  default     = {}
+}
+
+#####################
+# node-exporter
+#####################
+variable "node_exporter_enabled" {
+  description = "Enable prometheus-node-exporters helm charts installation."
+  type        = bool
+  default     = true
+}
+
+variable "node_exporter_helm_config_defaults" {
+  description = "Helm provider default config for prometheus-node-exporter."
+  type        = any
+  default = {
+    name        = "prometheus-node-exporter"
+    chart       = "prometheus-node-exporter"
+    repository  = "https://prometheus-community.github.io/helm-charts"
+    version     = "4.18.0"
+    namespace   = "kube-system"
+    description = "prometheus-node-exporter helm Chart deployment configuration"
+  }
+}
+
+variable "node_exporter_helm_config" {
+  description = "Helm provider config for prometheus-node-exporter."
+  type        = any
   default     = {}
 }
 
