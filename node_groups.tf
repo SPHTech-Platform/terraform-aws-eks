@@ -79,33 +79,6 @@ locals {
     var.eks_managed_node_groups,
   )
 
-  default_fargate_profiles = merge(
-    {
-      default = {
-        name = "default"
-        selectors = [
-          {
-            namespace = "default"
-          }
-        ]
-        subnet_ids = var.subnet_ids
-      }
-    },
-    { for subnet in var.subnet_ids :
-      "kube-system-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}" => {
-        selectors = [
-          { namespace = "kube-system" }
-        ]
-        # Create one profile per AZ for even spread
-        subnet_ids = [subnet]
-      }
-    }
-  )
-
-  fargate_profiles = merge(
-    local.default_fargate_profiles,
-    var.fargate_profiles,
-  )
 }
 
 data "aws_arn" "cluster" {
@@ -129,20 +102,6 @@ module "node_groups" {
 
   force_imdsv2 = var.force_imdsv2
   force_irsa   = var.force_irsa
-
-  tags = var.tags
-}
-
-module "fargate_profiles" {
-  source = "./modules/fargate_profile"
-
-  count = var.fargate_cluster ? 1 : 0
-
-  cluster_name                    = split("/", data.aws_arn.cluster.resource)[1]
-  fargate_profiles                = local.fargate_profiles
-  fargate_profile_defaults        = var.fargate_profile_defaults
-  create_aws_observability_ns     = var.create_aws_observability_ns
-  create_fargate_logger_configmap = var.create_fargate_logger_configmap
 
   tags = var.tags
 }
