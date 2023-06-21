@@ -147,7 +147,25 @@ resource "kubernetes_manifest" "karpenter_node_template" {
       subnetSelector        = each.value.karpenter_subnet_selector_map
       securityGroupSelector = each.value.karpenter_security_group_selector_map
       amiFamily             = each.value.karpenter_ami_family
-      blockDeviceMappings   = each.value.karpenter_block_device_mappings
+      blockDeviceMappings = [
+        {
+          deviceName = "/dev/xvda"
+          ebs = {
+            volumeSize = each.value.karpenter_root_volume_size
+            volumeType = "gp3"
+            encrypted  = true
+          }
+        },
+        {
+          deviceName = "/dev/xvdb"
+          ebs = {
+            volumeSize = each.value.karpenter_ephemeral_volume_size
+            volumeType = "gp3"
+            encrypted  = true
+          }
+        },
+      ]
+      # each.value.karpenter_block_device_mappings
 
       tags = each.value.karpenter_nodetemplate_tag_map
     }

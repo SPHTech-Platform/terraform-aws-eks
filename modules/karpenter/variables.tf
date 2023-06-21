@@ -64,7 +64,8 @@ variable "karpenter_nodetemplates" {
     karpenter_security_group_selector_map = map(string)
     karpenter_nodetemplate_tag_map        = map(string)
     karpenter_ami_family                  = string
-    karpenter_block_device_mappings       = list(map(any))
+    karpenter_root_volume_size            = number
+    karpenter_ephemeral_volume_size       = number
   }))
   default = []
   ## sample below
