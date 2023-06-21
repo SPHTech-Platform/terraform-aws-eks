@@ -64,6 +64,7 @@ variable "karpenter_nodetemplates" {
     karpenter_security_group_selector_map = map(string)
     karpenter_nodetemplate_tag_map        = map(string)
     karpenter_ami_family                  = string
+    karpenter_block_device_mappings       = list(map(string))
   }))
   default = []
   ## sample below
@@ -73,6 +74,7 @@ variable "karpenter_nodetemplates" {
   #   karpenter_security_group_selector_map = {}
   #   karpenter_nodetemplate_tag_map        = {}
   #   karpenter_ami_family                  = "Bottlerocket"
+  #   karpenter_block_device_mappings       = []
   # }]
 }
 
