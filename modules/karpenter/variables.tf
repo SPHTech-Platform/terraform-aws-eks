@@ -64,8 +64,8 @@ variable "karpenter_nodetemplates" {
     karpenter_security_group_selector_map = map(string)
     karpenter_nodetemplate_tag_map        = map(string)
     karpenter_ami_family                  = string
-    karpenter_root_volume_size            = number
-    karpenter_ephemeral_volume_size       = number
+    karpenter_root_volume_size            = string
+    karpenter_ephemeral_volume_size       = string
   }))
   default = []
   ## sample below
@@ -75,8 +75,8 @@ variable "karpenter_nodetemplates" {
   #   karpenter_security_group_selector_map = {}
   #   karpenter_nodetemplate_tag_map        = {}
   #   karpenter_ami_family                  = "Bottlerocket"
-  #   karpenter_root_volume_size            = 5
-  #   karpenter_ephemeral_volume_size       = 50
+  #   karpenter_root_volume_size            = 5G
+  #   karpenter_ephemeral_volume_size       = 50G
   # }]
 }
 
