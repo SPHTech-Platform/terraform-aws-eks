@@ -1,5 +1,5 @@
 locals {
-  helm_config = merge(
+  metric_server_helm_config = merge(
     var.metrics_server_helm_config_defaults,
     var.metrics_server_helm_config
   )
@@ -11,5 +11,5 @@ module "helm_metrics_server" {
   source  = "SPHTech-Platform/release/helm"
   version = "~> 0.1.0"
 
-  helm_config = local.helm_config
+  helm_config = local.metric_server_helm_config
 }
