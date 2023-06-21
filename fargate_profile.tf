@@ -2,15 +2,6 @@ locals {
 
   default_fargate_profiles = merge(
     {
-      default = {
-        name = "default"
-        selectors = [
-          {
-            namespace = "default"
-          },
-        ]
-        subnet_ids = var.subnet_ids
-      }
       essentials = {
         subnet_ids = var.subnet_ids
         selectors = [
