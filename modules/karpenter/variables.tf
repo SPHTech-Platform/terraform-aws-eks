@@ -75,8 +75,8 @@ variable "karpenter_nodetemplates" {
   #   karpenter_security_group_selector_map = {}
   #   karpenter_nodetemplate_tag_map        = {}
   #   karpenter_ami_family                  = "Bottlerocket"
-  #   karpenter_root_volume_size            = 5G
-  #   karpenter_ephemeral_volume_size       = 50G
+  #   karpenter_root_volume_size            = "5Gi"
+  #   karpenter_ephemeral_volume_size       = "50Gi"
   # }]
 }
 
