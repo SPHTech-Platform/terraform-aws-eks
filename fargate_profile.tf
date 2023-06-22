@@ -43,6 +43,7 @@ module "fargate_profiles" {
   fargate_profile_defaults        = var.fargate_profile_defaults
   create_aws_observability_ns     = var.create_aws_observability_ns
   create_fargate_logger_configmap = var.create_fargate_logger_configmap
+  eks_worker_security_group_id    = module.eks.node_security_group_id
 
   tags = var.tags
 }

@@ -73,12 +73,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
-##################################
-### Fargate Selector Namespaces ##
-##################################
-variable "fargate_namespaces_for_security_group" {
-  description = "List of fargate namespaces to craete SecurityGroupPolicy for talking to managed nodes"
-  type        = list(string)
-  default     = []
-}
