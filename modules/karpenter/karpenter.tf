@@ -165,7 +165,6 @@ resource "kubernetes_manifest" "karpenter_node_template" {
           }
         },
       ]
-      # each.value.karpenter_block_device_mappings
 
       tags = each.value.karpenter_nodetemplate_tag_map
     }
