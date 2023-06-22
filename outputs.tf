@@ -77,3 +77,8 @@ output "cluster_version" {
   description = "Version of the EKS Cluster"
   value       = module.eks.cluster_version
 }
+
+output "fargate_namespaces_for_security_group" {
+  description = "value for fargate_namespaces_for_security_group"
+  value       = local.fargate_namespaces
+}
