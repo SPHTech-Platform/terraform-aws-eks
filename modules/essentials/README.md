@@ -286,7 +286,7 @@ module "eks_essentials" {
 | <a name="input_webhook_node_selector"></a> [webhook\_node\_selector](#input\_webhook\_node\_selector) | Node selector for webhook | `map(string)` | `{}` | no |
 | <a name="input_webhook_pod_annotations"></a> [webhook\_pod\_annotations](#input\_webhook\_pod\_annotations) | Extra annotations for webhook pods | `map(string)` | `{}` | no |
 | <a name="input_webhook_pod_labels"></a> [webhook\_pod\_labels](#input\_webhook\_pod\_labels) | Extra labels for webhook pods | `map(string)` | `{}` | no |
-| <a name="input_webhook_port"></a> [webhook\_port](#input\_webhook\_port) | Port used by webhook to listen for request from Kubernetes Master | `number` | `10250` | no |
+| <a name="input_webhook_port"></a> [webhook\_port](#input\_webhook\_port) | Port used by webhook to listen for request from Kubernetes Master | `number` | `10260` | no |
 | <a name="input_webhook_readiness_probe"></a> [webhook\_readiness\_probe](#input\_webhook\_readiness\_probe) | Readiness probe for webhook | `map(any)` | <pre>{<br>  "failureThreshold": 3,<br>  "initialDelaySeconds": 5,<br>  "periodSeconds": 5,<br>  "successThreshold": 1,<br>  "timeoutSeconds": 5<br>}</pre> | no |
 | <a name="input_webhook_replica_count"></a> [webhook\_replica\_count](#input\_webhook\_replica\_count) | Number of replicas for webhook | `number` | `1` | no |
 | <a name="input_webhook_resources"></a> [webhook\_resources](#input\_webhook\_resources) | Webhook pod resources | `map(any)` | <pre>{<br>  "limits": {<br>    "cpu": "100m",<br>    "memory": "300Mi"<br>  },<br>  "requests": {<br>    "cpu": "100m",<br>    "memory": "300Mi"<br>  }<br>}</pre> | no |

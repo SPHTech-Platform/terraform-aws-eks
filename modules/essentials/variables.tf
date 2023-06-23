@@ -1014,7 +1014,7 @@ variable "webhook_service_account_annotations" {
 variable "webhook_port" {
   description = "Port used by webhook to listen for request from Kubernetes Master"
   type        = number
-  default     = 10250
+  default     = 10260
 }
 
 variable "webhook_host_network" {
