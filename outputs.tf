@@ -67,3 +67,13 @@ output "ebs_kms_key_arn" {
   description = "KMS Key ARN used for EBS encryption"
   value       = module.kms_ebs.key_arn
 }
+
+output "cluster_platform_version" {
+  description = "Platform version of the EKS Cluster"
+  value       = module.eks.cluster_platform_version
+}
+
+output "cluster_version" {
+  description = "Version of the EKS Cluster"
+  value       = module.eks.cluster_version
+}
