@@ -1,4 +1,6 @@
 resource "helm_release" "brupop" {
+  count = var.brupop_enabled ? 1 : 0
+
   name       = var.brupop_release_name
   chart      = var.brupop_chart_name
   repository = var.brupop_chart_repository
