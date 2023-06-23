@@ -55,8 +55,8 @@ variable "create_fargate_logger_configmap" {
 ### Fargate Selector Namespaces ##
 ##################################
 variable "fargate_namespaces_for_security_group" {
-  description = "List of fargate namespaces to craete SecurityGroupPolicy for talking to managed nodes"
-  type        = list(string)
+  description = "List of fargate namespaces to craete SecurityGroupPolicy for talking to managed nodes" # remember to `toset` the list before parsing into this variable
+  type        = set(string)
   default     = []
 }
 
