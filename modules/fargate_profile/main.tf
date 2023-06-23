@@ -26,7 +26,7 @@ module "fargate_profile" {
 ## Only used when needed for testing pods running in a namespace which requires access to the managed nodes
 resource "kubernetes_manifest" "sg" {
 
-  for_each = var.fargate_namespaces_for_security_group
+  for_each = toset(var.fargate_namespaces_for_security_group)
 
   manifest = {
     apiVersion = "vpcresources.k8s.aws/v1beta1"
