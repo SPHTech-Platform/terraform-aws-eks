@@ -63,4 +63,5 @@ variable "fargate_namespaces_for_security_group" {
 variable "eks_worker_security_group_id" {
   description = "Security Group ID of the worker nodes"
   type        = string
+  default     = ""
 }

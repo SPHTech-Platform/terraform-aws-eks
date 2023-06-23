@@ -44,8 +44,27 @@ module "fargate_profiles" {
   create_aws_observability_ns     = var.create_aws_observability_ns
   create_fargate_logger_configmap = var.create_fargate_logger_configmap
 
-  eks_worker_security_group_id          = module.eks.node_security_group_id
-  fargate_namespaces_for_security_group = local.fargate_namespaces
-
   tags = var.tags
+}
+
+resource "kubernetes_manifest" "fargate_node_security_group_policy" {
+
+  count = var.fargate_cluster && var.create_node_security_group ? 1 : 0
+
+  manifest = {
+    apiVersion = "vpcresources.k8s.aws/v1beta1"
+    kind       = "SecurityGroupPolicy"
+    metadata = {
+      name      = "fargate-node-default-namespace-sg"
+      namespace = "kube-system"
+    }
+    spec = {
+      podSelector = {
+        matchLabels = {}
+      }
+      securityGroups = {
+        groupIds = [module.eks.node_security_group_id]
+      }
+    }
+  }
 }
