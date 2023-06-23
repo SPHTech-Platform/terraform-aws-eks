@@ -1,29 +1,18 @@
 locals {
 
+  essentials_namespaces  = ["opentelemetry-operator-system", "cert-manager", "brupop-bottlerocket-aws"] # to add more if the essentials module deploys in any new namespaces
+  kube_system_namespaces = ["kube-system"]
+
+  fargate_namespaces = concat(local.essentials_namespaces, local.kube_system_namespaces)
+
   default_fargate_profiles = merge(
     {
-      default = {
-        name = "default"
-        selectors = [
-          {
-            namespace = "default"
-          },
-        ]
-        subnet_ids = var.subnet_ids
-      }
       essentials = {
         subnet_ids = var.subnet_ids
         selectors = [
-          {
-            namespace = "opentelemetry-operator-system"
-          },
-          {
-            namespace = "cert-manager"
-          },
-          {
-            namespace = "brupop-bottlerocket-aws"
-          },
-          # to add more if the essentials module deploys in any new namespaces
+          for ns_value in local.essentials_namespaces : {
+            namespace = ns_value
+          }
         ]
       }
     },
@@ -54,6 +43,9 @@ module "fargate_profiles" {
   fargate_profile_defaults        = var.fargate_profile_defaults
   create_aws_observability_ns     = var.create_aws_observability_ns
   create_fargate_logger_configmap = var.create_fargate_logger_configmap
+
+  eks_worker_security_group_id          = module.eks.node_security_group_id
+  fargate_namespaces_for_security_group = local.fargate_namespaces
 
   tags = var.tags
 }
