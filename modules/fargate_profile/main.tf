@@ -27,7 +27,7 @@ module "fargate_profile" {
 
 resource "kubernetes_manifest" "sg" {
 
-  for_each = var.fargate_namespaces_for_security_group
+  for_each = toset(var.fargate_namespaces_for_security_group)
 
   manifest = {
     apiVersion = "vpcresources.k8s.aws/v1beta1"
