@@ -120,7 +120,7 @@ variable "cluster_autoscaler_image" {
 variable "cluster_autoscaler_tag" {
   description = "Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.25.0"
+  default     = "v1.27.0"
 }
 
 variable "cluster_autoscaler_replica" {
@@ -593,7 +593,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "1.5.0"
+  default     = "1.12.0"
 }
 
 variable "certmanager_namespace" {
@@ -1011,6 +1011,7 @@ variable "webhook_service_account_annotations" {
   default     = {}
 }
 
+# Using non default port of 10260 instead of 10250 to avoid conflict with kubelet
 variable "webhook_port" {
   description = "Port used by webhook to listen for request from Kubernetes Master"
   type        = number
