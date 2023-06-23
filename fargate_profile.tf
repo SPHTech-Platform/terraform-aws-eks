@@ -78,7 +78,7 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy" {
 }
 
 resource "aws_iam_policy" "fargate_logging" {
-  name        = "fargate_logging_cloudwatch"
+  name        = "fargate_logging_cloudwatch_default"
   path        = "/"
   description = "AWS recommended cloudwatch perms policy"
 
