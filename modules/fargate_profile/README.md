@@ -92,7 +92,7 @@ module "fargate_profile" {
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | EKS Cluster name | `string` | n/a | yes |
 | <a name="input_create_aws_observability_ns"></a> [create\_aws\_observability\_ns](#input\_create\_aws\_observability\_ns) | value to determine if aws-observability namespace is created | `bool` | `true` | no |
 | <a name="input_create_fargate_logger_configmap"></a> [create\_fargate\_logger\_configmap](#input\_create\_fargate\_logger\_configmap) | value to determine if create\_fargate\_logger\_configmap is created | `bool` | `true` | no |
-| <a name="input_eks_worker_security_group_id"></a> [eks\_worker\_security\_group\_id](#input\_eks\_worker\_security\_group\_id) | Security Group ID of the worker nodes | `string` | n/a | yes |
+| <a name="input_eks_worker_security_group_id"></a> [eks\_worker\_security\_group\_id](#input\_eks\_worker\_security\_group\_id) | Security Group ID of the worker nodes | `string` | `""` | no |
 | <a name="input_fargate_namespaces_for_security_group"></a> [fargate\_namespaces\_for\_security\_group](#input\_fargate\_namespaces\_for\_security\_group) | List of fargate namespaces to craete SecurityGroupPolicy for talking to managed nodes | `list(string)` | `[]` | no |
 | <a name="input_fargate_profile_defaults"></a> [fargate\_profile\_defaults](#input\_fargate\_profile\_defaults) | Map of Fargate Profile default configurations | `any` | `{}` | no |
 | <a name="input_fargate_profiles"></a> [fargate\_profiles](#input\_fargate\_profiles) | Map of maps of `fargate_profiles` to create | `any` | `{}` | no |
