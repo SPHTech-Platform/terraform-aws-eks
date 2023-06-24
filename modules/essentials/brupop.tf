@@ -30,3 +30,9 @@ locals {
     brupop_tag       = var.brupop_tag
   }
 }
+
+# Added option to disable bottlerocket update operator
+moved {
+  from = helm_release.brupop
+  to   = helm_release.brupop[0]
+}
