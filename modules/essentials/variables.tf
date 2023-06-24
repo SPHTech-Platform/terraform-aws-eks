@@ -526,6 +526,11 @@ variable "node_termination_service_account" {
 ###############################
 # Bottle Rocket Update Operator
 ###############################
+variable "brupop_enabled" {
+  description = "Enable Bottle Rocket Update Operator"
+  type        = bool
+  default     = true
+}
 
 variable "brupop_namespace" {
   description = "Namespace for all resources under bottlerocket update operator"

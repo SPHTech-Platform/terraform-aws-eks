@@ -1,4 +1,6 @@
 resource "helm_release" "brupop" {
+  count = var.brupop_enabled ? 1 : 0
+
   name       = var.brupop_release_name
   chart      = var.brupop_chart_name
   repository = var.brupop_chart_repository
@@ -27,4 +29,10 @@ locals {
     brupop_image     = var.brupop_image
     brupop_tag       = var.brupop_tag
   }
+}
+
+# Added option to disable bottlerocket update operator
+moved {
+  from = helm_release.brupop
+  to   = helm_release.brupop[0]
 }

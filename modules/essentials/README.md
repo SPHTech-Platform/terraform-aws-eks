@@ -123,6 +123,7 @@ module "eks_essentials" {
 | <a name="input_brupop_chart_name"></a> [brupop\_chart\_name](#input\_brupop\_chart\_name) | Chart name for brupop | `string` | `"bottlerocket-brupop"` | no |
 | <a name="input_brupop_chart_repository"></a> [brupop\_chart\_repository](#input\_brupop\_chart\_repository) | Chart repository for brupop | `string` | `"oci://public.ecr.aws/sphmedia/helm/"` | no |
 | <a name="input_brupop_chart_version"></a> [brupop\_chart\_version](#input\_brupop\_chart\_version) | Chart version for brupop | `string` | `"1.0.3"` | no |
+| <a name="input_brupop_enabled"></a> [brupop\_enabled](#input\_brupop\_enabled) | Enable Bottle Rocket Update Operator | `bool` | `true` | no |
 | <a name="input_brupop_image"></a> [brupop\_image](#input\_brupop\_image) | Docker image for brupop | `string` | `"public.ecr.aws/bottlerocket/bottlerocket-update-operator"` | no |
 | <a name="input_brupop_namespace"></a> [brupop\_namespace](#input\_brupop\_namespace) | Namespace for all resources under bottlerocket update operator | `string` | `"brupop-bottlerocket-aws"` | no |
 | <a name="input_brupop_release_name"></a> [brupop\_release\_name](#input\_brupop\_release\_name) | Release name for brupop | `string` | `"bottlerocket-brupop"` | no |

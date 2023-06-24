@@ -1,6 +1,5 @@
 locals {
-
-  essentials_namespaces  = ["opentelemetry-operator-system", "cert-manager", "brupop-bottlerocket-aws"] # to add more if the essentials module deploys in any new namespaces
+  essentials_namespaces  = ["opentelemetry-operator-system", "cert-manager"] # to add more if the essentials module deploys in any new namespaces
   kube_system_namespaces = ["kube-system"]
 
   fargate_namespaces = concat(local.essentials_namespaces, local.kube_system_namespaces)
@@ -33,7 +32,6 @@ locals {
         subnet_ids = [subnet]
       }
     },
-
   )
 
   fargate_profiles = merge(
@@ -41,6 +39,7 @@ locals {
     var.fargate_profiles,
   )
 }
+
 module "fargate_profiles" {
   source = "./modules/fargate_profile"
 
@@ -56,9 +55,7 @@ module "fargate_profiles" {
 }
 
 resource "kubernetes_manifest" "fargate_node_security_group_policy" {
-
   count = var.fargate_cluster && var.create_node_security_group ? 1 : 0
-
   manifest = {
     apiVersion = "vpcresources.k8s.aws/v1beta1"
     kind       = "SecurityGroupPolicy"
@@ -81,8 +78,7 @@ resource "aws_iam_policy" "fargate_logging" {
   name        = "fargate_logging_cloudwatch_default"
   path        = "/"
   description = "AWS recommended cloudwatch perms policy"
-
-  policy = data.aws_iam_policy_document.fargate_logging.json
+  policy      = data.aws_iam_policy_document.fargate_logging.json
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
