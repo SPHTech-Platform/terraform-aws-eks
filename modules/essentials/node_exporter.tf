@@ -3,6 +3,23 @@ locals {
     var.node_exporter_helm_config_defaults,
     var.node_exporter_helm_config,
   )
+  affinity = {
+    nodeAffinity = {
+      requiredDuringSchedulingIgnoredDuringExecution = [
+        {
+          nodeSelectorTerms = {
+            "matchExpressions" = [
+              {
+                key      = "eks.amazonaws.com/compute-type"
+                operator = "NotIn"
+                values   = ["fargate"]
+              },
+            ]
+          }
+        },
+      ]
+    }
+  }
 }
 
 module "helm_node_exporter" {
@@ -12,4 +29,11 @@ module "helm_node_exporter" {
   version = "~> 0.1.0"
 
   helm_config = local.node_exporter_helm_config
+
+  set_values = [
+    {
+      name  = "affinity"
+      value = jsonencode(local.affinity)
+    }
+  ]
 }
