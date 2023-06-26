@@ -149,7 +149,7 @@ module "eks_essentials" {
 | <a name="input_cert_manager_chart_name"></a> [cert\_manager\_chart\_name](#input\_cert\_manager\_chart\_name) | Helm chart name to provision | `string` | `"cert-manager"` | no |
 | <a name="input_cert_manager_chart_repository"></a> [cert\_manager\_chart\_repository](#input\_cert\_manager\_chart\_repository) | Helm repository for the chart | `string` | `"https://charts.jetstack.io"` | no |
 | <a name="input_cert_manager_chart_timeout"></a> [cert\_manager\_chart\_timeout](#input\_cert\_manager\_chart\_timeout) | Timeout to wait for the Chart to be deployed. | `number` | `300` | no |
-| <a name="input_cert_manager_chart_version"></a> [cert\_manager\_chart\_version](#input\_cert\_manager\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"1.12.0"` | no |
+| <a name="input_cert_manager_chart_version"></a> [cert\_manager\_chart\_version](#input\_cert\_manager\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"1.12.2"` | no |
 | <a name="input_cert_manager_max_history"></a> [cert\_manager\_max\_history](#input\_cert\_manager\_max\_history) | Max History for Helm | `number` | `20` | no |
 | <a name="input_cert_manager_release_name"></a> [cert\_manager\_release\_name](#input\_cert\_manager\_release\_name) | Helm release name | `string` | `"cert-manager"` | no |
 | <a name="input_certmanager_namespace"></a> [certmanager\_namespace](#input\_certmanager\_namespace) | Namespace to install the chart into | `string` | `"cert-manager"` | no |
