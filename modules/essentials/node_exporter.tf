@@ -33,7 +33,7 @@ module "helm_node_exporter" {
   set_values = [
     {
       name  = "affinity"
-      value = jsonencode(local.affinity)
+      value = yamlencode(local.affinity)
     }
   ]
 }
