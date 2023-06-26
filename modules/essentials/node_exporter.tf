@@ -2,6 +2,11 @@ locals {
   node_exporter_helm_config = merge(
     var.node_exporter_helm_config_defaults,
     var.node_exporter_helm_config,
+    {
+      values = [
+        yamlencode(local.affinity),
+      ]
+    },
   )
   affinity = {
     nodeAffinity = {
@@ -29,11 +34,4 @@ module "helm_node_exporter" {
   version = "~> 0.1.0"
 
   helm_config = local.node_exporter_helm_config
-
-  set_values = [
-    {
-      name  = "affinity"
-      value = yamlencode(local.affinity)
-    }
-  ]
 }
