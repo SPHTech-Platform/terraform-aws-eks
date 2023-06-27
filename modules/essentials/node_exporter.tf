@@ -11,19 +11,19 @@ locals {
   node_affinity = {
     affinity = {
       nodeAffinity = {
-        requiredDuringSchedulingIgnoredDuringExecution = [
-          {
-            nodeSelectorTerms = {
-              "matchExpressions" = [
+        requiredDuringSchedulingIgnoredDuringExecution = {
+          nodeSelectorTerms = [
+            {
+              matchExpressions = [
                 {
                   key      = "eks.amazonaws.com/compute-type"
                   operator = "NotIn"
                   values   = ["fargate"]
                 },
               ]
-            }
-          },
-        ]
+            },
+          ]
+        }
       }
     }
   }
