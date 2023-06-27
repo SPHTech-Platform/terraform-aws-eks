@@ -73,6 +73,7 @@ module "eks" {
       service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
       configuration_values = jsonencode({
         env = {
+          # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
           ENABLE_POD_ENI = "true"
         }
       })
