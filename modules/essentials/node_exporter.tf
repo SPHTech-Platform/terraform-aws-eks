@@ -4,25 +4,27 @@ locals {
     var.node_exporter_helm_config,
     {
       values = [
-        yamlencode(local.affinity),
+        yamlencode(local.node_affinity),
       ]
     },
   )
-  affinity = {
-    nodeAffinity = {
-      requiredDuringSchedulingIgnoredDuringExecution = [
-        {
-          nodeSelectorTerms = {
-            "matchExpressions" = [
-              {
-                key      = "eks.amazonaws.com/compute-type"
-                operator = "NotIn"
-                values   = ["fargate"]
-              },
-            ]
-          }
-        },
-      ]
+  node_affinity = {
+    affinity = {
+      nodeAffinity = {
+        requiredDuringSchedulingIgnoredDuringExecution = [
+          {
+            nodeSelectorTerms = {
+              "matchExpressions" = [
+                {
+                  key      = "eks.amazonaws.com/compute-type"
+                  operator = "NotIn"
+                  values   = ["fargate"]
+                },
+              ]
+            }
+          },
+        ]
+      }
     }
   }
 }
