@@ -67,7 +67,16 @@ module "eks" {
       most_recent = true
       reserve     = true
     }
-    vpc-cni = {
+    vpc-cni = var.fargate_cluster ? {
+      most_recent              = true
+      reserve                  = true
+      service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
+      configuration_values = jsonencode({
+        env = {
+          ENABLE_POD_ENI = true
+        }
+      })
+      } : {
       most_recent              = true
       reserve                  = true
       service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
