@@ -8,7 +8,7 @@ resource "kubernetes_pod_disruption_budget_v1" "coredns" {
     labels      = var.kubernetes_labels
   }
   spec {
-    min_available = var.coredns_pdb_min_available
+    max_unavailable = var.coredns_pdb_max_unavailable
     selector {
       match_labels = {
         "eks.amazonaws.com/component" = "coredns"

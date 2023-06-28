@@ -254,7 +254,7 @@ variable "cluster_autoscaler_service_annotations" {
 #####################
 # CoreDNS PDB
 #####################
-variable "coredns_pdb_min_available" {
+variable "coredns_pdb_max_unavailable" {
   description = "PDB min available CoreDNS pods."
   type        = number
   default     = 1
