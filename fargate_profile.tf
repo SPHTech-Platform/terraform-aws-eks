@@ -60,7 +60,7 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy" {
     apiVersion = "vpcresources.k8s.aws/v1beta1"
     kind       = "SecurityGroupPolicy"
     metadata = {
-      name      = "fargate-node-default-namespace-sg"
+      name      = "fargate-node-kube-system-namespace-sg"
       namespace = "kube-system"
     }
     spec = {
