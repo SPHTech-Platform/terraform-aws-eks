@@ -9,6 +9,6 @@ permissions:
   security-events: write
 jobs:
   ci:
-    uses: SPHTech-Platform/reusable-workflows/.github/workflows/terraform.yaml@main
+    uses: SPHTech-Platform/reusable-workflows/.github/workflows/terraform.yaml@v2
     with:
       upload_sarif: true
