@@ -85,8 +85,12 @@ module "eks" {
           # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
           ENABLE_POD_ENI = "true"
         }
-        InitEnv = {
-          DISABLE_TCP_EARLY_DEMUX = "true"
+        init = {
+          env = {
+            initEnv = {
+              DISABLE_TCP_EARLY_DEMUX = "true"
+            }
+          }
         }
       })
       } : {
