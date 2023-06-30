@@ -83,8 +83,9 @@ module "eks" {
       configuration_values = jsonencode({
         env = {
           # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
-          ENABLE_POD_ENI          = "true"
-          DISABLE_TCP_EARLY_DEMUX = "true"
+          ENABLE_POD_ENI                    = "true"
+          DISABLE_TCP_EARLY_DEMUX           = "true"
+          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
         }
       })
       } : {
