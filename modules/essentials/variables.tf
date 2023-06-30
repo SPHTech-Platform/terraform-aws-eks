@@ -207,6 +207,12 @@ variable "cluster_autoscaler_pdb" {
   }
 }
 
+variable "create_pdb_for_coredns" {
+  description = "Create PDB for CoreDNS"
+  type        = bool
+  default     = false
+}
+
 variable "cluster_autoscaler_priority_class" {
   description = "Priority class for Cluster Autoscaler"
   type        = string
@@ -254,8 +260,8 @@ variable "cluster_autoscaler_service_annotations" {
 #####################
 # CoreDNS PDB
 #####################
-variable "coredns_pdb_min_available" {
-  description = "PDB min available CoreDNS pods."
+variable "coredns_pdb_max_unavailable" {
+  description = "PDB max unavailable CoreDNS pods."
   type        = number
   default     = 1
 }
