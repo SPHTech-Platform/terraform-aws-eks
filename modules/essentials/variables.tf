@@ -207,6 +207,12 @@ variable "cluster_autoscaler_pdb" {
   }
 }
 
+variable "create_pdb_for_coredns" {
+  description = "Create PDB for CoreDNS"
+  type        = bool
+  default     = false
+}
+
 variable "cluster_autoscaler_priority_class" {
   description = "Priority class for Cluster Autoscaler"
   type        = string
