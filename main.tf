@@ -87,9 +87,7 @@ module "eks" {
         }
         init = {
           env = {
-            initEnv = {
-              DISABLE_TCP_EARLY_DEMUX = "true"
-            }
+            DISABLE_TCP_EARLY_DEMUX = "true"
           }
         }
       })
