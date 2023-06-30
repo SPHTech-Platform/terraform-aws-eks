@@ -104,7 +104,7 @@ module "eks" {
       reserve                     = true
       resolve_conflicts_on_create = "OVERWRITE"
       resolve_conflicts_on_update = "OVERWRITE"
-      configuration_values        = jsonencode({
+      configuration_values = jsonencode({
         computeType = "Fargate"
         # https://github.com/aws-ia/terraform-aws-eks-blueprints/pull/1329
         resources = {
