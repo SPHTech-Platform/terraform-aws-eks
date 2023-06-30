@@ -178,8 +178,9 @@ module "eks_essentials" {
 | <a name="input_cluster_resource_namespace"></a> [cluster\_resource\_namespace](#input\_cluster\_resource\_namespace) | Override the namespace used to store DNS provider credentials etc. for ClusterIssuer resources. By default, the same namespace as cert-manager is deployed within is used. This namespace will not be automatically created by the Helm chart. | `string` | `""` | no |
 | <a name="input_configure_ecr_pull_through"></a> [configure\_ecr\_pull\_through](#input\_configure\_ecr\_pull\_through) | Configure ECR Pull Through Cache. | `bool` | `true` | no |
 | <a name="input_container_security_context"></a> [container\_security\_context](#input\_container\_security\_context) | Configure container security context | `map(string)` | `{}` | no |
-| <a name="input_coredns_pdb_min_available"></a> [coredns\_pdb\_min\_available](#input\_coredns\_pdb\_min\_available) | PDB min available CoreDNS pods. | `number` | `1` | no |
+| <a name="input_coredns_pdb_max_unavailable"></a> [coredns\_pdb\_max\_unavailable](#input\_coredns\_pdb\_max\_unavailable) | PDB max unavailable CoreDNS pods. | `number` | `1` | no |
 | <a name="input_create_node_termination_handler_sqs"></a> [create\_node\_termination\_handler\_sqs](#input\_create\_node\_termination\_handler\_sqs) | Whether to create node\_termination\_handler\_sqs. | `bool` | `false` | no |
+| <a name="input_create_pdb_for_coredns"></a> [create\_pdb\_for\_coredns](#input\_create\_pdb\_for\_coredns) | Create PDB for CoreDNS | `bool` | `false` | no |
 | <a name="input_csi_allow_volume_expansion"></a> [csi\_allow\_volume\_expansion](#input\_csi\_allow\_volume\_expansion) | Allow volume expansion in the StorageClass for CSI. Can be true or false | `bool` | `true` | no |
 | <a name="input_csi_default_storage_class"></a> [csi\_default\_storage\_class](#input\_csi\_default\_storage\_class) | Set the CSI StorageClass as the default storage class | `bool` | `true` | no |
 | <a name="input_csi_encryption_enable"></a> [csi\_encryption\_enable](#input\_csi\_encryption\_enable) | Enable encryption for CSI Storage Class | `bool` | `true` | no |
