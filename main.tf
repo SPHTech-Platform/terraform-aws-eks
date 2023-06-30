@@ -83,8 +83,8 @@ module "eks" {
       configuration_values = jsonencode({
         env = {
           # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
-          ENABLE_POD_ENI                    = "true"
-          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
+          ENABLE_POD_ENI          = "true"
+          DISABLE_TCP_EARLY_DEMUX = "true"
         }
       })
       } : {
@@ -93,16 +93,18 @@ module "eks" {
       service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
     }
     aws-ebs-csi-driver = {
-      most_recent              = true
-      reserve                  = true
-      resolve_conflicts        = "OVERWRITE"
-      service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
+      most_recent                 = true
+      reserve                     = true
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      service_account_role_arn    = module.ebs_csi_irsa_role.iam_role_arn
     }
     coredns = var.fargate_cluster ? {
-      most_recent       = true
-      reserve           = true
-      resolve_conflicts = "OVERWRITE"
-      configuration_values = jsonencode({
+      most_recent                 = true
+      reserve                     = true
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      configuration_values        = jsonencode({
         computeType = "Fargate"
         # https://github.com/aws-ia/terraform-aws-eks-blueprints/pull/1329
         resources = {
