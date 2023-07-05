@@ -54,8 +54,9 @@ module "eks" {
   node_security_group_name        = coalesce(var.worker_security_group_name, join("_", [var.cluster_name, "worker"]))
   node_security_group_description = "EKS Cluster ${var.cluster_name} Nodes"
   node_security_group_additional_rules = merge({
-    ingress_from_cluster_security_group = {
-      description                   = "Cluster API to node kubelets"
+    # cert-manager
+    ingress_cluster_10260_webhook = {
+      description                   = "Cluster API to node 10260/tcp webhook"
       protocol                      = "tcp"
       from_port                     = 10260
       to_port                       = 10260
