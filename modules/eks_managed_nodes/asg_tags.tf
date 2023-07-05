@@ -62,6 +62,6 @@ resource "aws_autoscaling_group_tag" "cluster_autoscaler" {
   tag {
     key                 = each.value.key
     value               = each.value.value
-    propagate_at_launch = false
+    propagate_at_launch = true
   }
 }
