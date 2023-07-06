@@ -7,9 +7,9 @@ kind: DaemonSet
 replicaCount: 1
 
 image:
-  repository: ${image_repository}
+  repository: ${fluent_bit_image_repository}
   # Overrides the image tag whose default is {{ .Chart.AppVersion }}
-  tag: ${image_tag}
+  tag: ${fluent_bit_image_tag}
   pullPolicy: Always
 
 serviceAccount:
