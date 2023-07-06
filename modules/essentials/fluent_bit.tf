@@ -37,7 +37,7 @@ module "helm_fluent_bit" {
   count = var.fluent_bit_enabled ? 1 : 0
 
   source  = "SPHTech-Platform/release/helm"
-  version = "~> 0.1.3"
+  version = "~> 0.1.4"
 
   helm_config = local.fluent_bit_helm_config
   irsa_config = {

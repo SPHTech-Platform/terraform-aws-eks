@@ -1299,7 +1299,7 @@ variable "kube_state_metrics_helm_config_defaults" {
     name        = "kube-state-metrics"
     chart       = "kube-state-metrics"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "5.8.0"
+    version     = "5.8.1"
     namespace   = "kube-system"
     description = "kube-state-metrics helm Chart deployment configuration"
   }
@@ -1327,7 +1327,7 @@ variable "node_exporter_helm_config_defaults" {
     name        = "prometheus-node-exporter"
     chart       = "prometheus-node-exporter"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "4.18.0"
+    version     = "4.18.1"
     namespace   = "kube-system"
     description = "prometheus-node-exporter helm Chart deployment configuration"
   }
