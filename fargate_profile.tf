@@ -62,7 +62,7 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy" {
     kind       = "SecurityGroupPolicy"
     metadata = {
       name      = "fargate-${each.value}-namespace-sg"
-      namespace = "kube-system"
+      namespace = each.value
     }
     spec = {
       podSelector = {
