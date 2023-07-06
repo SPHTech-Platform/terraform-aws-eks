@@ -56,11 +56,12 @@ module "fargate_profiles" {
 
 resource "kubernetes_manifest" "fargate_node_security_group_policy" {
   for_each = var.fargate_cluster && var.create_node_security_group ? local.fargate_namespaces : {}
+
   manifest = {
     apiVersion = "vpcresources.k8s.aws/v1beta1"
     kind       = "SecurityGroupPolicy"
     metadata = {
-      name      = "fargate-node-kube-system-namespace-sg"
+      name      = "fargate-${each.value}-namespace-sg"
       namespace = "kube-system"
     }
     spec = {
