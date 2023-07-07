@@ -9,7 +9,7 @@ locals {
       essentials = {
         iam_role_name = "fargate_profile_essentials"
         iam_role_additional_policies = {
-          additional = aws_iam_policy.fargate_logging.arn
+          additional = try(aws_iam_policy.fargate_logging[0].arn, null)
         }
         subnet_ids = var.subnet_ids
         selectors = [
@@ -23,7 +23,7 @@ locals {
       "kube-system-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}" => {
         iam_role_name = "fargate_profile_${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
         iam_role_additional_policies = {
-          additional = aws_iam_policy.fargate_logging.arn
+          additional = try(aws_iam_policy.fargate_logging[0].arn, null)
         }
         selectors = [
           { namespace = "kube-system" }
