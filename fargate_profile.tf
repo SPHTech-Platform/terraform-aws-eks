@@ -4,14 +4,16 @@ locals {
 
   fargate_namespaces = concat(local.essentials_namespaces, local.kube_system_namespaces)
 
+  iam_role_additional_policies = var.fargate_cluster ? {
+    additional = aws_iam_policy.fargate_logging[0].arn
+  } : {}
+
   default_fargate_profiles = merge(
     {
       essentials = {
-        iam_role_name = "fargate_profile_essentials"
-        iam_role_additional_policies = {
-          additional = try(aws_iam_policy.fargate_logging[0].arn, null)
-        }
-        subnet_ids = var.subnet_ids
+        iam_role_name                = "fargate_profile_essentials"
+        iam_role_additional_policies = local.iam_role_additional_policies
+        subnet_ids                   = var.subnet_ids
         selectors = [
           for ns_value in local.essentials_namespaces : {
             namespace = ns_value
@@ -21,10 +23,8 @@ locals {
     },
     { for subnet in var.subnet_ids :
       "kube-system-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}" => {
-        iam_role_name = "fargate_profile_${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
-        iam_role_additional_policies = {
-          additional = try(aws_iam_policy.fargate_logging[0].arn, null)
-        }
+        iam_role_name                = "fargate_profile_${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
+        iam_role_additional_policies = local.iam_role_additional_policies
         selectors = [
           { namespace = "kube-system" }
         ]
