@@ -73,3 +73,8 @@ resource "aws_iam_policy" "fluent_bit_irsa" {
   description = "IAM Policy for AWS for FluentBit IRSA"
   policy      = data.aws_iam_policy_document.fluent_bit.json
 }
+
+moved {
+  from = aws_cloudwatch_log_group.aws_for_fluent_bit
+  to   = aws_cloudwatch_log_group.aws_for_fluent_bit[0]
+}

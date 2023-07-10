@@ -101,3 +101,8 @@ data "aws_iam_policy_document" "fargate_logging" {
     ]
   }
 }
+
+moved {
+  from = aws_iam_policy.fargate_logging
+  to   = aws_iam_policy.fargate_logging[0]
+}
