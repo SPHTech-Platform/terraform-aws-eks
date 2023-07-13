@@ -29,6 +29,8 @@ locals {
 resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
   #checkov:skip=CKV_AWS_158:Not using CMK to save cost
   #checkov:skip=CKV_AWS_338: "Ensure CloudWatch log groups retains logs for at least 1 year"
+  count = var.fluent_bit_enabled ? 1 : 0
+
   name              = local.log_group_name
   retention_in_days = var.fluent_bit_log_group_retention
 }
@@ -70,4 +72,9 @@ resource "aws_iam_policy" "fluent_bit_irsa" {
   name        = "${var.cluster_name}-fluentbit"
   description = "IAM Policy for AWS for FluentBit IRSA"
   policy      = data.aws_iam_policy_document.fluent_bit.json
+}
+
+moved {
+  from = aws_cloudwatch_log_group.aws_for_fluent_bit
+  to   = aws_cloudwatch_log_group.aws_for_fluent_bit[0]
 }
