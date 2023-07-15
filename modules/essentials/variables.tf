@@ -1267,6 +1267,7 @@ variable "metrics_server_helm_config_defaults" {
     repository  = "https://kubernetes-sigs.github.io/metrics-server/"
     version     = "3.10.0"
     namespace   = "metrics-server"
+    create_namespace = true
     description = "Metric server helm Chart deployment configuration"
   }
 }
