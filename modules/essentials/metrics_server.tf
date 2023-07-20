@@ -1,8 +1,14 @@
 locals {
   metric_server_helm_config = merge(
     var.metrics_server_helm_config_defaults,
-    var.metrics_server_helm_config
+    var.metrics_server_helm_config,
+    local.namespace
   )
+
+  namespace = var.fargate_mix_node_groups ? {
+    create_namespace = true
+    namespace        = "metrics-server"
+  } : { namespace = "kube-system" }
 }
 
 module "helm_metrics_server" {
