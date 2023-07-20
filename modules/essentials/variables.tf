@@ -14,6 +14,12 @@ variable "kubernetes_labels" {
   }
 }
 
+variable "fargate_mix_node_groups" {
+  description = "Deploying mix workloads as in EKS Manage Node Groups and Fragate Node Groups, set this to TRUE"
+  type        = bool
+  default     = false
+}
+
 ############################
 # K8S Cluster Information
 ############################
@@ -1266,7 +1272,6 @@ variable "metrics_server_helm_config_defaults" {
     chart       = "metrics-server"
     repository  = "https://kubernetes-sigs.github.io/metrics-server/"
     version     = "3.10.0"
-    namespace   = "kube-system"
     description = "Metric server helm Chart deployment configuration"
   }
 }
