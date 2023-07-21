@@ -73,8 +73,6 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy" {
       }
     }
   }
-
-  depends_on = [module.eks.node_security_group_id]
 }
 
 resource "aws_iam_policy" "fargate_logging" {
