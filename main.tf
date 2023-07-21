@@ -40,16 +40,19 @@ module "eks" {
   create_cluster_security_group      = var.create_cluster_security_group
   cluster_security_group_name        = coalesce(var.cluster_security_group_name, var.cluster_name)
   cluster_security_group_description = "EKS Cluster ${var.cluster_name} Master"
-  cluster_security_group_additional_rules = merge({
-    egress_nodes_ephemeral_ports_tcp = {
-      description                = "To node 1025-65535"
-      protocol                   = "tcp"
-      from_port                  = 1025
-      to_port                    = 65535
-      type                       = "egress"
-      source_node_security_group = true
-    }
-  }, var.cluster_security_group_additional_rules)
+  cluster_security_group_additional_rules = merge(
+    var.create_node_security_group ?
+    {
+      egress_nodes_ephemeral_ports_tcp = {
+        description                = "To node 1025-65535"
+        protocol                   = "tcp"
+        from_port                  = 1025
+        to_port                    = 65535
+        type                       = "egress"
+        source_node_security_group = true
+      }
+    } : {}
+  , var.cluster_security_group_additional_rules)
 
   node_security_group_name        = coalesce(var.worker_security_group_name, join("_", [var.cluster_name, "worker"]))
   node_security_group_description = "EKS Cluster ${var.cluster_name} Nodes"
