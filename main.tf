@@ -41,7 +41,7 @@ module "eks" {
   cluster_security_group_name        = coalesce(var.cluster_security_group_name, var.cluster_name)
   cluster_security_group_description = "EKS Cluster ${var.cluster_name} Master"
   cluster_security_group_additional_rules = merge(
-    var.create_cluster_security_group ?
+    var.create_node_security_group ?
     {
       egress_nodes_ephemeral_ports_tcp = {
         description                = "To node 1025-65535"
