@@ -118,12 +118,6 @@ variable "cluster_addons_timeouts" {
   default     = {}
 }
 
-variable "enable_adot_operator_addon" {
-  description = "If true, will install the Opentelemetry operator addon"
-  type        = bool
-  default     = false
-}
-
 #######################
 # Cluster Networking
 #######################
