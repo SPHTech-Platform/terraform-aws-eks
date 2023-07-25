@@ -43,7 +43,7 @@ module "eks" {
         from_port                  = 1025
         to_port                    = 65535
         type                       = "egress"
-        source_node_security_group = true
+        source_node_security_group = var.create_node_security_group
       }
     } : {}
   , var.cluster_security_group_additional_rules)
