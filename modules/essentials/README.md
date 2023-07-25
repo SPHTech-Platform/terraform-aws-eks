@@ -110,7 +110,6 @@ module "eks_essentials" {
 | [aws_arn.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_eks_addon_version.latest_adot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_addon_version) | data source |
-| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_iam_policy_document.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.fluent_bit](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -214,6 +213,7 @@ module "eks_essentials" {
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `string` | `null` | no |
 | <a name="input_ingress_shim"></a> [ingress\_shim](#input\_ingress\_shim) | Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/ | `map(any)` | `{}` | no |
 | <a name="input_install_crds"></a> [install\_crds](#input\_install\_crds) | Install CRDs with chart | `bool` | `true` | no |
+| <a name="input_k8s_version_to_set_for_adot"></a> [k8s\_version\_to\_set\_for\_adot](#input\_k8s\_version\_to\_set\_for\_adot) | value of the adot addon version | `string` | `"1.27"` | no |
 | <a name="input_kube_state_metrics_enabled"></a> [kube\_state\_metrics\_enabled](#input\_kube\_state\_metrics\_enabled) | Enable kube-state-metrics helm charts installation. | `bool` | `true` | no |
 | <a name="input_kube_state_metrics_helm_config"></a> [kube\_state\_metrics\_helm\_config](#input\_kube\_state\_metrics\_helm\_config) | Helm provider config for kube-state-metrics. | `any` | `{}` | no |
 | <a name="input_kube_state_metrics_helm_config_defaults"></a> [kube\_state\_metrics\_helm\_config\_defaults](#input\_kube\_state\_metrics\_helm\_config\_defaults) | Helm provider default config for kube-state-metrics. | `any` | <pre>{<br>  "chart": "kube-state-metrics",<br>  "description": "kube-state-metrics helm Chart deployment configuration",<br>  "name": "kube-state-metrics",<br>  "namespace": "kube-system",<br>  "repository": "https://prometheus-community.github.io/helm-charts",<br>  "version": "5.8.1"<br>}</pre> | no |

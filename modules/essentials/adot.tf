@@ -1,10 +1,6 @@
-data "aws_eks_cluster" "cluster" {
-  name = var.cluster_name
-}
-
 data "aws_eks_addon_version" "latest_adot" {
   addon_name         = "adot"
-  kubernetes_version = data.aws_eks_cluster.cluster.platform_version
+  kubernetes_version = var.k8s_version_to_set_for_adot
   most_recent        = true
 }
 
