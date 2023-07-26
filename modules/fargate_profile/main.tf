@@ -1,6 +1,6 @@
 module "fargate_profile" {
   source  = "terraform-aws-modules/eks/aws//modules/fargate-profile"
-  version = "~> 19.10.0"
+  version = "~> 19.15.0"
 
   for_each = var.fargate_profiles
 
