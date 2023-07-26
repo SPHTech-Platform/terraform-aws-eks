@@ -96,15 +96,15 @@ module "eks" {
       service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
     }
     aws-ebs-csi-driver = {
-      most_recent                 = true
-      reserve                     = true
-      resolve_conflicts_on_create = "OVERWRITE"
-      service_account_role_arn    = module.ebs_csi_irsa_role.iam_role_arn
+      most_recent              = true
+      reserve                  = true
+      resolve_conflicts        = "OVERWRITE"
+      service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
     }
     coredns = var.fargate_cluster ? {
-      most_recent                 = true
-      reserve                     = true
-      resolve_conflicts_on_create = "OVERWRITE"
+      most_recent       = true
+      reserve           = true
+      resolve_conflicts = "OVERWRITE"
       configuration_values = jsonencode({
         computeType = "Fargate"
         # https://github.com/aws-ia/terraform-aws-eks-blueprints/pull/1329
