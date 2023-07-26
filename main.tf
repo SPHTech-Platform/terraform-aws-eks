@@ -8,12 +8,6 @@ locals {
     )
   ) : var.aws_auth_fargate_profile_pod_execution_role_arns
 
-  adot_addon = var.enable_adot_operator_addon ? {
-    adot = {
-      most_recent = true
-      preserve    = true
-    }
-  } : {}
 }
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 #tfsec:ignore:aws-eks-no-public-cluster-access
@@ -21,7 +15,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.10.0"
+  version = "~> 19.15.0"
 
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
@@ -41,7 +35,7 @@ module "eks" {
   cluster_security_group_name        = coalesce(var.cluster_security_group_name, var.cluster_name)
   cluster_security_group_description = "EKS Cluster ${var.cluster_name} Master"
   cluster_security_group_additional_rules = merge(
-    var.create_cluster_security_group ?
+    var.create_cluster_security_group && var.create_node_security_group ?
     {
       egress_nodes_ephemeral_ports_tcp = {
         description                = "To node 1025-65535"
@@ -49,7 +43,7 @@ module "eks" {
         from_port                  = 1025
         to_port                    = 65535
         type                       = "egress"
-        source_node_security_group = true
+        source_node_security_group = var.create_node_security_group
       }
     } : {}
   , var.cluster_security_group_additional_rules)
@@ -134,7 +128,6 @@ module "eks" {
       reserve     = true
     }
     },
-    local.adot_addon,
     var.cluster_addons,
   )
 

@@ -1,6 +1,6 @@
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 19.10.0"
+  version = "~> 19.15.0"
 
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
