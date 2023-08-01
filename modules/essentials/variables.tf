@@ -44,6 +44,14 @@ variable "worker_iam_role_name" {
   type        = string
 }
 
+########
+# ADOT
+########
+variable "adot_addon_version" {
+  description = "value of the adot addon version"
+  type        = string
+  default     = null
+}
 
 ############################
 # K8S Resources
