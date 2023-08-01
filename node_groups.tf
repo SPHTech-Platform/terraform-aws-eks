@@ -103,7 +103,6 @@ module "node_groups" {
   force_imdsv2 = var.force_imdsv2
   force_irsa   = var.force_irsa
 
-  tags = var.tags
 }
 
 ################################################
