@@ -53,13 +53,6 @@ variable "adot_addon_version" {
   default     = null
 }
 
-variable "k8s_version_to_set_for_adot" {
-  description = "value of the adot addon version"
-  type        = string
-  default     = "1.27"
-}
-
-
 ############################
 # K8S Resources
 ############################
