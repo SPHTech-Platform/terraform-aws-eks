@@ -9,11 +9,12 @@ data "aws_eks_addon_version" "latest_adot" {
 }
 
 resource "aws_eks_addon" "adot_operator" {
-  cluster_name                = var.cluster_name
-  addon_name                  = "adot"
-  addon_version               = try(var.adot_addon_version, data.aws_eks_addon_version.latest_adot.version)
-  resolve_conflicts_on_create = var.resolve_conflicts_on_create
-  resolve_conflicts_on_update = var.resolve_conflicts_on_update
+  cluster_name      = var.cluster_name
+  addon_name        = "adot"
+  addon_version     = try(var.adot_addon_version, data.aws_eks_addon_version.latest_adot.version)
+  resolve_conflicts = var.resolve_conflicts_on_create
+  # resolve_conflicts_on_create = var.resolve_conflicts_on_create
+  # resolve_conflicts_on_update = var.resolve_conflicts_on_update
 
   depends_on = [
     helm_release.cert_manager,

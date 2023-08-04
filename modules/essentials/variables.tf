@@ -1411,11 +1411,11 @@ variable "fluent_bit_extra_helm_values" {
   default     = ""
 }
 
-variable "resolve_conflicts_on_update" {
-  description = "value for resolve_conflicts_on_update for aws_eks_addon resource"
-  type        = string
-  default     = "OVERWRITE"
-}
+# variable "resolve_conflicts_on_update" {
+#   description = "value for resolve_conflicts_on_update for aws_eks_addon resource"
+#   type        = string
+#   default     = "OVERWRITE"
+# }
 
 variable "resolve_conflicts_on_create" {
   description = "value for resolve_conflicts_on_create for aws_eks_addon resource"
