@@ -18,6 +18,11 @@ output "worker_iam_role_name" {
   value       = aws_iam_role.workers.name
 }
 
+output "cluster_primary_security_group_id" {
+  description = "Primary Security Group ID created automatically by EKS"
+  value       = module.eks.cluster_primary_security_group_id
+}
+
 output "cluster_security_group_id" {
   description = "Security Group ID of the master nodes"
   value       = module.eks.cluster_security_group_id
