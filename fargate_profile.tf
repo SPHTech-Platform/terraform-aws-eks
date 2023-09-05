@@ -98,6 +98,7 @@ data "aws_iam_policy_document" "fargate_logging" {
       "logs:CreateLogGroup",
       "logs:DescribeLogStreams",
       "logs:PutLogEvents",
+      "logs:PutRetentionPolicy", #for overriding alr created log groups
     ]
   }
 }
