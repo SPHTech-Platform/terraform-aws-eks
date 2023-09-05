@@ -1,18 +1,19 @@
 locals {
 
   cwlog_group         = "/aws/eks/${var.cluster_name}/fargate-fluentbit-logs"
-  cwlog_stream_prefix = "fargate-logs-"
+  cwlog_stream_prefix = "from-fluent-bit-"
 
   default_config = {
     output_conf  = <<-EOF
     [OUTPUT]
-      Name cloudwatch_logs
-      Match   kube.*
-      region ${data.aws_region.current.name}
-      log_group_name ${local.cwlog_group}
-      log_stream_prefix ${local.cwlog_stream_prefix}
-      log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
-      log_retention_days 60
+        Name cloudwatch
+        Match   kube.*
+        region ${data.aws_region.current.name}
+        log_group_name ${local.cwlog_group}
+        log_stream_prefix ${local.cwlog_stream_prefix}
+        log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
+        log_retention_days 90
+        auto_create_group true
     EOF
     filters_conf = <<-EOF
     [FILTER]
@@ -30,11 +31,11 @@ locals {
     EOF
     parsers_conf = <<-EOF
     [PARSER]
-      Name crio
-      Format Regex
-      Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
-      Time_Key time
-      Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+        Name crio
+        Format Regex
+        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
     EOF
   }
 
