@@ -1,5 +1,8 @@
 # CoreDNS does not come with a PDB defined. We need to define this to prevent downtimes
 resource "kubernetes_pod_disruption_budget_v1" "coredns" {
+
+  count = var.create_pdb_for_coredns ? 1 : 0
+
   metadata {
     name      = "coredns"
     namespace = "kube-system"

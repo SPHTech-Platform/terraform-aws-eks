@@ -247,6 +247,12 @@ variable "cluster_autoscaler_service_annotations" {
 #####################
 # CoreDNS PDB
 #####################
+variable "create_pdb_for_coredns" {
+  description = "Create PDB for CoreDNS"
+  type        = bool
+  default     = false
+}
+
 variable "coredns_pdb_min_available" {
   description = "PDB min available CoreDNS pods."
   type        = number
