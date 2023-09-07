@@ -80,6 +80,13 @@ config:
         K8S-Logging.Exclude On
         Buffer_Size 31k
 
+    [FILTER]
+        Name parser
+        Match kube.*
+        Key_Name log
+        Parser custom_apache
+        Reserve_Data true
+
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
