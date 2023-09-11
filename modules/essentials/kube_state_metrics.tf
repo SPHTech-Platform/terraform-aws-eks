@@ -19,6 +19,6 @@ module "helm_kube_state_metrics" {
       values = {
         enabled = true
       }
-    }
+    },
   ]
 }
