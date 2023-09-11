@@ -12,4 +12,11 @@ module "helm_kube_state_metrics" {
   version = "~> 0.1.4"
 
   helm_config = local.kube_state_metrics_helm_config
+
+  set_values = [
+    {
+      name  = "selfMonitor.enabled"
+      value = true
+    },
+  ]
 }
