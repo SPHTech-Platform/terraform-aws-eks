@@ -15,10 +15,8 @@ module "helm_kube_state_metrics" {
 
   set_values = [
     {
-      name = "selfMonitor"
-      values = {
-        enabled = true
-      }
+      name  = "selfMonitor.enabled"
+      value = true
     },
   ]
 }
