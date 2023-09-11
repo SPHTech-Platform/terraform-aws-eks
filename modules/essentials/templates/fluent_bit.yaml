@@ -70,7 +70,8 @@ config:
         Time_Keep Off
         Time_Key time
         Time_Format %d/%b/%Y:%H:%M:%S %z
-        
+
+
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |
     [INPUT]
