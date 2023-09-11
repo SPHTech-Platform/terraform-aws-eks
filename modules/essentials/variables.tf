@@ -1321,11 +1321,7 @@ variable "kube_state_metrics_helm_config_defaults" {
 variable "kube_state_metrics_helm_config" {
   description = "Helm provider config for kube-state-metrics."
   type        = any
-  default = {
-    selfMonitor = {
-      enabled = true
-    }
-  }
+  default     = {}
 }
 
 #####################
