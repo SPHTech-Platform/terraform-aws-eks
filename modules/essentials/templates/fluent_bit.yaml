@@ -56,6 +56,22 @@ metricsPort: 2020
 
 ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file
 config:
+  ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
+  ## This configuration is deprecated, please use `extraFiles` instead.
+  upstream: {}
+
+  ## https://docs.fluentbit.io/manual/pipeline/parsers
+  ## Default parsers are from : https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf
+  customParsers: |
+    [PARSER]
+        Name custom_apache
+        Format regex
+        Regex ^(?<client_ip>[^ ]*) \<(?<x_forwarded_for>[^\"]*)\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<latency>[^\"]*)" "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Keep Off
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |
     [INPUT]
@@ -80,6 +96,13 @@ config:
         K8S-Logging.Exclude On
         Buffer_Size 31k
 
+    [FILTER]
+        Name parser
+        Match kube.*
+        Key_Name log
+        Parser custom_apache
+        Reserve_Data true
+
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
@@ -90,21 +113,6 @@ config:
         log_stream_prefix fluentbit-
         log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
         auto_create_group false
-
-  ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
-  ## This configuration is deprecated, please use `extraFiles` instead.
-  upstream: {}
-
-  ## https://docs.fluentbit.io/manual/pipeline/parsers
-  ## Default parsers are from : https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf
-  customParsers: |
-    [PARSER]
-        Name custom_apache
-        Format regex
-        Regex ^(?<client_ip>[^ ]*) \<(?<x_forwarded_for>[^\"]*)\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<latency>[^\"]*)" "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Keep Off
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
 
 #  extraFiles: {}
 #     upstream.conf: |
