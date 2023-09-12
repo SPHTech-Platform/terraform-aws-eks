@@ -10,7 +10,7 @@ locals {
         Match   kube.*
         region ${data.aws_region.current.name}
         log_group_name ${local.cwlog_group}
-        %{if local.cwlog_stream_prefix != "" }log_stream_prefix ${local.cwlog_stream_prefix}%{endif}
+        %{if local.cwlog_stream_prefix != ""}log_stream_prefix ${local.cwlog_stream_prefix}%{endif}
         log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
     EOF
     filters_conf = <<-EOF
