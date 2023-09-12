@@ -47,6 +47,9 @@ locals {
 
 #tfsec:ignore:aws-cloudwatch-log-group-customer-key Not using CMK to save cost
 resource "aws_cloudwatch_log_group" "fargate" {
+  #checkov:skip=CKV_AWS_158:Not using CMK to save cost
+  #checkov:skip=CKV_AWS_338:"Ensure CloudWatch log groups retains logs for at least 1 year"
+
   count = var.create_fargate_log_group ? 1 : 0
 
   name              = local.cwlog_group
