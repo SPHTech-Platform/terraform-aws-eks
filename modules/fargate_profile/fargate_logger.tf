@@ -45,6 +45,14 @@ locals {
   )
 }
 
+#tfsec:ignore:aws-cloudwatch-log-group-customer-key Not using CMK to save cost
+resource "aws_cloudwatch_log_group" "fargate" {
+  count = var.create_fargate_log_group ? 1 : 0
+
+  name              = local.cwlog_group
+  retention_in_days = var.fargate_log_group_retention_days
+}
+
 ########################
 ### K8s resources ######
 ########################
