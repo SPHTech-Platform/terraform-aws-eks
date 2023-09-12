@@ -63,6 +63,12 @@ variable "fargate_log_group_retention_days" {
   default     = 90
 }
 
+variable "fargate_log_stream_prefix" {
+  description = "Log stream prefix"
+  type        = string
+  default     = ""
+}
+
 ##################################
 ### Fargate Selector Namespaces ##
 ##################################
