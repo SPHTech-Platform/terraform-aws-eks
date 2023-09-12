@@ -1,7 +1,7 @@
 locals {
 
   cwlog_group         = "/aws/eks/${var.cluster_name}/fargate-fluentbit-logs"
-  cwlog_stream_prefix = "from-fluent-bit-"
+  cwlog_stream_prefix = var.fargate_log_stream_prefix
 
   default_config = {
     output_conf  = <<-EOF
@@ -12,8 +12,6 @@ locals {
         log_group_name ${local.cwlog_group}
         log_stream_prefix ${local.cwlog_stream_prefix}
         log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
-        log_retention_days 90
-        auto_create_group true
     EOF
     filters_conf = <<-EOF
     [FILTER]
