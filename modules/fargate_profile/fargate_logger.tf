@@ -9,7 +9,7 @@ locals {
         Match   kube.*
         region ${data.aws_region.current.name}
         log_group_name ${local.cwlog_group}
-        log_stream_name $(kubernetes['namespace_name'])/$(kubernetes['container_name'])
+        log_stream_name $(kubernetes['namespace_name'])/$(kubernetes['container_name'])/$(kubernetes['pod_name'])
         log_retention_days ${var.fargate_log_group_retention_days}
         auto_create_group false
     EOF
