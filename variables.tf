@@ -359,9 +359,3 @@ variable "create_fargate_logger_configmap" {
   type        = bool
   default     = true
 }
-
-variable "fargate_logging_policy" {
-  description = "Name of Fargate Logging Policy"
-  type        = string
-  default     = "fargate_logging_cloudwatch_default"
-}

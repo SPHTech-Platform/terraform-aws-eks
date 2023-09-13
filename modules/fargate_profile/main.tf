@@ -1,6 +1,6 @@
 module "fargate_profile" {
   source  = "terraform-aws-modules/eks/aws//modules/fargate-profile"
-  version = "~> 19.15.0"
+  version = "~> 19.16.0"
 
   for_each = var.fargate_profiles
 
@@ -18,7 +18,10 @@ module "fargate_profile" {
   iam_role_description          = lookup(each.value, "iam_role_description", lookup(var.fargate_profile_defaults, "iam_role_description", null))
   iam_role_permissions_boundary = lookup(each.value, "iam_role_permissions_boundary", lookup(var.fargate_profile_defaults, "iam_role_permissions_boundary", null))
   iam_role_attach_cni_policy    = lookup(each.value, "iam_role_attach_cni_policy", lookup(var.fargate_profile_defaults, "iam_role_attach_cni_policy", true))
-  iam_role_additional_policies  = lookup(each.value, "iam_role_additional_policies", lookup(var.fargate_profile_defaults, "iam_role_additional_policies", {}))
+  iam_role_additional_policies  = merge(
+    lookup(each.value, "iam_role_additional_policies", lookup(var.fargate_profile_defaults, "iam_role_additional_policies", {})),
+    var.create_fargate_logging_policy ? { fargate_logging = aws_iam_policy.fargate_logging[0].arn } : {},
+  )
   iam_role_tags                 = lookup(each.value, "iam_role_tags", {})
   tags                          = merge(var.tags, lookup(each.value, "tags", {}))
 }

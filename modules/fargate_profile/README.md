@@ -73,16 +73,18 @@ module "fargate_profile" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_fargate_profile"></a> [fargate\_profile](#module\_fargate\_profile) | terraform-aws-modules/eks/aws//modules/fargate-profile | ~> 19.15.0 |
+| <a name="module_fargate_profile"></a> [fargate\_profile](#module\_fargate\_profile) | terraform-aws-modules/eks/aws//modules/fargate-profile | ~> 19.16.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [aws_cloudwatch_log_group.fargate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
+| [aws_iam_policy.fargate_logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [kubernetes_config_map_v1.aws_logging](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map_v1) | resource |
 | [kubernetes_manifest.sg](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_namespace_v1.aws_observability](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
+| [aws_iam_policy_document.fargate_logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
@@ -94,9 +96,10 @@ module "fargate_profile" {
 | <a name="input_create_aws_observability_ns"></a> [create\_aws\_observability\_ns](#input\_create\_aws\_observability\_ns) | value to determine if aws-observability namespace is created | `bool` | `true` | no |
 | <a name="input_create_fargate_log_group"></a> [create\_fargate\_log\_group](#input\_create\_fargate\_log\_group) | Create Fargate Cloudwatch Log group | `bool` | `true` | no |
 | <a name="input_create_fargate_logger_configmap"></a> [create\_fargate\_logger\_configmap](#input\_create\_fargate\_logger\_configmap) | value to determine if create\_fargate\_logger\_configmap is created | `bool` | `true` | no |
+| <a name="input_create_fargate_logging_policy"></a> [create\_fargate\_logging\_policy](#input\_create\_fargate\_logging\_policy) | Create and attach fargate logging policy | `bool` | `true` | no |
 | <a name="input_eks_worker_security_group_id"></a> [eks\_worker\_security\_group\_id](#input\_eks\_worker\_security\_group\_id) | Security Group ID of the worker nodes | `string` | `""` | no |
 | <a name="input_fargate_log_group_retention_days"></a> [fargate\_log\_group\_retention\_days](#input\_fargate\_log\_group\_retention\_days) | Specifies the number of days you want to retain log events in the specified log group. Possible values are: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653, and 0. If you select 0, the events in the log group are always retained and never expire. | `number` | `90` | no |
-| <a name="input_fargate_log_stream_prefix"></a> [fargate\_log\_stream\_prefix](#input\_fargate\_log\_stream\_prefix) | Log stream prefix | `string` | `""` | no |
+| <a name="input_fargate_logging_policy_suffix"></a> [fargate\_logging\_policy\_suffix](#input\_fargate\_logging\_policy\_suffix) | Name of Fargate Logging Policy | `string` | `"fargate-logging"` | no |
 | <a name="input_fargate_namespaces_for_security_group"></a> [fargate\_namespaces\_for\_security\_group](#input\_fargate\_namespaces\_for\_security\_group) | List of fargate namespaces to craete SecurityGroupPolicy for talking to managed nodes | `list(string)` | `[]` | no |
 | <a name="input_fargate_profile_defaults"></a> [fargate\_profile\_defaults](#input\_fargate\_profile\_defaults) | Map of Fargate Profile default configurations | `any` | `{}` | no |
 | <a name="input_fargate_profiles"></a> [fargate\_profiles](#input\_fargate\_profiles) | Map of maps of `fargate_profiles` to create | `any` | `{}` | no |
