@@ -133,3 +133,9 @@ variable "create_fargate_logger_configmap" {
   type        = bool
   default     = true
 }
+
+variable "karpenter_fargate_logging_policy" {
+  description = "Name of Fargate Logging Profile Policy"
+  type        = string
+  default     = "karpenter_fargate_logging_cloudwatch"
+}

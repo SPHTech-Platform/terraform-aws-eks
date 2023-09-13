@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "karpenter_fargate_logging" {
 }
 
 resource "aws_iam_policy" "karpenter_fargate_logging" {
-  name        = "karpenter_fargate_logging_cloudwatch"
+  name        = var.karpenter_fargate_logging_policy
   path        = "/"
   description = "AWS recommended cloudwatch perms policy"
 
