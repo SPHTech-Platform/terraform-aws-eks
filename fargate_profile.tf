@@ -7,8 +7,8 @@ locals {
   default_fargate_profiles = merge(
     {
       essentials = {
-        iam_role_name                = "fargate_profile_essentials"
-        subnet_ids                   = var.subnet_ids
+        iam_role_name = "fargate_profile_essentials"
+        subnet_ids    = var.subnet_ids
         selectors = [
           for ns_value in local.essentials_namespaces : {
             namespace = ns_value
@@ -18,7 +18,7 @@ locals {
     },
     { for subnet in var.subnet_ids :
       "kube-system-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}" => {
-        iam_role_name                = "fargate_profile_${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
+        iam_role_name = "fargate_profile_${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
         selectors = [
           { namespace = "kube-system" }
         ]

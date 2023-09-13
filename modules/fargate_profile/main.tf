@@ -18,12 +18,12 @@ module "fargate_profile" {
   iam_role_description          = lookup(each.value, "iam_role_description", lookup(var.fargate_profile_defaults, "iam_role_description", null))
   iam_role_permissions_boundary = lookup(each.value, "iam_role_permissions_boundary", lookup(var.fargate_profile_defaults, "iam_role_permissions_boundary", null))
   iam_role_attach_cni_policy    = lookup(each.value, "iam_role_attach_cni_policy", lookup(var.fargate_profile_defaults, "iam_role_attach_cni_policy", true))
-  iam_role_additional_policies  = merge(
+  iam_role_additional_policies = merge(
     lookup(each.value, "iam_role_additional_policies", lookup(var.fargate_profile_defaults, "iam_role_additional_policies", {})),
     var.create_fargate_logging_policy ? { fargate_logging = aws_iam_policy.fargate_logging[0].arn } : {},
   )
-  iam_role_tags                 = lookup(each.value, "iam_role_tags", {})
-  tags                          = merge(var.tags, lookup(each.value, "tags", {}))
+  iam_role_tags = lookup(each.value, "iam_role_tags", {})
+  tags          = merge(var.tags, lookup(each.value, "tags", {}))
 }
 
 ## Only used when needed for testing pods running in a namespace which requires access to the managed nodes
