@@ -9,7 +9,7 @@ locals {
         Match   kube.*
         region ${data.aws_region.current.name}
         log_group_name ${local.cwlog_group}
-        log_stream_name $(kubernetes['namespace_name'])/$(kubernetes['container_name'])/$(kubernetes['pod_name'])
+        log_stream_name $(kubernetes['namespace_name'])/$(kubernetes['pod_name'])/$(kubernetes['container_name'])
         auto_create_group false
     EOF
     filters_conf = <<-EOF

@@ -110,7 +110,7 @@ config:
         Match kube.*
         region ap-southeast-1
         log_group_name ${log_group_name}
-        log_stream_name $(kubernetes['namespace_name'])/$(kubernetes['container_name'])/$(kubernetes['pod_name'])
+        log_stream_name $(kubernetes['namespace_name'])/$(kubernetes['pod_name'])/$(kubernetes['container_name'])
         auto_create_group false
 
 #  extraFiles: {}
