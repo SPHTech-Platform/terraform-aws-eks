@@ -1,17 +1,15 @@
 locals {
   cwlog_group = "/aws/eks/${var.cluster_name}/fargate-fluentbit-logs"
 
-  # https://docs.fluentbit.io/manual/pipeline/outputs/cloudwatch
+  # https://docs.fluentbit.io/manual/v/1.5/pipeline/outputs/cloudwatch
   default_config = {
-    # https://docs.fluentbit.io/manual/pipeline/outputs/cloudwatch#log-stream-and-group-name-templating-using-record_accessor-syntax
-    # log_stream_prefix is fallback
+    # log_stream_template does not exist on 1.5
     output_conf  = <<-EOF
     [OUTPUT]
         Name cloudwatch_logs
         Match   kube.*
         region ${data.aws_region.current.name}
         log_group_name ${local.cwlog_group}
-        log_stream_template $(kubernetes['namespace_name'])/$(kubernetes['pod_name'])/$(kubernetes['container_name'])
         log_stream_prefix fluentbit-
         auto_create_group false
     EOF
