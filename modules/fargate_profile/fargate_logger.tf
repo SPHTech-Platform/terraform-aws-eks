@@ -1,17 +1,17 @@
 locals {
+  cwlog_group = "/aws/eks/${var.cluster_name}/fargate-fluentbit-logs"
 
-  cwlog_group         = "/aws/eks/${var.cluster_name}/fargate-fluentbit-logs"
-  cwlog_stream_prefix = var.fargate_log_stream_prefix
-
+  # https://docs.fluentbit.io/manual/v/1.5/pipeline/outputs/cloudwatch
   default_config = {
+    # log_stream_template does not exist on 1.5
     output_conf  = <<-EOF
     [OUTPUT]
-        Name cloudwatch
+        Name cloudwatch_logs
         Match   kube.*
         region ${data.aws_region.current.name}
         log_group_name ${local.cwlog_group}
-        %{if local.cwlog_stream_prefix != ""}log_stream_prefix ${local.cwlog_stream_prefix}%{endif}
-        log_stream_template $kubernetes['pod_name'].$kubernetes['container_name']
+        log_stream_prefix fluentbit-
+        auto_create_group false
     EOF
     filters_conf = <<-EOF
     [FILTER]
@@ -73,7 +73,6 @@ resource "kubernetes_namespace_v1" "aws_observability" {
 
 # fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
 resource "kubernetes_config_map_v1" "aws_logging" {
-
   count = var.create_fargate_logger_configmap ? 1 : 0
 
   metadata {
@@ -86,5 +85,32 @@ resource "kubernetes_config_map_v1" "aws_logging" {
     "filters.conf" = local.config["filters_conf"]
     "output.conf"  = local.config["output_conf"]
   }
+}
 
+resource "aws_iam_policy" "fargate_logging" {
+  count = var.create_fargate_logging_policy ? 1 : 0
+
+  name        = "${var.cluster_name}-${var.fargate_logging_policy_suffix}"
+  path        = "/"
+  description = "Fargate Cloudwatch Logging"
+  policy      = data.aws_iam_policy_document.fargate_logging.json
+}
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
+data "aws_iam_policy_document" "fargate_logging" {
+  #checkov:skip=CKV_AWS_111:Restricted to Cloudwatch Actions only
+  #checkov:skip=CKV_AWS_356: Only logs actions
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "logs:CreateLogStream",
+      "logs:CreateLogGroup",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+      "logs:PutRetentionPolicy", # for overriding alr created log groups
+    ]
+  }
 }

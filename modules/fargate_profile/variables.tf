@@ -63,10 +63,16 @@ variable "fargate_log_group_retention_days" {
   default     = 90
 }
 
-variable "fargate_log_stream_prefix" {
-  description = "Log stream prefix"
+variable "create_fargate_logging_policy" {
+  description = "Create and attach fargate logging policy"
+  type        = bool
+  default     = true
+}
+
+variable "fargate_logging_policy_suffix" {
+  description = "Name of Fargate Logging Policy"
   type        = string
-  default     = ""
+  default     = "fargate-logging"
 }
 
 ##################################
