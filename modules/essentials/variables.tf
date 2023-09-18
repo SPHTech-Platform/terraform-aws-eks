@@ -1407,8 +1407,8 @@ variable "fluent_bit_log_group_retention" {
 
 variable "fluent_bit_extra_helm_values" {
   description = "Helm values for extra configuration"
-  type        = string
-  default     = ""
+  type        = any
+  default     = {}
 }
 
 # variable "resolve_conflicts_on_update" {
