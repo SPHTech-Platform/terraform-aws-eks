@@ -359,3 +359,12 @@ variable "create_fargate_logger_configmap" {
   type        = bool
   default     = true
 }
+
+##########
+## MODE ##
+##########
+variable "autoscaling_mode" {
+  description = "Autoscaling mode: cluster_autoscaler or karpenter"
+  type        = string
+  default     = "karpenter"
+}
