@@ -8,7 +8,7 @@ locals {
     )
   ) : var.aws_auth_fargate_profile_pod_execution_role_arns
 
-  additional_aws_auth_fargate_profile_pod_execution_role_arns = var.autoscaling_mode == "karpenter" ? concat(values(module.karpenter.fargate_profile_pod_execution_role_arn)) : []
+  additional_aws_auth_fargate_profile_pod_execution_role_arns = var.autoscaling_mode == "karpenter" && !var.install_crds_first ? concat(values(module.karpenter.fargate_profile_pod_execution_role_arn)) : []
 
   additional_role_mapping = var.autoscaling_mode == "karpenter" ? [
     {

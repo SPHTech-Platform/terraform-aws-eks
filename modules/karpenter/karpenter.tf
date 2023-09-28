@@ -81,7 +81,7 @@ module "karpenter-crds" {
 
 resource "kubernetes_manifest" "karpenter_provisioner" {
 
-  for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner if var.autoscaling_mode == "karpenter" }
+  for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner if !var.install_crds_first }
 
   manifest = {
     apiVersion = "karpenter.sh/v1alpha5"
@@ -119,7 +119,7 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
 ####################################################################################
 resource "kubernetes_manifest" "karpenter_node_template" {
 
-  for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate if var.autoscaling_mode == "karpenter" }
+  for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate if !var.install_crds_first }
 
   manifest = {
     apiVersion = "karpenter.k8s.aws/v1alpha1"
