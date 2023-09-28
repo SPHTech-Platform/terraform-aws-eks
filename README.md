@@ -151,10 +151,6 @@ locals {
           timeAdded = timestamp() # required if not terraform plan complains
         }
       ]
-
-      karpenter_instance_types_list = ["m5a.large"]
-      karpenter_capacity_type_list  = ["on-demand"]
-      karpenter_arch_list           = ["amd64"]
     },
   ]
   # Karpenter Nodetemplate Config

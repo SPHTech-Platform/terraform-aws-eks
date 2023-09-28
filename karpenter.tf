@@ -26,7 +26,7 @@ locals {
 module "karpenter" {
   source = "./modules/karpenter"
 
-  karpenter_chart_version = "v0.30.0"
+  karpenter_chart_version = "v0.31.0"
 
   cluster_name        = var.cluster_name
   cluster_endpoint    = module.eks.cluster_endpoint
