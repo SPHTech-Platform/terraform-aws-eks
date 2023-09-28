@@ -14,6 +14,8 @@ module "karpenter" {
 
 resource "helm_release" "karpenter" {
 
+  count = !var.install_crds_first ? 1 : 0
+
   namespace        = var.karpenter_namespace
   create_namespace = true
 
