@@ -482,3 +482,15 @@ variable "install_crds_first" {
   type        = bool
   default     = true
 }
+
+variable "create_aws_observability_ns_for_karpenter" {
+  description = "Create aws-observability namespace flag"
+  type        = bool
+  default     = false
+}
+
+variable "create_fargate_logger_configmap_for_karpenter" {
+  description = "create_fargate_logger_configmap flag"
+  type        = bool
+  default     = false
+}

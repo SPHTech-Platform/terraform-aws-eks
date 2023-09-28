@@ -41,6 +41,9 @@ module "karpenter" {
   karpenter_provisioners  = local.karpenter_provisioners
   karpenter_nodetemplates = local.karpenter_nodetemplates
 
+  create_fargate_logger_configmap = var.create_fargate_logger_configmap_for_karpenter
+  create_aws_observability_ns     = var.create_aws_observability_ns_for_karpenter
+
   # Required for Fargate profile
   subnet_ids = var.subnet_ids
 }
