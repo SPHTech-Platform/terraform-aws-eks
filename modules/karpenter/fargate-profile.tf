@@ -3,15 +3,15 @@ module "karpenter_fargate_profile" {
 
   create_aws_observability_ns     = var.create_aws_observability_ns
   create_fargate_logger_configmap = var.create_fargate_logger_configmap
+  create_fargate_log_group        = var.create_fargate_log_group
   #   cluster_name = local.cluster_name
   cluster_name = var.cluster_name
   fargate_profiles = {
     karpenter = {
       iam_role_name = "fargate_profile_karpenter"
-      iam_role_additional_policies = {
-        additional = aws_iam_policy.karpenter_fargate_logging.arn
-      }
-      #   subnet_ids = local.app_subnets
+      # iam_role_additional_policies = {
+      #   additional = aws_iam_policy.karpenter_fargate_logging.arn
+      # }
       subnet_ids = var.subnet_ids
       selectors = [
         {
@@ -25,6 +25,7 @@ module "karpenter_fargate_profile" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "karpenter_fargate_logging" {
+
   #checkov:skip=CKV_AWS_111:Restricted to Cloudwatch Actions only
   #checkov:skip=CKV_AWS_356: Only logs actions
   statement {
@@ -42,6 +43,9 @@ data "aws_iam_policy_document" "karpenter_fargate_logging" {
 }
 
 resource "aws_iam_policy" "karpenter_fargate_logging" {
+
+  count = var.create_fargate_log_group ? 1 : 0
+
   name        = var.karpenter_fargate_logging_policy
   path        = "/"
   description = "AWS recommended cloudwatch perms policy"
