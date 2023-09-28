@@ -30,12 +30,13 @@ module "karpenter" {
 
   karpenter_chart_version = "v0.31.0"
 
+  install_crds_first = var.install_crds_first
+
   cluster_name        = var.cluster_name
   cluster_endpoint    = module.eks.cluster_endpoint
   oidc_provider_arn   = module.eks.oidc_provider_arn
   worker_iam_role_arn = aws_iam_role.workers.arn
 
-  autoscaling_mode = var.autoscaling_mode
   # Add the provisioners and nodetemplates after CRDs are installed
   karpenter_provisioners  = local.karpenter_provisioners
   karpenter_nodetemplates = local.karpenter_nodetemplates

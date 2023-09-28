@@ -140,11 +140,12 @@ variable "worker_iam_role_arn" {
 ##########
 ## MODE ##
 ##########
-variable "autoscaling_mode" {
-  description = "Autoscaling mode: cluster_autoscaler or karpenter"
-  type        = string
-  default     = "cluster_autoscaler"
+variable "install_crds_first" {
+  description = "Allow installation of CRDs first and skip Custom Resource creations"
+  type        = bool
+  default     = true
 }
+
 
 ##############
 ## FARGATE ###
