@@ -2,8 +2,6 @@ module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
   version = "~> 19.16.0"
 
-  count = var.autoscaling_mode == "karpenter" ? 1 : 0
-
   cluster_name = var.cluster_name
 
   irsa_oidc_provider_arn          = var.oidc_provider_arn
@@ -15,8 +13,6 @@ module "karpenter" {
 }
 
 resource "helm_release" "karpenter" {
-
-  count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
   namespace        = var.karpenter_namespace
   create_namespace = true

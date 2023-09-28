@@ -26,6 +26,8 @@ locals {
 module "karpenter" {
   source = "./modules/karpenter"
 
+  count = var.autoscaling_mode == "karpenter" ? 1 : 0
+
   karpenter_chart_version = "v0.31.0"
 
   cluster_name        = var.cluster_name
