@@ -390,3 +390,89 @@ variable "autoscaling_mode" {
   type        = string
   default     = "karpenter"
 }
+
+##############################
+## KARPENTER DEFAULT CONFIG ##
+##############################
+variable "karpenter_provisioners" {
+  description = "List of Provisioner maps"
+  type = list(object({
+    name                              = string
+    provider_ref_nodetemplate_name    = string
+    karpenter_provisioner_node_labels = map(string)
+    karpenter_provisioner_node_taints = list(map(string))
+    karpenter_requirements = list(object({
+      key      = string
+      operator = string
+      values   = list(string)
+      })
+    )
+  }))
+  default = [{
+    name                              = "default"
+    provider_ref_nodetemplate_name    = "default"
+    karpenter_provisioner_node_labels = {}
+    karpenter_provisioner_node_taints = []
+    karpenter_requirements = [{
+      key      = "karpenter.k8s.aws/instance-category"
+      operator = "In"
+      values   = ["m"]
+      }, {
+      key      = "karpenter.k8s.aws/instance-cpu"
+      operator = "In"
+      values   = ["4,8,16"]
+      }, {
+      key      = "karpenter.k8s.aws/instance-generation"
+      operator = "Gt"
+      values   = ["5"]
+      }, {
+      key      = "karpenter.sh/capacity-type"
+      operator = "In"
+      values   = ["on-demand"]
+      }, {
+      key      = "kubernetes.io/arch"
+      operator = "In"
+      values   = ["amd64"]
+      }, {
+      key      = "kubernetes.io/os"
+      operator = "In"
+      values   = ["linux"]
+      }
+    ]
+  }]
+}
+
+variable "karpenter_nodetemplates" {
+  description = "List of nodetemplate maps"
+  type = list(object({
+    name                                  = string
+    karpenter_subnet_selector_map         = map(string)
+    karpenter_security_group_selector_map = map(string)
+    karpenter_nodetemplate_tag_map        = map(string)
+    karpenter_ami_family                  = string
+    karpenter_root_volume_size            = string
+    karpenter_ephemeral_volume_size       = string
+  }))
+  default = [
+    # {
+    # name                          = "default"
+    # karpenter_subnet_selector_map = {}
+    # Please insert from module user
+    # karpenter_subnet_selector_map         = {
+    #   "Name" = "aft-app-ap-southeast*"
+    # }
+    # karpenter_security_group_selector_map = {
+    #     "aws-ids" = module.eks.worker_security_group_id
+    #   }
+    #   karpenter_nodetemplate_tag_map = {
+    #     "karpenter.sh/discovery" = module.eks.cluster_name
+    #     "eks:cluster-name"       = module.eks.cluster_name
+    #   }
+    # karpenter_security_group_selector_map = {}
+    # karpenter_nodetemplate_tag_map        = {}
+    # karpenter_ami_family                  = "Bottlerocket"
+    # karpenter_root_volume_size            = "5Gi"
+    # karpenter_ephemeral_volume_size       = "50Gi"
+    # }
+  ]
+}

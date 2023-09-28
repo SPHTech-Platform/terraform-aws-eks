@@ -1,6 +1,6 @@
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 19.15.0"
+  version = "~> 19.16.0"
 
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
@@ -70,13 +70,18 @@ module "karpenter-crds" {
   crds_urls = [
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_provisioners.yaml",
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_awsnodetemplates.yaml",
-    # "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_machines.yaml", #not part of release yet
+    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_machines.yaml", #not part of release yet
   ]
+
 }
 
 ################
 ##### CRD ######
 ################
+
+####################################################################################
+### PROVISIONER
+####################################################################################
 
 resource "kubernetes_manifest" "karpenter_provisioner" {
 
@@ -92,28 +97,8 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
       labels = each.value.karpenter_provisioner_node_labels
       taints = each.value.karpenter_provisioner_node_taints
 
-      requirements = [
-        {
-          key      = "node.kubernetes.io/instance-type"
-          operator = "In"
-          values   = each.value.karpenter_instance_types_list
-        },
-        {
-          key      = "karpenter.sh/capacity-type"
-          operator = "In"
-          values   = each.value.karpenter_capacity_type_list
-        },
-        {
-          key      = "kubernetes.io/arch"
-          operator = "In"
-          values   = each.value.karpenter_arch_list
-        },
-        {
-          key      = "kubernetes.io/os"
-          operator = "In"
-          values   = ["linux"]
-        },
-      ]
+      requirements = each.value.karpenter_requirements
+
       limits = {
         resources = {
           cpu = "1k"
@@ -133,6 +118,9 @@ resource "kubernetes_manifest" "karpenter_provisioner" {
   ]
 }
 
+####################################################################################
+###               NODE TEMPLATE           ###
+####################################################################################
 resource "kubernetes_manifest" "karpenter_node_template" {
 
   for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate if var.autoscaling_mode == "karpenter" }

@@ -1,39 +1,10 @@
 locals {
   # Karpenter Provisioners Config
-  karpenter_provisioners = [
-    {
-      name                           = "default"
-      provider_ref_nodetemplate_name = "default"
+  # Use default var
+  karpenter_provisioners = var.karpenter_provisioners
 
-      karpenter_instance_types_list     = ["m6a.xlarge", "m6i.xlarge"]
-      karpenter_capacity_type_list      = ["on-demand"]
-      karpenter_provisioner_node_labels = {}
-      karpenter_provisioner_node_taints = []
-      karpenter_arch_list               = ["amd64"]
-    },
-    {
-      name                           = "default-2xlarge"
-      provider_ref_nodetemplate_name = "default"
-
-      karpenter_instance_types_list     = ["m5a.2xlarge", "m6i.2xlarge"]
-      karpenter_capacity_type_list      = ["on-demand"]
-      karpenter_provisioner_node_labels = {}
-      karpenter_provisioner_node_taints = []
-      karpenter_arch_list               = ["amd64"]
-    },
-    {
-      name                           = "default-4xlarge-c6a"
-      provider_ref_nodetemplate_name = "default"
-
-      karpenter_instance_types_list     = ["c6a.4xlarge", "c6i.4xlarge"]
-      karpenter_capacity_type_list      = ["on-demand"]
-      karpenter_provisioner_node_labels = {}
-      karpenter_provisioner_node_taints = []
-      karpenter_arch_list               = ["amd64"]
-    },
-  ]
   # Karpenter Nodetemplate Config
-  karpenter_nodetemplates = [
+  karpenter_nodetemplates = length(var.karpenter_nodetemplates) == 0 ? [
     {
       name = "default"
       karpenter_subnet_selector_map = {
@@ -49,7 +20,7 @@ locals {
       karpenter_root_volume_size      = "5Gi"
       karpenter_ephemeral_volume_size = "50Gi"
     },
-  ]
+  ] : var.karpenter_nodetemplates
 }
 
 module "karpenter" {
