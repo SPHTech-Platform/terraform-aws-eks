@@ -179,3 +179,9 @@ variable "karpenter_fargate_logging_policy" {
   type        = string
   default     = "karpenter_fargate_logging_cloudwatch"
 }
+
+variable "create_fargate_logging_policy" {
+  description = "create_fargate_logging_policy flag"
+  type        = bool
+  default     = true
+}
