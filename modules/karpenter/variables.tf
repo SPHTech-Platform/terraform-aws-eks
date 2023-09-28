@@ -29,7 +29,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "v0.27.5"
+  default     = "v0.31.0"
 }
 
 variable "karpenter_provisioners" {
@@ -39,21 +39,45 @@ variable "karpenter_provisioners" {
     provider_ref_nodetemplate_name    = string
     karpenter_provisioner_node_labels = map(string)
     karpenter_provisioner_node_taints = list(map(string))
-    karpenter_instance_types_list     = list(string)
-    karpenter_capacity_type_list      = list(string)
-    karpenter_arch_list               = list(string)
+    karpenter_requirements = list(object({
+      key      = string
+      operator = string
+      values   = list(string)
+      })
+    )
   }))
-  default = []
-  ## Sample Below
-  #[{
-  #   name                              = "default"
-  #   provider_ref_nodetemplate_name    = "default"
-  #   karpenter_provisioner_node_labels = {}
-  #   karpenter_provisioner_node_taints = []
-  #   karpenter_instance_types_list     = ["m5a.xlarge", "m6.xlarge"]
-  #   karpenter_capacity_type_list      = ["on-demand"]
-  #   karpenter_arch_list               = ["amd64"]
-  # }]
+  default = [{
+    name                              = "default"
+    provider_ref_nodetemplate_name    = "default"
+    karpenter_provisioner_node_labels = {}
+    karpenter_provisioner_node_taints = []
+    karpenter_requirements = [{
+      key      = "karpenter.k8s.aws/instance-category"
+      operator = "In"
+      values   = ["m"]
+      }, {
+      key      = "karpenter.k8s.aws/instance-cpu"
+      operator = "In"
+      values   = ["4,8,16"]
+      }, {
+      key      = "karpenter.k8s.aws/instance-generation"
+      operator = "Gt"
+      values   = ["5"]
+      }, {
+      key      = "karpenter.sh/capacity-type"
+      operator = "In"
+      values   = ["on-demand"]
+      }, {
+      key      = "kubernetes.io/arch"
+      operator = "In"
+      values   = ["amd64"]
+      }, {
+      key      = "kubernetes.io/os"
+      operator = "In"
+      values   = ["linux"]
+      }
+    ]
+  }]
 }
 
 variable "karpenter_nodetemplates" {
@@ -67,17 +91,26 @@ variable "karpenter_nodetemplates" {
     karpenter_root_volume_size            = string
     karpenter_ephemeral_volume_size       = string
   }))
-  default = []
-  ## sample below
-  # [{
-  #   name                                  = "default"
-  #   karpenter_subnet_selector_map         = {}
-  #   karpenter_security_group_selector_map = {}
-  #   karpenter_nodetemplate_tag_map        = {}
-  #   karpenter_ami_family                  = "Bottlerocket"
-  #   karpenter_root_volume_size            = "5Gi"
-  #   karpenter_ephemeral_volume_size       = "50Gi"
-  # }]
+  default = [{
+    name                          = "default"
+    karpenter_subnet_selector_map = {}
+    # Please insert from module user
+    # karpenter_subnet_selector_map         = {
+    #   "Name" = "aft-app-ap-southeast*"
+    # }
+    # karpenter_security_group_selector_map = {
+    #     "aws-ids" = module.eks.worker_security_group_id
+    #   }
+    #   karpenter_nodetemplate_tag_map = {
+    #     "karpenter.sh/discovery" = module.eks.cluster_name
+    #     "eks:cluster-name"       = module.eks.cluster_name
+    #   }
+    karpenter_security_group_selector_map = {}
+    karpenter_nodetemplate_tag_map        = {}
+    karpenter_ami_family                  = "Bottlerocket"
+    karpenter_root_volume_size            = "5Gi"
+    karpenter_ephemeral_volume_size       = "50Gi"
+  }]
 }
 
 
