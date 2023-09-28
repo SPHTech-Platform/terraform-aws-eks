@@ -4,6 +4,7 @@ module "karpenter_fargate_profile" {
   create_aws_observability_ns     = var.create_aws_observability_ns
   create_fargate_logger_configmap = var.create_fargate_logger_configmap
   create_fargate_log_group        = var.create_fargate_log_group
+  create_fargate_logging_policy   = var.create_fargate_logging_policy
   #   cluster_name = local.cluster_name
   cluster_name = var.cluster_name
   fargate_profiles = {

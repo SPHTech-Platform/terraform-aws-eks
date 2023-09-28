@@ -500,3 +500,9 @@ variable "create_fargate_log_group_for_karpenter" {
   type        = bool
   default     = false
 }
+
+variable "create_fargate_logging_policy_for_karpenter" {
+  description = "value for create_fargate_logging_policy"
+  type        = bool
+  default     = false
+}
