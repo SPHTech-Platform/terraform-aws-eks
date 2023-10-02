@@ -38,17 +38,17 @@ resource "helm_release" "karpenter" {
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = try(module.karpenter[0].irsa_arn, "")
+    value = try(module.karpenter.irsa_arn, "")
   }
 
   set {
     name  = "settings.aws.defaultInstanceProfile"
-    value = try(module.karpenter[0].instance_profile_name, "")
+    value = try(module.karpenter.instance_profile_name, "")
   }
 
   set {
     name  = "settings.aws.interruptionQueueName"
-    value = try(module.karpenter[0].queue_name, "")
+    value = try(module.karpenter.queue_name, "")
   }
 
   depends_on = [
