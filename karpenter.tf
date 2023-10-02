@@ -28,7 +28,7 @@ module "karpenter" {
 
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
-  karpenter_chart_version = "v0.31.0"
+  karpenter_chart_version = var.karpenter_chart_version
 
   install_crds_first = var.install_crds_first
 
