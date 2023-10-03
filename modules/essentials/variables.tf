@@ -1417,7 +1417,7 @@ variable "resolve_conflicts_on_create" {
   default     = "OVERWRITE"
 }
 
-variable "overwrite_helm_values" {
+variable "fluent_bit_overwrite_helm_values" {
   description = "helm values for overwrite configuration"
   type        = string
   default     = ""
