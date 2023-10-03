@@ -1405,12 +1405,6 @@ variable "fluent_bit_log_group_retention" {
   default     = 30
 }
 
-variable "fluent_bit_extra_helm_values" {
-  description = "Helm values for extra configuration"
-  type        = any
-  default     = {}
-}
-
 # variable "resolve_conflicts_on_update" {
 #   description = "value for resolve_conflicts_on_update for aws_eks_addon resource"
 #   type        = string
@@ -1421,4 +1415,10 @@ variable "resolve_conflicts_on_create" {
   description = "value for resolve_conflicts_on_create for aws_eks_addon resource"
   type        = string
   default     = "OVERWRITE"
+}
+
+variable "overwrite_helm_values" {
+  description = "helm values for overwrite configuration"
+  type        = any
+  default     = {}
 }
