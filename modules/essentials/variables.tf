@@ -1419,6 +1419,6 @@ variable "resolve_conflicts_on_create" {
 
 variable "overwrite_helm_values" {
   description = "helm values for overwrite configuration"
-  type        = any
+  type        = string
   default     = ""
 }
