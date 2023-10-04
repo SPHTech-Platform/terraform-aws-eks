@@ -420,7 +420,7 @@ variable "karpenter_provisioners" {
       }, {
       key      = "karpenter.k8s.aws/instance-cpu"
       operator = "In"
-      values   = ["4,8,16"]
+      values   = ["8"]
       }, {
       key      = "karpenter.k8s.aws/instance-generation"
       operator = "Gt"
