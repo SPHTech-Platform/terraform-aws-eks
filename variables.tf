@@ -391,7 +391,7 @@ variable "karpenter_provisioners" {
     provider_ref_nodetemplate_name    = "default"
     karpenter_provisioner_node_taints = []
     karpenter_provisioner_node_labels = {
-      "" = ""
+      "karpenter-node" = "true"
     }
     karpenter_requirements = [{
       key      = "karpenter.k8s.aws/instance-category"
