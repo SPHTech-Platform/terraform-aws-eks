@@ -14,7 +14,8 @@ locals {
         "aws-ids" = module.eks.cluster_security_group_id
       }
       karpenter_nodetemplate_tag_map = {
-        "karpenter.sh/discovery" = module.eks.cluster_name
+        "karpenter.sh/discovery" = module.eks.cluster_name,
+        "eks:cluster-name"       = module.eks.cluster_name,
       }
       karpenter_ami_family            = "Bottlerocket"
       karpenter_root_volume_size      = "5Gi"
