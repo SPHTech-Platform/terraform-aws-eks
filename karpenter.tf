@@ -11,7 +11,7 @@ locals {
         "Name" = "aft-app-ap-southeast*"
       }
       karpenter_security_group_selector_map = {
-        "aws-ids" = "${module.eks.cluster_security_group_id}, ${module.eks.cluster_primary_security_group_id}"
+        "aws-ids" = module.eks.cluster_primary_security_group_id
       }
       karpenter_nodetemplate_tag_map = {
         "karpenter.sh/discovery" = module.eks.cluster_name,
