@@ -6,12 +6,11 @@ locals {
     {
       values = [
         local.default_helm_values,
-        var.fluent_bit_extra_helm_values,
       ]
     }
   )
 
-  default_helm_values = templatefile("${path.module}/templates/fluent_bit.yaml", {
+  default_helm_values = var.fluent_bit_overwrite_helm_values != null && var.fluent_bit_overwrite_helm_values != "" ? var.fluent_bit_overwrite_helm_values : templatefile("${path.module}/templates/fluent_bit.yaml", {
     log_group_name       = local.log_group_name,
     service_account_name = local.service_account_name,
     image_repository     = var.fluent_bit_image_repository,
