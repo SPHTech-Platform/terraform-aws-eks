@@ -81,82 +81,121 @@ module "karpenter-crds" {
 ### PROVISIONER
 ####################################################################################
 
-resource "kubernetes_manifest" "karpenter_provisioner" {
+# resource "kubernetes_manifest" "karpenter_provisioner" {
+
+#   for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner if !var.install_crds_first }
+
+#   manifest = {
+#     apiVersion = "karpenter.sh/v1alpha5"
+#     kind       = "Provisioner"
+#     metadata = {
+#       name = each.value.name
+#     }
+#     spec = {
+#       labels = each.value.karpenter_provisioner_node_labels
+#       taints = each.value.karpenter_provisioner_node_taints
+
+#       requirements = each.value.karpenter_requirements
+
+#       limits = {
+#         resources = {
+#           cpu = "1k"
+#         }
+#       }
+#       providerRef = {
+#         name = each.value.provider_ref_nodetemplate_name
+#       }
+#       ttlSecondsAfterEmpty = 30
+#     }
+#   }
+
+#   computed_fields = ["spec.taints", "spec.requirements"]
+
+#   depends_on = [
+#     helm_release.karpenter
+#   ]
+# }
+
+#########################
+## KUBECTL PROVISIONER ##
+#########################
+
+resource "kubectl_manifest" "karpenter_provisioner" {
 
   for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner if !var.install_crds_first }
 
-  manifest = {
-    apiVersion = "karpenter.sh/v1alpha5"
-    kind       = "Provisioner"
-    metadata = {
-      name = each.value.name
-    }
-    spec = {
-      labels = each.value.karpenter_provisioner_node_labels
-      taints = each.value.karpenter_provisioner_node_taints
-
-      requirements = each.value.karpenter_requirements
-
-      limits = {
-        resources = {
-          cpu = "1k"
-        }
-      }
-      providerRef = {
-        name = each.value.provider_ref_nodetemplate_name
-      }
-      ttlSecondsAfterEmpty = 30
-    }
-  }
-
-  computed_fields = ["spec.taints", "spec.requirements"]
+  yaml_body = templatefile("${path.module}/templates/provisioner.tftpl", {
+    provisioner_name                       = each.value.name
+    karpenter_provisioner_node_taints_yaml = yamlencode(each.value.karpenter_provisioner_node_taints)
+    karpenter_provisioner_node_labels_yaml = yamlencode(each.value.karpenter_provisioner_node_labels)
+    karpenter_requirements_yaml            = yamlencode(each.value.karpenter_requirements)
+  })
 
   depends_on = [
     helm_release.karpenter
   ]
 }
 
+
 ####################################################################################
 ###               NODE TEMPLATE           ###
 ####################################################################################
-resource "kubernetes_manifest" "karpenter_node_template" {
+# resource "kubernetes_manifest" "karpenter_node_template" {
 
-  for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate if !var.install_crds_first }
+#   for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate if !var.install_crds_first }
 
-  manifest = {
-    apiVersion = "karpenter.k8s.aws/v1alpha1"
-    kind       = "AWSNodeTemplate"
-    metadata = {
-      name = each.value.name
-    }
-    spec = {
-      subnetSelector        = each.value.karpenter_subnet_selector_map
-      securityGroupSelector = each.value.karpenter_security_group_selector_map
-      amiFamily             = each.value.karpenter_ami_family
-      blockDeviceMappings = [
-        {
-          deviceName = "/dev/xvda"
-          ebs = {
-            volumeSize = each.value.karpenter_root_volume_size
-            volumeType = "gp3"
-            encrypted  = true
-          }
-        },
-        {
-          deviceName = "/dev/xvdb"
-          ebs = {
-            volumeSize = each.value.karpenter_ephemeral_volume_size
-            volumeType = "gp3"
-            encrypted  = true
-          }
-        },
-      ]
+#   manifest = {
+#     apiVersion = "karpenter.k8s.aws/v1alpha1"
+#     kind       = "AWSNodeTemplate"
+#     metadata = {
+#       name = each.value.name
+#     }
+#     spec = {
+#       subnetSelector        = each.value.karpenter_subnet_selector_map
+#       securityGroupSelector = each.value.karpenter_security_group_selector_map
+#       amiFamily             = each.value.karpenter_ami_family
+#       blockDeviceMappings = [
+#         {
+#           deviceName = "/dev/xvda"
+#           ebs = {
+#             volumeSize = each.value.karpenter_root_volume_size
+#             volumeType = "gp3"
+#             encrypted  = true
+#           }
+#         },
+#         {
+#           deviceName = "/dev/xvdb"
+#           ebs = {
+#             volumeSize = each.value.karpenter_ephemeral_volume_size
+#             volumeType = "gp3"
+#             encrypted  = true
+#           }
+#         },
+#       ]
 
-      tags = each.value.karpenter_nodetemplate_tag_map
-    }
-  }
+#       tags = each.value.karpenter_nodetemplate_tag_map
+#     }
+#   }
 
-  depends_on = [
-    helm_release.karpenter
-  ]
+#   depends_on = [
+#     helm_release.karpenter
+#   ]
+# }
+
+##########################
+## KUBECTL NODETEMPLATE ##
+##########################
+resource "kubectl_manifest" "karpenter_node_template" {
+  for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate }
+
+  yaml_body = templatefile("${path.module}/templates/nodetemplate.tftpl", {
+    node_template_name                         = each.value.name
+    karpenter_subnet_selector_map_yaml         = yamlencode(each.value.karpenter_subnet_selector_map)
+    karpenter_security_group_selector_map_yaml = yamlencode(each.value.karpenter_security_group_selector_map)
+    karpenter_nodetemplate_tag_map_yaml        = yamlencode(each.value.karpenter_nodetemplate_tag_map)
+    karpenter_ami_family                       = each.value.karpenter_ami_family
+    karpenter_root_volume_size                 = each.value.karpenter_root_volume_size
+    karpenter_ephemeral_volume_size            = each.value.karpenter_ephemeral_volume_size
+
+  })
 }

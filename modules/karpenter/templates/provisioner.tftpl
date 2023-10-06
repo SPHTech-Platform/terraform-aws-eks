@@ -1,0 +1,17 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  labels: |
+    ${karpenter_provisioner_node_labels_yaml}
+  taints: |
+    ${karpenter_provisioner_node_taints_yaml}
+  limits:
+    resources:
+      cpu: 1k
+  providerRef:
+    name: default
+  requirements: |
+    ${karpenter_requirements_yaml}
+  ttlSecondsAfterEmpty: 30
