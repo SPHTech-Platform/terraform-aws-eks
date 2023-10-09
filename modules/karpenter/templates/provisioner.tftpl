@@ -4,11 +4,11 @@ metadata:
   name: default
 spec:
 %{ if karpenter_provisioner_node_labels_yaml != ""}
-  labels: |
+  labels:
     ${indent(4, karpenter_provisioner_node_labels_yaml)}
 %{ endif }
 %{ if karpenter_provisioner_node_taints_yaml != ""}
-  taints: |
+  taints:
     ${indent(4, karpenter_provisioner_node_taints_yaml)}
 %{ endif }
   limits:
@@ -16,6 +16,6 @@ spec:
       cpu: 1k
   providerRef:
     name: default
-  requirements: |
+  requirements:
     ${indent(4, karpenter_requirements_yaml)}
   ttlSecondsAfterEmpty: 30
