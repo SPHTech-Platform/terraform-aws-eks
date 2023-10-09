@@ -124,9 +124,9 @@ resource "kubectl_manifest" "karpenter_provisioner" {
 
   yaml_body = templatefile("${path.module}/templates/provisioner.tftpl", {
     provisioner_name                       = each.value.name
-    karpenter_provisioner_node_taints_yaml = length(keys(each.value.karpenter_provisioner_node_labels)) == 0 ? "" : yamlencode(each.value.karpenter_provisioner_node_taints)
-    karpenter_provisioner_node_labels_yaml = length(each.value.karpenter_provisioner_node_taints) == 0 ? "" : yamlencode(each.value.karpenter_provisioner_node_labels)
-    karpenter_requirements_yaml            = yamlencode(each.value.karpenter_requirements)
+    karpenter_provisioner_node_taints_yaml = length(keys(each.value.karpenter_provisioner_node_labels)) == 0 ? "" : replace(yamlencode(each.value.karpenter_provisioner_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_provisioner_node_labels_yaml = length(each.value.karpenter_provisioner_node_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_provisioner_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_requirements_yaml            = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
   })
 }
 
@@ -184,9 +184,9 @@ resource "kubectl_manifest" "karpenter_node_template" {
 
   yaml_body = templatefile("${path.module}/templates/nodetemplate.tftpl", {
     node_template_name                         = each.value.name
-    karpenter_subnet_selector_map_yaml         = yamlencode(each.value.karpenter_subnet_selector_map)
-    karpenter_security_group_selector_map_yaml = yamlencode(each.value.karpenter_security_group_selector_map)
-    karpenter_nodetemplate_tag_map_yaml        = yamlencode(each.value.karpenter_nodetemplate_tag_map)
+    karpenter_subnet_selector_map_yaml         = replace(yamlencode(each.value.karpenter_subnet_selector_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_security_group_selector_map_yaml = replace(yamlencode(each.value.karpenter_security_group_selector_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodetemplate_tag_map_yaml        = replace(yamlencode(each.value.karpenter_nodetemplate_tag_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
     karpenter_ami_family                       = each.value.karpenter_ami_family
     karpenter_root_volume_size                 = each.value.karpenter_root_volume_size
     karpenter_ephemeral_volume_size            = each.value.karpenter_ephemeral_volume_size
