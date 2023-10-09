@@ -149,13 +149,13 @@ variable "subnet_ids" {
 variable "create_aws_observability_ns" {
   description = "Create aws-observability namespace flag"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "create_fargate_logger_configmap" {
   description = "create_fargate_logger_configmap flag"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "create_fargate_log_group" {
