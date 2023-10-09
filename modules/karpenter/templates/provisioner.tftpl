@@ -12,6 +12,29 @@ spec:
       cpu: 1k
   providerRef:
     name: default
-  requirements: |
-    ${karpenter_requirements_yaml}
+  requirements:
+  - key: karpenter.k8s.aws/instance-category
+    operator: In
+    values:
+    - m
+  - key: karpenter.k8s.aws/instance-cpu
+    operator: In
+    values:
+    - "8"
+  - key: karpenter.k8s.aws/instance-generation
+    operator: Gt
+    values:
+    - "5"
+  - key: karpenter.sh/capacity-type
+    operator: In
+    values:
+    - on-demand
+  - key: kubernetes.io/arch
+    operator: In
+    values:
+    - amd64
+  - key: kubernetes.io/os
+    operator: In
+    values:
+    - linux
   ttlSecondsAfterEmpty: 30
