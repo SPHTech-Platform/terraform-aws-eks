@@ -3,34 +3,19 @@ kind: Provisioner
 metadata:
   name: default
 spec:
+%{ if karpenter_provisioner_node_labels_yaml != ""}
+  labels: |
+    ${karpenter_provisioner_node_labels_yaml}
+%{ endif }
+%{ if karpenter_provisioner_node_taints_yaml != ""}
+  taints: |
+    ${karpenter_provisioner_node_taints_yaml}
+%{ endif }
   limits:
     resources:
       cpu: 1k
   providerRef:
     name: default
-  requirements:
-  - key: karpenter.k8s.aws/instance-category
-    operator: In
-    values:
-    - m
-  - key: karpenter.k8s.aws/instance-cpu
-    operator: In
-    values:
-    - "8"
-  - key: karpenter.k8s.aws/instance-generation
-    operator: Gt
-    values:
-    - "5"
-  - key: karpenter.sh/capacity-type
-    operator: In
-    values:
-    - on-demand
-  - key: kubernetes.io/arch
-    operator: In
-    values:
-    - amd64
-  - key: kubernetes.io/os
-    operator: In
-    values:
-    - linux
+  requirements: |
+    ${karpenter_requirements_yaml}
   ttlSecondsAfterEmpty: 30
