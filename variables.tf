@@ -457,12 +457,6 @@ variable "karpenter_nodetemplates" {
   ]
 }
 
-variable "install_crds_first" {
-  description = "Allow installation of CRDs first and skip Custom Resource creations"
-  type        = bool
-  default     = true
-}
-
 variable "create_aws_observability_ns_for_karpenter" {
   description = "Create aws-observability namespace flag"
   type        = bool
