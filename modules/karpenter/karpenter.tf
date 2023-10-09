@@ -66,53 +66,10 @@ module "karpenter-crds" {
   crds_urls = [
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_provisioners.yaml",
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_awsnodetemplates.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_machines.yaml", #not part of release yet
+    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_machines.yaml",
   ]
 
 }
-
-################
-##### CRD ######
-################
-
-####################################################################################
-### PROVISIONER
-####################################################################################
-
-# resource "kubernetes_manifest" "karpenter_provisioner" {
-
-#   for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner}
-
-#   manifest = {
-#     apiVersion = "karpenter.sh/v1alpha5"
-#     kind       = "Provisioner"
-#     metadata = {
-#       name = each.value.name
-#     }
-#     spec = {
-#       labels = each.value.karpenter_provisioner_node_labels
-#       taints = each.value.karpenter_provisioner_node_taints
-
-#       requirements = each.value.karpenter_requirements
-
-#       limits = {
-#         resources = {
-#           cpu = "1k"
-#         }
-#       }
-#       providerRef = {
-#         name = each.value.provider_ref_nodetemplate_name
-#       }
-#       ttlSecondsAfterEmpty = 30
-#     }
-#   }
-
-#   computed_fields = ["spec.taints", "spec.requirements"]
-
-#   depends_on = [
-#     helm_release.karpenter
-#   ]
-# }
 
 #########################
 ## KUBECTL PROVISIONER ##
@@ -128,53 +85,9 @@ resource "kubectl_manifest" "karpenter_provisioner" {
     karpenter_provisioner_node_labels_yaml = length(each.value.karpenter_provisioner_node_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_provisioner_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
     karpenter_requirements_yaml            = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
   })
+
+  depends_on = [module.karpenter-crds]
 }
-
-
-####################################################################################
-###               NODE TEMPLATE           ###
-####################################################################################
-# resource "kubernetes_manifest" "karpenter_node_template" {
-
-#   for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate }
-
-#   manifest = {
-#     apiVersion = "karpenter.k8s.aws/v1alpha1"
-#     kind       = "AWSNodeTemplate"
-#     metadata = {
-#       name = each.value.name
-#     }
-#     spec = {
-#       subnetSelector        = each.value.karpenter_subnet_selector_map
-#       securityGroupSelector = each.value.karpenter_security_group_selector_map
-#       amiFamily             = each.value.karpenter_ami_family
-#       blockDeviceMappings = [
-#         {
-#           deviceName = "/dev/xvda"
-#           ebs = {
-#             volumeSize = each.value.karpenter_root_volume_size
-#             volumeType = "gp3"
-#             encrypted  = true
-#           }
-#         },
-#         {
-#           deviceName = "/dev/xvdb"
-#           ebs = {
-#             volumeSize = each.value.karpenter_ephemeral_volume_size
-#             volumeType = "gp3"
-#             encrypted  = true
-#           }
-#         },
-#       ]
-
-#       tags = each.value.karpenter_nodetemplate_tag_map
-#     }
-#   }
-
-#   depends_on = [
-#     helm_release.karpenter
-#   ]
-# }
 
 ##########################
 ## KUBECTL NODETEMPLATE ##
@@ -192,4 +105,6 @@ resource "kubectl_manifest" "karpenter_node_template" {
     karpenter_ephemeral_volume_size            = each.value.karpenter_ephemeral_volume_size
 
   })
+
+  depends_on = [module.karpenter-crds]
 }
