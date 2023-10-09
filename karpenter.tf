@@ -27,6 +27,10 @@ locals {
 module "karpenter" {
   source = "./modules/karpenter"
 
+  providers = {
+    kubectl = kubectl
+  }
+
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
   karpenter_chart_version = var.karpenter_chart_version
