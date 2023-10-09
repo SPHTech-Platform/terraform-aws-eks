@@ -3,6 +3,14 @@ kind: Provisioner
 metadata:
   name: default
 spec:
+%{ if karpenter_provisioner_node_labels_yaml != ""}
+  labels: |
+    ${indent(4, karpenter_provisioner_node_labels_yaml)}
+%{ endif }
+%{ if karpenter_provisioner_node_taints_yaml != ""}
+  taints: |
+    ${indent(4, karpenter_provisioner_node_taints_yaml)}
+%{ endif }
   limits:
     resources:
       cpu: 1k
