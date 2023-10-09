@@ -31,8 +31,6 @@ module "karpenter" {
 
   karpenter_chart_version = var.karpenter_chart_version
 
-  install_crds_first = var.install_crds_first
-
   cluster_name        = var.cluster_name
   cluster_endpoint    = module.eks.cluster_endpoint
   oidc_provider_arn   = module.eks.oidc_provider_arn

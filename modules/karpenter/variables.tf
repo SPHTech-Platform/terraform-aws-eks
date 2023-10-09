@@ -137,16 +137,6 @@ variable "worker_iam_role_arn" {
   type        = string
 }
 
-##########
-## MODE ##
-##########
-variable "install_crds_first" {
-  description = "Allow installation of CRDs first and skip Custom Resource creations"
-  type        = bool
-  default     = true
-}
-
-
 ##############
 ## FARGATE ###
 ##############

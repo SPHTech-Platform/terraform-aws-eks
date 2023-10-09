@@ -14,8 +14,6 @@ module "karpenter" {
 
 resource "helm_release" "karpenter" {
 
-  count = !var.install_crds_first ? 1 : 0
-
   namespace        = var.karpenter_namespace
   create_namespace = true
 
@@ -83,7 +81,7 @@ module "karpenter-crds" {
 
 # resource "kubernetes_manifest" "karpenter_provisioner" {
 
-#   for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner if !var.install_crds_first }
+#   for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner}
 
 #   manifest = {
 #     apiVersion = "karpenter.sh/v1alpha5"
@@ -122,7 +120,7 @@ module "karpenter-crds" {
 
 resource "kubectl_manifest" "karpenter_provisioner" {
 
-  for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner if !var.install_crds_first }
+  for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner }
 
   yaml_body = templatefile("${path.module}/templates/provisioner.tftpl", {
     provisioner_name                       = each.value.name
@@ -130,10 +128,6 @@ resource "kubectl_manifest" "karpenter_provisioner" {
     karpenter_provisioner_node_labels_yaml = yamlencode(each.value.karpenter_provisioner_node_labels)
     karpenter_requirements_yaml            = yamlencode(each.value.karpenter_requirements)
   })
-
-  depends_on = [
-    helm_release.karpenter
-  ]
 }
 
 
@@ -142,7 +136,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
 ####################################################################################
 # resource "kubernetes_manifest" "karpenter_node_template" {
 
-#   for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate if !var.install_crds_first }
+#   for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate }
 
 #   manifest = {
 #     apiVersion = "karpenter.k8s.aws/v1alpha1"
