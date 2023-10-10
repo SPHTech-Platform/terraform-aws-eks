@@ -28,9 +28,8 @@ module "karpenter" {
   source = "./modules/karpenter"
 
   providers = {
-    kubectl    = kubectl
-    helm       = helm
-    kubernetes = kubernetes
+    kubectl = kubectl
+    helm    = helm
   }
 
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
