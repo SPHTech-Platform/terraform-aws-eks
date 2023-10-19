@@ -31,6 +31,7 @@ locals {
     http_tokens                 = var.force_imdsv2 ? "required" : "optional"
     http_put_response_hop_limit = var.force_imdsv2 && var.force_irsa ? 1 : 2
     instance_metadata_tags      = "disabled"
+    http_protocol_ipv6          = "enabled"
   }
 
   # Cartesian product of node groups and individual subnets
@@ -53,13 +54,13 @@ locals {
 ################################################################################
 module "eks_managed_node_group" {
   source  = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
-  version = "~> 19.15.0"
+  version = "~> 19.17.0"
 
   for_each = local.eks_managed_node_groups
 
   cluster_name      = var.cluster_name
   cluster_version   = try(each.value.cluster_version, local.eks_managed_node_group_defaults.cluster_version, data.aws_eks_cluster.this.version)
-  cluster_ip_family = "ipv4"
+  cluster_ip_family = var.cluster_ip_family
 
   # EKS Managed Node Group
   name            = try(each.value.name, each.key)

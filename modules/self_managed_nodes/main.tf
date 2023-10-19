@@ -62,7 +62,7 @@ module "self_managed_group" {
   for_each = local.self_managed_node_groups
 
   cluster_name      = var.cluster_name
-  cluster_ip_family = "ipv4"
+  cluster_ip_family = var.cluster_ip_family
 
   # Autoscaling Group
   name            = try(each.value.name, each.key)

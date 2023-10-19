@@ -300,6 +300,7 @@ variable "eks_managed_node_group_defaults" {
       http_tokens                 = "required"
       http_put_response_hop_limit = 1
       instance_metadata_tags      = "disabled"
+      http_protocol_ipv6          = "enabled"
     }
 
     update_launch_template_default_version = true
@@ -358,4 +359,26 @@ variable "create_fargate_logger_configmap" {
   description = "Whether to create AWS Fargate logger configmap."
   type        = bool
   default     = true
+}
+
+#######################
+# Ipv6
+#######################
+
+variable "create_cni_ipv6_iam_policy" {
+  description = "Whether to create CNI IPv6 IAM policy."
+  type        = bool
+  default     = false
+}
+
+variable "cluster_service_ipv6_cidr" {
+  description = "The CIDR block to assign Kubernetes pod and service IP addresses from if `ipv6` was specified when the cluster was created. Kubernetes assigns service addresses from the unique local address range (fc00::/7) because you can't specify a custom IPv6 CIDR block when you create the cluster"
+  type        = string
+  default     = null
+}
+
+variable "cluster_ip_family" {
+  description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created"
+  type        = string
+  default     = null
 }

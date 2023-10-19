@@ -15,7 +15,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16.0"
+  version = "~> 19.17.0"
 
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
@@ -29,7 +29,10 @@ module "eks" {
   vpc_id                                = var.vpc_id
   subnet_ids                            = var.subnet_ids
   cluster_additional_security_group_ids = var.cluster_additional_security_group_ids
+  cluster_ip_family                     = var.cluster_ip_family
   cluster_service_ipv4_cidr             = var.cluster_service_ipv4_cidr
+  cluster_service_ipv6_cidr             = var.cluster_service_ipv6_cidr
+  create_cni_ipv6_iam_policy            = var.create_cni_ipv6_iam_policy
 
   create_cluster_security_group      = var.create_cluster_security_group
   cluster_security_group_name        = coalesce(var.cluster_security_group_name, var.cluster_name)
