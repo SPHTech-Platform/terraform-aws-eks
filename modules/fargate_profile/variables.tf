@@ -24,6 +24,13 @@ variable "fargate_profile_defaults" {
   default     = {}
 }
 
+
+variable "cluster_ip_family" {
+  description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`"
+  type        = string
+  default     = "ipv4"
+}
+
 variable "tags" {
   description = "Tags for all resources"
   type        = map(string)

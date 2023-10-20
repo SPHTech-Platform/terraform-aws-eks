@@ -18,6 +18,7 @@ locals {
     http_tokens                 = var.force_imdsv2 ? "required" : "optional"
     http_put_response_hop_limit = var.force_imdsv2 && var.force_irsa ? 1 : 2
     instance_metadata_tags      = "disabled"
+    http_protocol_ipv6          = var.cluster_ip_family == "ipv6" ? "enabled" : "disabled"
   }
 
   # Cartesian product of node groups and individual subnets
@@ -62,7 +63,7 @@ module "self_managed_group" {
   for_each = local.self_managed_node_groups
 
   cluster_name      = var.cluster_name
-  cluster_ip_family = "ipv4"
+  cluster_ip_family = var.cluster_ip_family
 
   # Autoscaling Group
   name            = try(each.value.name, each.key)

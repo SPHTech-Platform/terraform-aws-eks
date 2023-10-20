@@ -79,6 +79,11 @@ locals {
     var.eks_managed_node_groups,
   )
 
+  eks_managed_node_group_defaults = var.cluster_ip_family != "ipv6" ? var.eks_managed_node_group_defaults : merge(var.eks_managed_node_group_defaults, {
+    metadata_options = merge(var.eks_managed_node_group_defaults["metadata_options"], {
+      http_protocol_ipv6 = "enabled"
+    })
+  })
 }
 
 data "aws_arn" "cluster" {
@@ -98,7 +103,7 @@ module "node_groups" {
   worker_security_group_id = module.eks.node_security_group_id
 
   eks_managed_node_groups         = local.eks_managed_node_groups
-  eks_managed_node_group_defaults = var.eks_managed_node_group_defaults
+  eks_managed_node_group_defaults = local.eks_managed_node_group_defaults
 
   force_imdsv2 = var.force_imdsv2
   force_irsa   = var.force_irsa

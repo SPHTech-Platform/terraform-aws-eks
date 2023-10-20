@@ -51,6 +51,12 @@ variable "self_managed_node_group_defaults" {
   }
 }
 
+variable "cluster_ip_family" {
+  description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`"
+  type        = string
+  default     = "ipv4"
+}
+
 ############################################
 # Instance Refresh/Node Termination Handler
 ############################################
