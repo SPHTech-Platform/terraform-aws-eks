@@ -300,7 +300,7 @@ variable "eks_managed_node_group_defaults" {
       http_tokens                 = "required"
       http_put_response_hop_limit = 1
       instance_metadata_tags      = "disabled"
-      http_protocol_ipv6          = "enabled"
+      http_protocol_ipv6          = "disabled"
     }
 
     update_launch_template_default_version = true
@@ -380,5 +380,5 @@ variable "cluster_service_ipv6_cidr" {
 variable "cluster_ip_family" {
   description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created"
   type        = string
-  default     = null
+  default     = "ipv4"
 }

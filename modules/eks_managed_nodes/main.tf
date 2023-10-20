@@ -31,7 +31,7 @@ locals {
     http_tokens                 = var.force_imdsv2 ? "required" : "optional"
     http_put_response_hop_limit = var.force_imdsv2 && var.force_irsa ? 1 : 2
     instance_metadata_tags      = "disabled"
-    http_protocol_ipv6          = "enabled"
+    http_protocol_ipv6          = var.cluster_ip_family == "ipv6" ? "enabled" : "disabled"
   }
 
   # Cartesian product of node groups and individual subnets
