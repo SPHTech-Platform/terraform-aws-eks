@@ -88,12 +88,12 @@ variable "karpenter_nodetemplates" {
     karpenter_security_group_selector_map = map(string)
     karpenter_nodetemplate_tag_map        = map(string)
     karpenter_ami_family                  = string
-    karpenter_root_volume_size            = string
-    karpenter_ephemeral_volume_size       = string
+    karpenter_block_device_mapping        = list(map(string))
   }))
   default = [{
-    name                          = "default"
-    karpenter_subnet_selector_map = {}
+    name                           = "default"
+    karpenter_subnet_selector_map  = {}
+    karpenter_block_device_mapping = []
     # Please insert from module user
     # karpenter_subnet_selector_map         = {
     #   "Name" = "aft-app-ap-southeast*"
@@ -105,11 +105,32 @@ variable "karpenter_nodetemplates" {
     #     "karpenter.sh/discovery" = module.eks.cluster_name
     #     "eks:cluster-name"       = module.eks.cluster_name
     #   }
+    # karpenter_block_device_mapping = [
+    #   {
+    #     #karpenter_root_volume_size
+    #     "deviceName" = "/dev/xvda"
+    #     "ebs" = {
+    #       "encrypted"           = true
+    #       "volumeSize"          = "5Gi"
+    #       "volumeType"          = "gp3"
+    #       "kmsKeyID"            = ""
+    #       "deleteOnTermination" = "true"
+    #     }
+    #     }, {
+    #     #karpenter_ephemeral_volume_size
+    #     "deviceName" = "/dev/xvdb",
+    #     "ebs" = {
+    #       "encrypted"           = true
+    #       "volumeSize"          = "50Gi"
+    #       "volumeType"          = "gp3"
+    #       "kmsKeyID"            = ""
+    #       "deleteOnTermination" = "true"
+    #     }
+    #   }`
+    # ]
     karpenter_security_group_selector_map = {}
     karpenter_nodetemplate_tag_map        = {}
     karpenter_ami_family                  = "Bottlerocket"
-    karpenter_root_volume_size            = "5Gi"
-    karpenter_ephemeral_volume_size       = "50Gi"
   }]
 }
 
