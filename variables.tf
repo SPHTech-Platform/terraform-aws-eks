@@ -430,31 +430,18 @@ variable "karpenter_nodetemplates" {
     karpenter_security_group_selector_map = map(string)
     karpenter_nodetemplate_tag_map        = map(string)
     karpenter_ami_family                  = string
-    karpenter_root_volume_size            = string
-    karpenter_ephemeral_volume_size       = string
+    karpenter_block_device_mapping = list(object({
+      deviceName = string
+      ebs = object({
+        encrypted           = bool
+        volumeSize          = string
+        volumeType          = string
+        kmsKeyID            = optional(string)
+        deleteOnTermination = bool
+      })
+    }))
   }))
-  # default = [
-  # {
-  # name                          = "default"
-  # karpenter_subnet_selector_map = {}
-  # Please insert from module user
-  # karpenter_subnet_selector_map         = {
-  #   "Name" = "aft-app-ap-southeast*"
-  # }
-  # karpenter_security_group_selector_map = {
-  #     "aws-ids" = module.eks.worker_security_group_id
-  #   }
-  #   karpenter_nodetemplate_tag_map = {
-  #     "karpenter.sh/discovery" = module.eks.cluster_name
-  #     "eks:cluster-name"       = module.eks.cluster_name
-  #   }
-  # karpenter_security_group_selector_map = {}
-  # karpenter_nodetemplate_tag_map        = {}
-  # karpenter_ami_family                  = "Bottlerocket"
-  # karpenter_root_volume_size            = "5Gi"
-  # karpenter_ephemeral_volume_size       = "50Gi"
-  # }
-  # ]
+  default = []
 }
 
 variable "create_aws_observability_ns_for_karpenter" {
