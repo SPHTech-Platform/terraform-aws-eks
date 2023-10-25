@@ -168,6 +168,12 @@ variable "create_fargate_logger_configmap" {
   default     = true
 }
 
+variable "create_fargate_log_group" {
+  description = "create_fargate_log_group flag"
+  type        = bool
+  default     = true
+}
+
 variable "karpenter_fargate_logging_policy" {
   description = "Name of Fargate Logging Profile Policy"
   type        = string
