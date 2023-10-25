@@ -88,7 +88,16 @@ variable "karpenter_nodetemplates" {
     karpenter_security_group_selector_map = map(string)
     karpenter_nodetemplate_tag_map        = map(string)
     karpenter_ami_family                  = string
-    karpenter_block_device_mapping        = list(map(string))
+    karpenter_block_device_mapping = list(object({
+      deviceName = string
+      ebs = object({
+        encrypted           = bool
+        volumeSize          = string
+        volumeType          = string
+        kmsKeyID            = optional(string)
+        deleteOnTermination = bool
+      })
+    }))
   }))
   default = [{
     name                           = "default"
@@ -114,7 +123,7 @@ variable "karpenter_nodetemplates" {
     #       "volumeSize"          = "5Gi"
     #       "volumeType"          = "gp3"
     #       "kmsKeyID"            = ""
-    #       "deleteOnTermination" = "true"
+    #       "deleteOnTermination" = true
     #     }
     #     }, {
     #     #karpenter_ephemeral_volume_size
@@ -124,7 +133,7 @@ variable "karpenter_nodetemplates" {
     #       "volumeSize"          = "50Gi"
     #       "volumeType"          = "gp3"
     #       "kmsKeyID"            = ""
-    #       "deleteOnTermination" = "true"
+    #       "deleteOnTermination" = true
     #     }
     #   }`
     # ]

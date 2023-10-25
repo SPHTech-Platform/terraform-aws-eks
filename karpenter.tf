@@ -4,7 +4,7 @@ locals {
   karpenter_provisioners = var.karpenter_provisioners
 
   # Karpenter Nodetemplate Config
-  karpenter_nodetemplates = length(var.karpenter_nodetemplates) == 0 ? [
+  karpenter_nodetemplates = coalescelist(var.karpenter_nodetemplates, [
     {
       name = "default"
       karpenter_subnet_selector_map = {
@@ -17,11 +17,31 @@ locals {
         "karpenter.sh/discovery" = module.eks.cluster_name,
         "eks:cluster-name"       = module.eks.cluster_name,
       }
-      karpenter_ami_family            = "Bottlerocket"
-      karpenter_root_volume_size      = "5Gi"
-      karpenter_ephemeral_volume_size = "50Gi"
-    },
-  ] : var.karpenter_nodetemplates
+      karpenter_ami_family = "Bottlerocket"
+      karpenter_block_device_mapping = [
+        {
+          #karpenter_root_volume_size
+          "deviceName" = "/dev/xvda"
+          "ebs" = {
+            "encrypted"           = true
+            "volumeSize"          = "5Gi"
+            "volumeType"          = "gp3"
+            "deleteOnTermination" = true
+          }
+          }, {
+          #karpenter_ephemeral_volume_size
+          "deviceName" = "/dev/xvdb",
+          "ebs" = {
+            "encrypted"           = true
+            "volumeSize"          = "50Gi"
+            "volumeType"          = "gp3"
+            "deleteOnTermination" = true
+          }
+        }
+      ]
+    }
+  ])
+
 }
 
 module "karpenter" {
