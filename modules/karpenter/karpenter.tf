@@ -101,8 +101,7 @@ resource "kubectl_manifest" "karpenter_node_template" {
     karpenter_security_group_selector_map_yaml = replace(yamlencode(each.value.karpenter_security_group_selector_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
     karpenter_nodetemplate_tag_map_yaml        = replace(yamlencode(each.value.karpenter_nodetemplate_tag_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
     karpenter_ami_family                       = each.value.karpenter_ami_family
-    karpenter_root_volume_size                 = each.value.karpenter_root_volume_size
-    karpenter_ephemeral_volume_size            = each.value.karpenter_ephemeral_volume_size
+    karpenter_block_device_mapping_yaml        = replace(yamlencode(each.value.karpenter_block_device_mapping), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
 
   })
 

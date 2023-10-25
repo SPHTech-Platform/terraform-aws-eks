@@ -5,16 +5,7 @@ metadata:
 spec:
   amiFamily: ${karpenter_ami_family}
   blockDeviceMappings:
-  - deviceName: /dev/xvda
-    ebs:
-      encrypted: true
-      volumeSize: ${karpenter_root_volume_size}
-      volumeType: gp3
-  - deviceName: /dev/xvdb
-    ebs:
-      encrypted: true
-      volumeSize: ${karpenter_ephemeral_volume_size}
-      volumeType: gp3
+    ${indent(4,karpenter_block_device_mapping_yaml)}
   securityGroupSelector:
     ${indent(4,karpenter_security_group_selector_map_yaml)}
   subnetSelector:
