@@ -382,3 +382,11 @@ variable "cluster_ip_family" {
   type        = string
   default     = "ipv4"
 }
+##########
+## MODE ##
+##########
+variable "autoscaling_mode" {
+  description = "Autoscaling mode: cluster_autoscaler or karpenter"
+  type        = string
+  default     = "karpenter"
+}

@@ -8,6 +8,19 @@ locals {
     )
   ) : var.aws_auth_fargate_profile_pod_execution_role_arns
 
+  additional_aws_auth_fargate_profile_pod_execution_role_arns = var.autoscaling_mode == "karpenter" ? concat(values(module.karpenter.fargate_profile_pod_execution_role_arn)) : []
+
+  additional_role_mapping = var.autoscaling_mode == "karpenter" ? [
+    {
+      rolearn = aws_iam_role.workers.arn
+      groups = [
+        "system:bootstrappers",
+        "system:nodes",
+      ]
+      username = "system:node:{{EC2PrivateDNSName}}"
+    }
+  ] : []
+
 }
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 #tfsec:ignore:aws-eks-no-public-cluster-access
@@ -149,10 +162,10 @@ module "eks" {
   manage_aws_auth_configmap                        = var.manage_aws_auth_configmap
   aws_auth_node_iam_role_arns_non_windows          = [aws_iam_role.workers.arn]
   aws_auth_node_iam_role_arns_windows              = var.enable_cluster_windows_support ? [aws_iam_role.workers.arn] : []
-  aws_auth_roles                                   = var.role_mapping
+  aws_auth_roles                                   = concat(var.role_mapping, local.additional_role_mapping)
   aws_auth_users                                   = var.user_mapping
   aws_auth_accounts                                = []
-  aws_auth_fargate_profile_pod_execution_role_arns = local.aws_auth_fargate_profile_pod_execution_role_arns
+  aws_auth_fargate_profile_pod_execution_role_arns = concat(local.aws_auth_fargate_profile_pod_execution_role_arns, local.additional_aws_auth_fargate_profile_pod_execution_role_arns)
 
   tags = var.tags
 }
