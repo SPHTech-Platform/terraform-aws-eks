@@ -1,7 +1,7 @@
 apiVersion: karpenter.sh/v1alpha5
 kind: Provisioner
 metadata:
-  name: default
+  name: ${provisioner_name}
 spec:
 %{ if karpenter_provisioner_node_labels_yaml != ""}
   labels:
