@@ -49,6 +49,11 @@ resource "helm_release" "karpenter" {
     value = try(module.karpenter.queue_name, "")
   }
 
+  set {
+    name  = "settings.aws.enablePodENI"
+    value = var.enable_pod_eni
+  }
+
   depends_on = [
     module.karpenter[0].irsa_arn,
     module.karpenter-crds,

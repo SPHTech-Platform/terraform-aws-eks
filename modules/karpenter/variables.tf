@@ -205,3 +205,10 @@ variable "create_fargate_logging_policy" {
   type        = bool
   default     = true
 }
+
+variable "enable_pod_eni" {
+  description = "value for enablePodENI"
+  type        = bool
+  default     = true
+
+}
