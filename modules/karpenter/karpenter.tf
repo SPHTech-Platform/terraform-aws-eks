@@ -86,7 +86,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
 
   yaml_body = templatefile("${path.module}/templates/provisioner.tftpl", {
     provisioner_name                       = each.value.name
-    karpenter_provisioner_node_taints_yaml = length(keys(each.value.karpenter_provisioner_node_labels)) == 0 ? "" : replace(yamlencode(each.value.karpenter_provisioner_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_provisioner_node_taints_yaml = length(keys(each.value.karpenter_provisioner_node_taints)) == 0 ? "" : replace(yamlencode(each.value.karpenter_provisioner_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
     karpenter_provisioner_node_labels_yaml = length(each.value.karpenter_provisioner_node_labels) == 0 ? "" : replace(yamlencode(each.value.karpenter_provisioner_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
     karpenter_requirements_yaml            = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
   })
