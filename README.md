@@ -231,6 +231,7 @@ module "karpenter" {
 | [aws_iam_service_linked_role.autoscaling](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_service_linked_role) | resource |
 | [kubernetes_config_map_v1.amazon_vpc_cni](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map_v1) | resource |
 | [kubernetes_manifest.fargate_node_security_group_policy](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.fargate_node_security_group_policy_for_karpenter](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [aws_ami.eks_default_bottlerocket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_arn.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
@@ -267,11 +268,8 @@ module "karpenter" {
 | <a name="input_create_aws_observability_ns"></a> [create\_aws\_observability\_ns](#input\_create\_aws\_observability\_ns) | Whether to create AWS Observability Namespace. | `bool` | `true` | no |
 | <a name="input_create_aws_observability_ns_for_karpenter"></a> [create\_aws\_observability\_ns\_for\_karpenter](#input\_create\_aws\_observability\_ns\_for\_karpenter) | Create aws-observability namespace flag | `bool` | `false` | no |
 | <a name="input_create_cluster_security_group"></a> [create\_cluster\_security\_group](#input\_create\_cluster\_security\_group) | Determines if a security group is created for the cluster. Note: the EKS service creates a primary security group for the cluster by default | `bool` | `true` | no |
-<<<<<<< HEAD
 | <a name="input_create_cni_ipv6_iam_policy"></a> [create\_cni\_ipv6\_iam\_policy](#input\_create\_cni\_ipv6\_iam\_policy) | Whether to create CNI IPv6 IAM policy. | `bool` | `false` | no |
-=======
 | <a name="input_create_fargate_log_group_for_karpenter"></a> [create\_fargate\_log\_group\_for\_karpenter](#input\_create\_fargate\_log\_group\_for\_karpenter) | value for create\_fargate\_log\_group | `bool` | `false` | no |
->>>>>>> 0214028 (Set flag for creation of fargate log group)
 | <a name="input_create_fargate_logger_configmap"></a> [create\_fargate\_logger\_configmap](#input\_create\_fargate\_logger\_configmap) | Whether to create AWS Fargate logger configmap. | `bool` | `true` | no |
 | <a name="input_create_fargate_logger_configmap_for_karpenter"></a> [create\_fargate\_logger\_configmap\_for\_karpenter](#input\_create\_fargate\_logger\_configmap\_for\_karpenter) | create\_fargate\_logger\_configmap flag | `bool` | `false` | no |
 | <a name="input_create_fargate_logging_policy_for_karpenter"></a> [create\_fargate\_logging\_policy\_for\_karpenter](#input\_create\_fargate\_logging\_policy\_for\_karpenter) | value for create\_fargate\_logging\_policy | `bool` | `false` | no |

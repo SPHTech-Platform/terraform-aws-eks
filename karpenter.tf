@@ -73,3 +73,24 @@ module "karpenter" {
   # Required for Fargate profile
   subnet_ids = var.subnet_ids
 }
+
+resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter" {
+  count = var.fargate_cluster && var.create_node_security_group && var.autoscaling_mode == "karpenter" ? 1 : 0
+
+  manifest = {
+    apiVersion = "vpcresources.k8s.aws/v1beta1"
+    kind       = "SecurityGroupPolicy"
+    metadata = {
+      name      = "fargate-karpenter-namespace-sg"
+      namespace = "karpenter"
+    }
+    spec = {
+      podSelector = {
+        matchLabels = {}
+      }
+      securityGroups = {
+        groupIds = [module.eks.node_security_group_id]
+      }
+    }
+  }
+}
