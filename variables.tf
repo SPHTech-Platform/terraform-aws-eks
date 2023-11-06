@@ -634,5 +634,5 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "v0.31.0"
+  default     = "v0.32.1"
 }
