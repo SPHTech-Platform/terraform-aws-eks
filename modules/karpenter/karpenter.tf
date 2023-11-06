@@ -60,7 +60,7 @@ resource "helm_release" "karpenter" {
   }
 
   set {
-    name  = "featureGates.drift"
+    name  = "settings.featureGates.drift"
     value = var.enable_drift_detection
   }
 
