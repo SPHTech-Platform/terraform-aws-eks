@@ -394,27 +394,108 @@ variable "autoscaling_mode" {
 ##############################
 ## KARPENTER DEFAULT CONFIG ##
 ##############################
-variable "karpenter_provisioners" {
+# To be removed after test completion of nodepools and nodeclasses
+# variable "karpenter_provisioners" {
+#   description = "List of Provisioner maps"
+#   type = list(object({
+#     name                              = string
+#     provider_ref_nodetemplate_name    = string
+#     karpenter_provisioner_node_labels = map(string)
+#     karpenter_provisioner_node_taints = list(map(string))
+#     karpenter_requirements = list(object({
+#       key      = string
+#       operator = string
+#       values   = list(string)
+#       })
+#     )
+#   }))
+#   default = [{
+#     name                              = "default"
+#     provider_ref_nodetemplate_name    = "default"
+#     karpenter_provisioner_node_taints = []
+#     karpenter_provisioner_node_labels = {
+#       "karpenter-node" = "true"
+#     }
+#     karpenter_requirements = [{
+#       key      = "karpenter.k8s.aws/instance-category"
+#       operator = "In"
+#       values   = ["m"]
+#       }, {
+#       key      = "karpenter.k8s.aws/instance-cpu"
+#       operator = "In"
+#       values   = ["8"]
+#       }, {
+#       key      = "karpenter.k8s.aws/instance-generation"
+#       operator = "Gt"
+#       values   = ["5"]
+#       }, {
+#       key      = "karpenter.sh/capacity-type"
+#       operator = "In"
+#       values   = ["on-demand"]
+#       }, {
+#       key      = "kubernetes.io/arch"
+#       operator = "In"
+#       values   = ["amd64"]
+#       }, {
+#       key      = "kubernetes.io/os"
+#       operator = "In"
+#       values   = ["linux"]
+#       }
+#     ]
+#   }]
+# }
+
+# variable "karpenter_nodetemplates" {
+#   description = "List of nodetemplate maps"
+#   type = list(object({
+#     name                                  = string
+#     karpenter_subnet_selector_map         = map(string)
+#     karpenter_security_group_selector_map = map(string)
+#     karpenter_nodetemplate_tag_map        = map(string)
+#     karpenter_ami_family                  = string
+#     karpenter_block_device_mapping = list(object({
+#       deviceName = string
+#       ebs = object({
+#         encrypted           = bool
+#         volumeSize          = string
+#         volumeType          = string
+#         kmsKeyID            = optional(string)
+#         deleteOnTermination = bool
+#       })
+#     }))
+#   }))
+#   default = []
+# }
+
+variable "karpenter_nodepools" {
   description = "List of Provisioner maps"
   type = list(object({
-    name                              = string
-    provider_ref_nodetemplate_name    = string
-    karpenter_provisioner_node_labels = map(string)
-    karpenter_provisioner_node_taints = list(map(string))
+    nodepool_name                     = string
+    nodeclass_name                    = string
+    karpenter_nodepool_node_labels    = map(string)
+    karpenter_nodepool_annotations    = map(string)
+    karpenter_nodepool_node_taints    = list(map(string))
+    karpenter_nodepool_startup_taints = list(map(string))
     karpenter_requirements = list(object({
       key      = string
       operator = string
       values   = list(string)
       })
     )
+    karpenter_nodepool_disruption = object({
+      consolidation_policy = string
+      consolidate_after    = optional(string)
+      expire_after         = string
+    })
+    karpenter_nodepool_weight = number
   }))
   default = [{
-    name                              = "default"
-    provider_ref_nodetemplate_name    = "default"
-    karpenter_provisioner_node_taints = []
-    karpenter_provisioner_node_labels = {
-      "karpenter-node" = "true"
-    }
+    nodepool_name                     = "default"
+    nodeclass_name                    = "default"
+    karpenter_nodepool_node_labels    = {}
+    karpenter_nodepool_annotations    = {}
+    karpenter_nodepool_node_taints    = []
+    karpenter_nodepool_startup_taints = []
     karpenter_requirements = [{
       key      = "karpenter.k8s.aws/instance-category"
       operator = "In"
@@ -422,7 +503,7 @@ variable "karpenter_provisioners" {
       }, {
       key      = "karpenter.k8s.aws/instance-cpu"
       operator = "In"
-      values   = ["8"]
+      values   = ["4"]
       }, {
       key      = "karpenter.k8s.aws/instance-generation"
       operator = "Gt"
@@ -441,17 +522,26 @@ variable "karpenter_provisioners" {
       values   = ["linux"]
       }
     ]
+    karpenter_nodepool_disruption = {
+      consolidation_policy = "WhenUnderutilized" # WhenUnderutilized or WhenEmpty
+      # consolidate_after    = "10m"               # Only used if consolidation_policy is WhenEmpty
+      expire_after = "168h" # 7d | 168h | 1w
+    }
+    karpenter_nodepool_weight = 10
   }]
 }
 
-variable "karpenter_nodetemplates" {
+variable "karpenter_nodeclasses" {
   description = "List of nodetemplate maps"
   type = list(object({
-    name                                  = string
-    karpenter_subnet_selector_map         = map(string)
-    karpenter_security_group_selector_map = map(string)
-    karpenter_nodetemplate_tag_map        = map(string)
-    karpenter_ami_family                  = string
+    nodeclass_name                         = string
+    karpenter_subnet_selector_maps         = list(map(any))
+    karpenter_security_group_selector_maps = list(map(any))
+    karpenter_ami_selector_maps            = list(map(any))
+    karpenter_node_role                    = string
+    karpenter_node_tags_map                = map(string)
+    karpenter_ami_family                   = string
+    karpenter_node_user_data               = string
     karpenter_block_device_mapping = list(object({
       deviceName = string
       ebs = object({
@@ -463,7 +553,58 @@ variable "karpenter_nodetemplates" {
       })
     }))
   }))
-  default = []
+  default = [{
+    nodeclass_name                 = "default"
+    karpenter_block_device_mapping = []
+    karpenter_ami_selector_maps    = []
+    karpenter_node_user_data       = ""
+    karpenter_node_role            = "module.eks.worker_iam_role_name"
+    # Please insert from module user
+    # karpenter_subnet_selector_map         =  [{
+    #      tags = {
+    #    "Name" = "aft-app-ap-southeast*"
+    #       },
+    #  ]
+    # karpenter_security_group_selector_map = [{
+    #     "id" = module.eks.worker_security_group_id
+    #   }, {
+    #     "tags" = {
+    #        "Name" = "*Public*",
+    #     }
+    #  }]
+    #   karpenter_nodetemplate_tag_map = {
+    #     "karpenter.sh/discovery" = module.eks.cluster_name
+    #     "eks:cluster-name"       = module.eks.cluster_name
+    #   }
+    #  karpenter_node_role = module.eks.worker_iam_role_name
+    # karpenter_block_device_mapping = [
+    #   {
+    #     #karpenter_root_volume_size
+    #     "deviceName" = "/dev/xvda"
+    #     "ebs" = {
+    #       "encrypted"           = true
+    #       "volumeSize"          = "5Gi"
+    #       "volumeType"          = "gp3"
+    #       "kmsKeyID"            = ""
+    #       "deleteOnTermination" = true
+    #     }
+    #     }, {
+    #     #karpenter_ephemeral_volume_size
+    #     "deviceName" = "/dev/xvdb",
+    #     "ebs" = {
+    #       "encrypted"           = true
+    #       "volumeSize"          = "50Gi"
+    #       "volumeType"          = "gp3"
+    #       "kmsKeyID"            = ""
+    #       "deleteOnTermination" = true
+    #     }
+    #   }`
+    # ]
+    karpenter_subnet_selector_maps         = []
+    karpenter_security_group_selector_maps = []
+    karpenter_node_tags_map                = {}
+    karpenter_ami_family                   = "Bottlerocket"
+  }]
 }
 
 variable "create_aws_observability_ns_for_karpenter" {

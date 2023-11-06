@@ -1,18 +1,26 @@
 locals {
   # Karpenter Provisioners Config
   # Use default var
-  karpenter_provisioners = var.karpenter_provisioners
+  karpenter_nodepools = var.karpenter_nodepools
 
   # Karpenter Nodetemplate Config
-  karpenter_nodetemplates = coalescelist(var.karpenter_nodetemplates, [
+  karpenter_nodeclasses = coalescelist(var.karpenter_nodeclasses, [
     {
-      name = "default"
-      karpenter_subnet_selector_map = {
-        "Name" = "aft-app-ap-southeast*"
-      }
-      karpenter_security_group_selector_map = {
-        "aws-ids" = module.eks.cluster_primary_security_group_id
-      }
+      nodeclass_name = "default"
+      karpenter_subnet_selector_map = [{
+        tags = {
+          "Name" = "aft-app-ap-southeast*"
+        },
+        }
+      ]
+      karpenter_node_role = aws_iam_role.workers.name
+      karpenter_security_group_selector_map = [{
+        "id" = module.eks.cluster_primary_security_group_id
+        }, {
+        "tags" = {
+          "Name" = "*Public*",
+        }
+      }]
       karpenter_nodetemplate_tag_map = {
         "karpenter.sh/discovery" = module.eks.cluster_name,
         "eks:cluster-name"       = module.eks.cluster_name,
@@ -39,7 +47,7 @@ locals {
           }
         }
       ]
-    }
+    },
   ])
 
 }
@@ -61,9 +69,8 @@ module "karpenter" {
   oidc_provider_arn   = module.eks.oidc_provider_arn
   worker_iam_role_arn = aws_iam_role.workers.arn
 
-  # Add the provisioners and nodetemplates after CRDs are installed
-  karpenter_provisioners  = local.karpenter_provisioners
-  karpenter_nodetemplates = local.karpenter_nodetemplates
+  karpenter_nodepools   = local.karpenter_nodepools
+  karpenter_nodeclasses = local.karpenter_nodeclasses
 
   create_fargate_logger_configmap = var.create_fargate_logger_configmap_for_karpenter
   create_aws_observability_ns     = var.create_aws_observability_ns_for_karpenter
