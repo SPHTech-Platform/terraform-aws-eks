@@ -93,4 +93,6 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter
       }
     }
   }
+
+  depends_on = [module.karpenter]
 }
