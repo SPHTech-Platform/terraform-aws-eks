@@ -54,6 +54,16 @@ resource "helm_release" "karpenter" {
     value = var.enable_pod_eni
   }
 
+  set {
+    name  = "settings.aws.enablePodENI"
+    value = var.enable_pod_eni
+  }
+
+  set {
+    name  = "featureGates.drift"
+    value = var.enable_drift_detection
+  }
+
   depends_on = [
     module.karpenter[0].irsa_arn,
     module.karpenter-crds,

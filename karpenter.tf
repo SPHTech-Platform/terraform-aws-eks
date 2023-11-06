@@ -64,6 +64,7 @@ module "karpenter" {
   # Add the provisioners and nodetemplates after CRDs are installed
   karpenter_provisioners  = local.karpenter_provisioners
   karpenter_nodetemplates = local.karpenter_nodetemplates
+  enable_drift_detection  = var.karpenter_enable_drift_detection
 
   create_fargate_logger_configmap = var.create_fargate_logger_configmap_for_karpenter
   create_aws_observability_ns     = var.create_aws_observability_ns_for_karpenter
@@ -73,6 +74,7 @@ module "karpenter" {
   # Required for Fargate profile
   subnet_ids = var.subnet_ids
 }
+
 
 resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter" {
   count = var.fargate_cluster && var.create_node_security_group && var.autoscaling_mode == "karpenter" ? 1 : 0

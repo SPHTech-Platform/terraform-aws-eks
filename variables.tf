@@ -495,3 +495,9 @@ variable "karpenter_chart_version" {
   type        = string
   default     = "v0.31.0"
 }
+
+variable "karpenter_enable_drift_detection" {
+  description = "value for enable_drift_detection"
+  type        = bool
+  default     = false
+}

@@ -212,3 +212,9 @@ variable "enable_pod_eni" {
   default     = true
 
 }
+
+variable "enable_drift_detection" {
+  description = "value for enable_drift_detection"
+  type        = bool
+  default     = false
+}
