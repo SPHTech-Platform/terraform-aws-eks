@@ -107,6 +107,7 @@ variable "karpenter_nodeclasses" {
     karpenter_node_tags_map                = map(string)
     karpenter_ami_family                   = string
     karpenter_node_user_data               = string
+    karpenter_node_metadata_options        = map(string)
     karpenter_block_device_mapping = list(object({
       deviceName = string
       ebs = object({
@@ -168,6 +169,7 @@ variable "karpenter_nodeclasses" {
     karpenter_subnet_selector_maps         = []
     karpenter_security_group_selector_maps = []
     karpenter_node_tags_map                = {}
+    karpenter_node_metadata_options        = {}
     karpenter_ami_family                   = "Bottlerocket"
   }]
 }
