@@ -132,7 +132,7 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
   yaml_body = templatefile("${path.module}/templates/nodeclass.tftpl", {
     nodeclass_name                             = each.value.nodeclass_name
     karpenter_subnet_selector_map_yaml         = replace(yamlencode(each.value.karpenter_subnet_selector_maps), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_security_group_selector_map_yaml = replace(yamlencode(each.value.karpenter_security_group_selector_maps), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_security_group_selector_map_yaml = yamlencode(each.value.karpenter_security_group_selector_maps)
     karpenter_ami_selector_map_yaml            = replace(yamlencode(each.value.karpenter_ami_selector_maps), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
     karpenter_node_role                        = each.value.karpenter_node_role
     karpenter_node_user_data                   = each.value.karpenter_node_user_data
