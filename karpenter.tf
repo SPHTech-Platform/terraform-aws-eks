@@ -14,7 +14,7 @@ locals {
         }
       ]
       karpenter_node_role = aws_iam_role.workers.name
-      karpenter_security_group_selector_map = [{
+      karpenter_security_group_selector_maps = [{
         "id" = module.eks.cluster_primary_security_group_id
         },
       ]
