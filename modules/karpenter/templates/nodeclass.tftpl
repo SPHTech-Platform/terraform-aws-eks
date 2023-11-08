@@ -12,7 +12,8 @@ spec:
 
   # required, discovers security groups to attach to instances
   securityGroupSelectorTerms:
-  ${indent(4,karpenter_security_group_selector_map_yaml)}
+    - id: "sg-063d7acfb4b06c82c"
+  #${indent(4,karpenter_security_group_selector_map_yaml)}
 
   # required, IAM role to use for the node identity
   role: ${karpenter_node_role}
