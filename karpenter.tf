@@ -7,7 +7,7 @@ locals {
   karpenter_nodeclasses = coalescelist(var.karpenter_nodeclasses, [
     {
       nodeclass_name = "default"
-      karpenter_subnet_selector_map = [{
+      karpenter_subnet_selector_maps = [{
         tags = {
           "Name" = "aft-app-ap-southeast*"
         },
