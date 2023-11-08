@@ -140,7 +140,7 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
     karpenter_node_tags_map_yaml               = length(keys(each.value.karpenter_node_tags_map)) == 0 ? "" : yamlencode(each.value.karpenter_node_tags_map)
     karpenter_node_metadata_options_yaml       = length(keys(each.value.karpenter_node_metadata_options)) == 0 ? "" : yamlencode(each.value.karpenter_node_metadata_options)
     karpenter_ami_family                       = each.value.karpenter_ami_family
-    karpenter_block_device_mapping_yaml        = length(keys(each.value.karpenter_block_device_mapping)) == 0 ? "" : yamlencode(each.value.karpenter_block_device_mapping)
+    karpenter_block_device_mapping_yaml        = length(each.value.karpenter_block_device_mapping) == 0 ? "" : yamlencode(each.value.karpenter_block_device_mapping)
 
   })
 
