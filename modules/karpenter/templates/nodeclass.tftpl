@@ -35,7 +35,8 @@ spec:
   # optional, propagates tags to underlying EC2 resources
   %{ if karpenter_node_tags_map_yaml != ""}
   tags:
-    ${indent(4,karpenter_node_tags_map_yaml)}
+    "karpenter.sh/discovery": "test"
+    #${indent(4,karpenter_node_tags_map_yaml)}
   %{ endif }
 
   # optional, configures IMDS for the instance, defaults to https://karpenter.sh/docs/concepts/nodeclasses/#specmetadataoptions
