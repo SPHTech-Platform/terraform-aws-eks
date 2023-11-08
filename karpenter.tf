@@ -19,6 +19,7 @@ locals {
         },
       ]
       karpenter_node_metadata_options = {}
+      karpenter_ami_selector_maps     = []
       karpenter_node_tags_map = {
         "karpenter.sh/discovery" = module.eks.cluster_name,
         "eks:cluster-name"       = module.eks.cluster_name,

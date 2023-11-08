@@ -132,15 +132,15 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
   yaml_body = templatefile("${path.module}/templates/nodeclass.tftpl", {
     nodeclass_name                             = each.value.nodeclass_name
     CLUSTER_NAME                               = var.cluster_name
-    karpenter_subnet_selector_map_yaml         = replace(yamlencode(each.value.karpenter_subnet_selector_maps), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_security_group_selector_map_yaml = yamlencode(each.value.karpenter_security_group_selector_maps)
-    karpenter_ami_selector_map_yaml            = replace(yamlencode(each.value.karpenter_ami_selector_maps), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_subnet_selector_map_yaml         = length(each.value.karpenter_subnet_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_subnet_selector_maps)
+    karpenter_security_group_selector_map_yaml = length(each.value.karpenter_security_group_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_security_group_selector_maps)
+    karpenter_ami_selector_map_yaml            = length(each.value.karpenter_ami_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_ami_selector_maps)
     karpenter_node_role                        = each.value.karpenter_node_role
     karpenter_node_user_data                   = each.value.karpenter_node_user_data
-    karpenter_node_tags_map_yaml               = replace(yamlencode(each.value.karpenter_node_tags_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_node_metadata_options_yaml       = replace(yamlencode(each.value.karpenter_node_metadata_options), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_node_tags_map_yaml               = length(keys(each.value.karpenter_node_tags_map)) == 0 ? "" : yamlencode(each.value.karpenter_node_tags_map)
+    karpenter_node_metadata_options_yaml       = length(keys(each.value.karpenter_node_metadata_options)) == 0 ? "" : yamlencode(each.value.karpenter_node_metadata_options)
     karpenter_ami_family                       = each.value.karpenter_ami_family
-    karpenter_block_device_mapping_yaml        = replace(yamlencode(each.value.karpenter_block_device_mapping), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_block_device_mapping_yaml        = length(keys(each.value.karpenter_block_device_mapping)) == 0 ? "" : yamlencode(each.value.karpenter_block_device_mapping)
 
   })
 
