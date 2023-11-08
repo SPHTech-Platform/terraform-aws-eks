@@ -35,7 +35,7 @@ spec:
   # optional, propagates tags to underlying EC2 resources
   %{ if karpenter_node_tags_map_yaml != ""}
   tags:
-    karpenter.sh/discovery: "test"
+    karpenter.sh/discovery: test
     #${indent(4,karpenter_node_tags_map_yaml)}
   %{ endif }
 
