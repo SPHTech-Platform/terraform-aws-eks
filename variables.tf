@@ -481,59 +481,7 @@ variable "karpenter_nodeclasses" {
       })
     }))
   }))
-  default = [{
-    nodeclass_name                 = "default"
-    karpenter_block_device_mapping = []
-    karpenter_ami_selector_maps    = []
-    karpenter_node_user_data       = ""
-    karpenter_node_role            = "module.eks.worker_iam_role_name"
-    # Please insert from module user
-    # karpenter_subnet_selector_map         =  [{
-    #      tags = {
-    #    "Name" = "aft-app-ap-southeast*"
-    #       },
-    #  ]
-    # karpenter_security_group_selector_map = [{
-    #     "id" = module.eks.worker_security_group_id
-    #   }, {
-    #     "tags" = {
-    #        "Name" = "*Public*",
-    #     }
-    #  }]
-    #   karpenter_nodetemplate_tag_map = {
-    #     "karpenter.sh/discovery" = module.eks.cluster_name
-    #     "eks:cluster-name"       = module.eks.cluster_name
-    #   }
-    #  karpenter_node_role = module.eks.worker_iam_role_name
-    # karpenter_block_device_mapping = [
-    #   {
-    #     #karpenter_root_volume_size
-    #     "deviceName" = "/dev/xvda"
-    #     "ebs" = {
-    #       "encrypted"           = true
-    #       "volumeSize"          = "5Gi"
-    #       "volumeType"          = "gp3"
-    #       "kmsKeyID"            = ""
-    #       "deleteOnTermination" = true
-    #     }
-    #     }, {
-    #     #karpenter_ephemeral_volume_size
-    #     "deviceName" = "/dev/xvdb",
-    #     "ebs" = {
-    #       "encrypted"           = true
-    #       "volumeSize"          = "50Gi"
-    #       "volumeType"          = "gp3"
-    #       "kmsKeyID"            = ""
-    #       "deleteOnTermination" = true
-    #     }
-    #   }`
-    # ]
-    karpenter_subnet_selector_maps         = []
-    karpenter_security_group_selector_maps = []
-    karpenter_node_tags_map                = {}
-    karpenter_node_metadata_options        = {}
-    karpenter_ami_family                   = "Bottlerocket"
-  }]
+  default = []
 }
 
 variable "create_aws_observability_ns_for_karpenter" {
