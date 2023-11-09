@@ -60,7 +60,6 @@
 | <a name="input_create_fargate_log_group"></a> [create\_fargate\_log\_group](#input\_create\_fargate\_log\_group) | create\_fargate\_log\_group flag | `bool` | `true` | no |
 | <a name="input_create_fargate_logger_configmap"></a> [create\_fargate\_logger\_configmap](#input\_create\_fargate\_logger\_configmap) | create\_fargate\_logger\_configmap flag | `bool` | `false` | no |
 | <a name="input_create_fargate_logging_policy"></a> [create\_fargate\_logging\_policy](#input\_create\_fargate\_logging\_policy) | create\_fargate\_logging\_policy flag | `bool` | `true` | no |
-| <a name="input_enable_pod_eni"></a> [enable\_pod\_eni](#input\_enable\_pod\_eni) | value for enablePodENI | `bool` | `true` | no |
 | <a name="input_karpenter_chart_name"></a> [karpenter\_chart\_name](#input\_karpenter\_chart\_name) | Chart name for Karpenter | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_chart_repository"></a> [karpenter\_chart\_repository](#input\_karpenter\_chart\_repository) | Chart repository for Karpenter | `string` | `"oci://public.ecr.aws/karpenter"` | no |
 | <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Karpenter | `string` | `"v0.32.1"` | no |

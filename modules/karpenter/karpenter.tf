@@ -31,9 +31,6 @@ resource "helm_release" "karpenter" {
       clusterName: ${var.cluster_name}
       clusterEndpoint: ${var.cluster_endpoint}
       interruptionQueueName: ${module.karpenter.queue_name}
-      aws:
-        defaultInstanceProfile: ${module.karpenter.instance_profile_name}
-        enablePodENI: ${var.enable_pod_eni}
     serviceAccount:
       annotations:
         eks.amazonaws.com/role-arn: ${module.karpenter.irsa_arn}
