@@ -10,6 +10,8 @@ module "karpenter" {
   create_iam_role = false
   iam_role_arn    = var.worker_iam_role_arn
 
+  enable_karpenter_instance_profile_creation = true # Might be removed in later versions https://github.com/terraform-aws-modules/terraform-aws-eks/pull/2800/files
+
 }
 
 resource "helm_release" "karpenter" {
@@ -62,43 +64,6 @@ module "karpenter-crds" {
   ]
 
 }
-
-#########################
-## KUBECTL PROVISIONER ##
-#########################
-
-# resource "kubectl_manifest" "karpenter_provisioner" {
-
-#   for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner }
-
-#   yaml_body = templatefile("${path.module}/templates/provisioner.tftpl", {
-#     provisioner_name                       = each.value.name
-#     karpenter_provisioner_node_taints_yaml = length(each.value.karpenter_provisioner_node_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_provisioner_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-#     karpenter_provisioner_node_labels_yaml = length(keys(each.value.karpenter_provisioner_node_labels)) == 0 ? "" : replace(yamlencode(each.value.karpenter_provisioner_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-#     karpenter_requirements_yaml            = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-#   })
-
-#   depends_on = [module.karpenter-crds]
-# }
-
-# ##########################
-# ## KUBECTL NODETEMPLATE ##
-# ##########################
-# resource "kubectl_manifest" "karpenter_node_template" {
-#   for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate }
-
-#   yaml_body = templatefile("${path.module}/templates/nodetemplate.tftpl", {
-#     node_template_name                         = each.value.name
-#     karpenter_subnet_selector_map_yaml         = replace(yamlencode(each.value.karpenter_subnet_selector_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-#     karpenter_security_group_selector_map_yaml = replace(yamlencode(each.value.karpenter_security_group_selector_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-#     karpenter_nodetemplate_tag_map_yaml        = replace(yamlencode(each.value.karpenter_nodetemplate_tag_map), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-#     karpenter_ami_family                       = each.value.karpenter_ami_family
-#     karpenter_block_device_mapping_yaml        = replace(yamlencode(each.value.karpenter_block_device_mapping), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-
-#   })
-
-#   depends_on = [module.karpenter-crds]
-# }
 
 #########################
 ## KUBECTL NODEPOOL ##
