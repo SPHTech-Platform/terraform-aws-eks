@@ -49,7 +49,7 @@ resource "helm_release" "karpenter" {
 
 module "karpenter-crds" {
   source  = "rpadovani/helm-crds/kubectl"
-  version = "0.3.0"
+  version = "~> 0.3.0"
 
   crds_urls = [
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_provisioners.yaml",
