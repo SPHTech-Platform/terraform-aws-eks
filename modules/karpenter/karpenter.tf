@@ -34,6 +34,8 @@ resource "helm_release" "karpenter" {
     serviceAccount:
       annotations:
         eks.amazonaws.com/role-arn: ${module.karpenter.irsa_arn}
+    webhook:
+      enabled: false
     EOT
   ]
 
