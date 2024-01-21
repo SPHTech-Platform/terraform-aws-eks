@@ -48,6 +48,11 @@ output "cluster_arn" {
   value       = module.eks.cluster_arn
 }
 
+output "id" {
+  description = "Id of the EKS Cluster"
+  value       = module.eks.id
+}
+
 output "cluster_endpoint" {
   description = "Endpoint of the EKS Cluster"
   value       = module.eks.cluster_endpoint
