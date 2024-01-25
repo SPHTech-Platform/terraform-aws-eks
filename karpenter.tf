@@ -9,7 +9,7 @@ locals {
       nodeclass_name = "default"
       karpenter_subnet_selector_maps = [{
         tags = {
-          "Name" = "aft-app-ap-southeast*"
+          "Name" = var.subnet_selector_regx
         },
         }
       ]
