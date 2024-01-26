@@ -159,13 +159,6 @@ variable "subnet_ids" {
 variable "subnet_selector_regx" {
   description = "Select the Subnets from this Regular expression to spin up the Karpenter nodes"
   type        = string
-  default     = "aft-app-ap-southeast*"
-
-  validation {
-    condition     = can(regex("^aft-app-ap-southeast*|^App*|^Web*", var.subnet_selector_regx))
-    error_message = "Err: invalid subnet selector, must be one of aft-app-ap-southeast*|App*|Web*."
-  }
-
 }
 
 variable "cluster_service_ipv4_cidr" {
