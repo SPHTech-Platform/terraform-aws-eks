@@ -157,7 +157,7 @@ variable "subnet_ids" {
 }
 
 variable "subnet_selector_regx" {
-  description = "Select the Subnets from this Regular expression to spin up the Karpenter nodes"
+  description = "Subnet selector Name tags for Karpenter nodes, supports wildcard."
   type        = string
 }
 
