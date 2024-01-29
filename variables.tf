@@ -156,7 +156,7 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "subnet_selector_regx" {
+variable "subnet_selector_name_tag" {
   description = "Subnet selector Name tags for Karpenter nodes, supports wildcard."
   type        = string
 }
