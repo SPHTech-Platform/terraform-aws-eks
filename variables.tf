@@ -477,7 +477,7 @@ variable "karpenter_nodeclasses" {
     karpenter_node_metadata_options = map(object({
       httpEndpoint            = optional(string)
       httpTokens              = optional(string)
-      httpPutResponseHopLimit = optional(number)
+      httpPutResponseHopLimit = optional(int)
       instanceMetadataTags    = optional(string)
       httpProtocolIpv6        = optional(string)
       })
