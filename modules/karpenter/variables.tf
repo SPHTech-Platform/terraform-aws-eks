@@ -176,7 +176,7 @@ variable "karpenter_nodeclasses" {
     karpenter_subnet_selector_maps         = []
     karpenter_security_group_selector_maps = []
     karpenter_node_tags_map                = {}
-    karpenter_node_metadata_options        = [{}]
+    karpenter_node_metadata_options        = {}
     karpenter_ami_family                   = "Bottlerocket"
   }]
 }
