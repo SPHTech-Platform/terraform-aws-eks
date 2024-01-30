@@ -474,7 +474,14 @@ variable "karpenter_nodeclasses" {
     karpenter_node_tags_map                = map(string)
     karpenter_ami_family                   = string
     karpenter_node_user_data               = string
-    karpenter_node_metadata_options        = map(string)
+    karpenter_node_metadata_options = map(object({
+      httpEndpoint            = optional(string)
+      httpProtocolIpv6        = optional(string)
+      httpPutResponseHopLimit = optional(number)
+      httpTokens              = optional(string)
+      instanceMetadataTags    = optional(string)
+      })
+    )
     karpenter_block_device_mapping = list(object({
       deviceName = string
       ebs = object({
