@@ -24,7 +24,6 @@ locals {
         http_put_response_hop_limit = 1
         instance_metadata_tags      = "disabled",
         http_protocol_ipv6          = "disabled",
-
       }
       karpenter_ami_selector_maps = []
       karpenter_node_user_data    = ""
