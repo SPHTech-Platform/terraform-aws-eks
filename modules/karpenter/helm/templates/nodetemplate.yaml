@@ -1,0 +1,14 @@
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: {{ .Values.node_template_name }}
+spec:
+  amiFamily: {{ .Values.karpenter_ami_family }}
+  blockDeviceMappings:
+{{ .Values.karpenter_block_device_mapping_yaml | nindent 4 }}
+  securityGroupSelector:
+{{ .Values.karpenter_security_group_selector_map_yaml | nindent 4 }}
+  subnetSelector:
+{{ .Values.karpenter_subnet_selector_map_yaml | nindent 4 }}
+  tags:
+{{ .Values.karpenter_nodetemplate_tag_map_yaml | nindent 4 }}

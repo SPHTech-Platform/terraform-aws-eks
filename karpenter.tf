@@ -55,6 +55,14 @@ locals {
     },
   ])
 
+  yaml_output = yamlencode(
+    {
+      http_endpoint               = "enabled"
+      http_protocol_ipv6          = "disabled"
+      http_put_response_hop_limit = 2
+      http_tokens                 = "required"
+    }
+  )
 }
 
 module "karpenter" {

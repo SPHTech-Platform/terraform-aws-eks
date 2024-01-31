@@ -1,0 +1,31 @@
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: {{ .Values.nodeclass_name }}
+spec:
+  amiFamily: {{ .Values.karpenter_ami_family }}
+  subnetSelectorTerms:
+{{ .Values.karpenter_subnet_selector_map_yaml | nindent 4 }}
+  securityGroupSelectorTerms:
+{{ .Values.karpenter_security_group_selector_map_yaml | nindent 4 }}
+  role: {{ .Values.karpenter_node_role }}
+{{- if .Values.karpenter_ami_selector_map_yaml }}
+  amiSelectorTerms:
+{{ .Values.karpenter_ami_selector_map_yaml | nindent 4 }}
+{{- end }}
+{{- if .Values.karpenter_node_user_data }}
+  userData: |
+{{ .Values.karpenter_node_user_data | nindent 4 }}
+{{- end }}
+{{- if .Values.karpenter_node_tags_map_yaml }}
+  tags:
+{{ .Values.karpenter_node_tags_map_yaml | nindent 4 }}
+{{- end }}
+{{- if .Values.karpenter_node_metadata_options_yaml }}
+  metadataOptions:
+{{ .Values.karpenter_node_metadata_options_yaml | nindent 4 }}
+{{- end }}
+{{- if .Values.karpenter_block_device_mapping_yaml }}
+  blockDeviceMappings:
+{{ .Values.karpenter_block_device_mapping_yaml | nindent 4 }}
+{{- end }}

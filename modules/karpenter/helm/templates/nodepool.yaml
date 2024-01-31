@@ -1,0 +1,38 @@
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: {{ .Values.nodepool_name }}
+spec:
+  template:
+    metadata:
+      {{- if .Values.karpenter_nodepool_node_labels_yaml }}
+      labels:
+{{ .Values.karpenter_nodepool_node_labels_yaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.karpenter_nodepool_annotations_yaml }}
+      annotations:
+{{ .Values.karpenter_nodepool_annotations_yaml | nindent 8 }}
+      {{- end }}
+    spec:
+      nodeClassRef:
+        name: {{ .Values.nodeclass_name }}
+      {{- if .Values.karpenter_nodepool_node_taints_yaml }}
+      taints:
+{{ .Values.karpenter_nodepool_node_taints_yaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.karpenter_nodepool_startup_taints_yaml }}
+      startupTaints:
+{{ .Values.karpenter_nodepool_startup_taints_yaml | nindent 8 }}
+      {{- end }}
+      requirements:
+{{ .Values.karpenter_requirements_yaml | nindent 8 }}
+  disruption:
+    consolidationPolicy: {{ .Values.karpenter_nodepool_disruption.consolidation_policy }}
+{{- if eq .Values.karpenter_nodepool_disruption.consolidation_policy "WhenEmpty" }}
+    consolidateAfter: {{ .Values.karpenter_nodepool_disruption.consolidation_after }}
+{{- end }}
+    expireAfter: {{ .Values.karpenter_nodepool_disruption.expire_after }}
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+  weight: {{ .Values.karpenter_nodepool_weight }}

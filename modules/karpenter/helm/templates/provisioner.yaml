@@ -1,0 +1,21 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: {{ .Values.provisioner_name }}
+spec:
+{{- if .Values.karpenter_provisioner_node_labels_yaml }}
+  labels:
+{{ .Values.karpenter_provisioner_node_labels_yaml | nindent 4 }}
+{{- end }}
+{{- if .Values.karpenter_provisioner_node_taints_yaml }}
+  taints:
+{{ .Values.karpenter_provisioner_node_taints_yaml | nindent 4 }}
+{{- end }}
+  limits:
+    resources:
+      cpu: 1k
+  providerRef:
+    name: default
+  requirements:
+{{ .Values.karpenter_requirements_yaml | nindent 4 }}
+  ttlSecondsAfterEmpty: 30
