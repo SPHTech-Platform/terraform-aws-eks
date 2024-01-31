@@ -170,10 +170,10 @@ variable "karpenter_nodeclasses" {
     karpenter_security_group_selector_maps = []
     karpenter_node_tags_map                = {}
     karpenter_node_metadata_options = {
-      http_endpoint               = "enabled"
-      http_protocol_ipv6          = "disabled"
-      http_put_response_hop_limit = 2
-      http_tokens                 = "required"
+      httpEndpoint            = "enabled"
+      httpProtocolIPv6        = "disabled"
+      httpPutResponseHopLimit = 1
+      httpTokens              = "required"
     }
     karpenter_ami_family = "Bottlerocket"
   }]
