@@ -169,8 +169,13 @@ variable "karpenter_nodeclasses" {
     karpenter_subnet_selector_maps         = []
     karpenter_security_group_selector_maps = []
     karpenter_node_tags_map                = {}
-    karpenter_node_metadata_options        = {}
-    karpenter_ami_family                   = "Bottlerocket"
+    karpenter_node_metadata_options = {
+      http_endpoint               = "enabled"
+      http_protocol_ipv6          = "disabled"
+      http_put_response_hop_limit = 2
+      http_tokens                 = "required"
+    }
+    karpenter_ami_family = "Bottlerocket"
   }]
 }
 
