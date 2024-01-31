@@ -19,10 +19,17 @@ locals {
         },
       ]
       karpenter_node_metadata_options = {
+<<<<<<< HEAD
         "httpEndpoint"            = "enabled"
         "httpTokens"              = "required"
         "httpPutResponseHopLimit" = "1"
         "httpProtocolIpv6"        = "disabled"
+=======
+        http_endpoint               = "enabled"
+        http_protocol_ipv6          = "disabled"
+        http_put_response_hop_limit = 2
+        http_tokens                 = "required"
+>>>>>>> karpenter-0.32
       }
       karpenter_ami_selector_maps = []
       karpenter_node_user_data    = ""
