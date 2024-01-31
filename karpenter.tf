@@ -20,7 +20,7 @@ locals {
       ]
       karpenter_node_metadata_options = {
         httpEndpoint            = "enabled"
-        httpProtocolIPv6        = "disabled"
+        httpProtocolIPv6        = var.cluster_ip_family != "ipv6" ? "disabled" : "enabled"
         httpPutResponseHopLimit = 1
         httpTokens              = "required"
       }
@@ -54,7 +54,6 @@ locals {
       ]
     },
   ])
-
 }
 
 module "karpenter" {
