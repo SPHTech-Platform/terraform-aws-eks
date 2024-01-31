@@ -19,11 +19,10 @@ locals {
         },
       ]
       karpenter_node_metadata_options = {
-        http_endpoint               = "enabled"
-        http_tokens                 = "required"
-        http_put_response_hop_limit = 1
-        instance_metadata_tags      = "disabled"
-        http_protocol_ipv6          = "disabled"
+        "httpEndpoint"            = "enabled"
+        "httpTokens"              = "required"
+        "httpPutResponseHopLimit" = "1"
+        "httpProtocolIpv6"        = "disabled"
       }
       karpenter_ami_selector_maps = []
       karpenter_node_user_data    = ""
@@ -56,22 +55,6 @@ locals {
     },
   ])
 
-  nodeclass_config = {
-    for nodeclass in local.karpenter_nodeclasses :
-    nodeclass.nodeclass_name => {
-      nodeclass_name                             = nodeclass.nodeclass_name
-      CLUSTER_NAME                               = var.cluster_name
-      karpenter_subnet_selector_map_yaml         = length(nodeclass.karpenter_subnet_selector_maps) == 0 ? "" : yamlencode(nodeclass.karpenter_subnet_selector_maps)
-      karpenter_security_group_selector_map_yaml = length(nodeclass.karpenter_security_group_selector_maps) == 0 ? "" : yamlencode(nodeclass.karpenter_security_group_selector_maps)
-      karpenter_ami_selector_map_yaml            = length(nodeclass.karpenter_ami_selector_maps) == 0 ? "" : yamlencode(nodeclass.karpenter_ami_selector_maps)
-      karpenter_node_role                        = nodeclass.karpenter_node_role
-      karpenter_node_user_data                   = nodeclass.karpenter_node_user_data
-      karpenter_node_tags_map_yaml               = length(keys(nodeclass.karpenter_node_tags_map)) == 0 ? "" : yamlencode(nodeclass.karpenter_node_tags_map)
-      karpenter_node_metadata_options_yaml       = length(keys(nodeclass.karpenter_node_metadata_options)) == 0 ? "" : yamlencode(nodeclass.karpenter_node_metadata_options)
-      karpenter_ami_family                       = nodeclass.karpenter_ami_family
-      karpenter_block_device_mapping_yaml        = length(nodeclass.karpenter_block_device_mapping) == 0 ? "" : yamlencode(nodeclass.karpenter_block_device_mapping)
-    }
-  }
 }
 
 module "karpenter" {
