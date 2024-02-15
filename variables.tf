@@ -518,3 +518,11 @@ variable "karpenter_chart_version" {
   type        = string
   default     = "v0.32.1"
 }
+
+variable "karpenter_subnet_selector_tags" {
+  description = "Subnet selector tags for Karpenter nodes"
+  type        = map(string)
+  default = {
+    "Name" = "aft-app-ap-southeast-*"
+  }
+}
