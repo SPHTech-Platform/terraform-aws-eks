@@ -518,6 +518,6 @@ variable "karpenter_subnet_selector_tags" {
   description = "Subnet selector tags for Karpenter nodes"
   type        = map(string)
   default = {
-    "Name" = "aft-app-ap-southeast-*"
+    "Name" = "aft-app-ap-southeast*"
   }
 }
