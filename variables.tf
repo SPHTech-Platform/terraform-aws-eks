@@ -156,11 +156,6 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "subnet_selector_name_tag" {
-  description = "Subnet selector Name tags for Karpenter nodes, supports wildcard."
-  type        = string
-}
-
 variable "cluster_service_ipv4_cidr" {
   description = "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks"
   type        = string
@@ -517,4 +512,12 @@ variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
   default     = "v0.32.1"
+}
+
+variable "karpenter_subnet_selector_tags" {
+  description = "Subnet selector tags for Karpenter nodes"
+  type        = map(string)
+  default = {
+    "Name" = "aft-app-ap-southeast*"
+  }
 }
