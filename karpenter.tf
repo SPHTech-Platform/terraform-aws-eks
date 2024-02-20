@@ -8,7 +8,7 @@ locals {
     {
       nodeclass_name = "default"
       karpenter_subnet_selector_maps = [{
-        tags = var.karpenter_subnet_selector_tags,
+        tags = var.karpenter_default_subnet_selector_tags,
         }
       ]
       karpenter_node_role = aws_iam_role.workers.name
