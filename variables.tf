@@ -515,7 +515,7 @@ variable "karpenter_chart_version" {
 }
 
 variable "karpenter_default_subnet_selector_tags" {
-  description = "Subnet selector tags for Karpenter nodes"
+  description = "Subnet selector tags for Karpenter default node class"
   type        = map(string)
   default = {
     "kubernetes.io/role/internal-elb" = "1"
