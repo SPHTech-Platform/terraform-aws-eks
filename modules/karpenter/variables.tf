@@ -188,12 +188,6 @@ variable "create_fargate_log_group" {
   default     = true
 }
 
-variable "karpenter_fargate_logging_policy" {
-  description = "Name of Fargate Logging Profile Policy"
-  type        = string
-  default     = "karpenter_fargate_logging_cloudwatch"
-}
-
 variable "create_fargate_logging_policy" {
   description = "create_fargate_logging_policy flag"
   type        = bool
