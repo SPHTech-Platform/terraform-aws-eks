@@ -382,3 +382,142 @@ variable "cluster_ip_family" {
   type        = string
   default     = "ipv4"
 }
+##########
+## MODE ##
+##########
+variable "autoscaling_mode" {
+  description = "Autoscaling mode: cluster_autoscaler or karpenter"
+  type        = string
+  default     = "karpenter"
+}
+
+##############################
+## KARPENTER DEFAULT CONFIG ##
+##############################
+variable "karpenter_nodepools" {
+  description = "List of Provisioner maps"
+  type = list(object({
+    nodepool_name                     = string
+    nodeclass_name                    = string
+    karpenter_nodepool_node_labels    = map(string)
+    karpenter_nodepool_annotations    = map(string)
+    karpenter_nodepool_node_taints    = list(map(string))
+    karpenter_nodepool_startup_taints = list(map(string))
+    karpenter_requirements = list(object({
+      key      = string
+      operator = string
+      values   = list(string)
+      })
+    )
+    karpenter_nodepool_disruption = object({
+      consolidation_policy = string
+      consolidate_after    = optional(string)
+      expire_after         = string
+    })
+    karpenter_nodepool_weight = number
+  }))
+  default = [{
+    nodepool_name                     = "default"
+    nodeclass_name                    = "default"
+    karpenter_nodepool_node_labels    = {}
+    karpenter_nodepool_annotations    = {}
+    karpenter_nodepool_node_taints    = []
+    karpenter_nodepool_startup_taints = []
+    karpenter_requirements = [{
+      key      = "karpenter.k8s.aws/instance-category"
+      operator = "In"
+      values   = ["m"]
+      }, {
+      key      = "karpenter.k8s.aws/instance-cpu"
+      operator = "In"
+      values   = ["4"]
+      }, {
+      key      = "karpenter.k8s.aws/instance-generation"
+      operator = "Gt"
+      values   = ["5"]
+      }, {
+      key      = "karpenter.sh/capacity-type"
+      operator = "In"
+      values   = ["on-demand"]
+      }, {
+      key      = "kubernetes.io/arch"
+      operator = "In"
+      values   = ["amd64"]
+      }, {
+      key      = "kubernetes.io/os"
+      operator = "In"
+      values   = ["linux"]
+      }
+    ]
+    karpenter_nodepool_disruption = {
+      consolidation_policy = "WhenUnderutilized" # WhenUnderutilized or WhenEmpty
+      # consolidate_after    = "10m"               # Only used if consolidation_policy is WhenEmpty
+      expire_after = "168h" # 7d | 168h | 1w
+    }
+    karpenter_nodepool_weight = 10
+  }]
+}
+
+variable "karpenter_nodeclasses" {
+  description = "List of nodetemplate maps"
+  type = list(object({
+    nodeclass_name                         = string
+    karpenter_subnet_selector_maps         = list(map(any))
+    karpenter_security_group_selector_maps = list(map(any))
+    karpenter_ami_selector_maps            = list(map(any))
+    karpenter_node_role                    = string
+    karpenter_node_tags_map                = map(string)
+    karpenter_ami_family                   = string
+    karpenter_node_user_data               = string
+    karpenter_node_metadata_options        = map(any)
+    karpenter_block_device_mapping = list(object({
+      deviceName = string
+      ebs = object({
+        encrypted           = bool
+        volumeSize          = string
+        volumeType          = string
+        kmsKeyID            = optional(string)
+        deleteOnTermination = bool
+      })
+    }))
+  }))
+  default = []
+}
+
+variable "create_aws_observability_ns_for_karpenter" {
+  description = "Create aws-observability namespace flag"
+  type        = bool
+  default     = false
+}
+
+variable "create_fargate_logger_configmap_for_karpenter" {
+  description = "create_fargate_logger_configmap flag"
+  type        = bool
+  default     = false
+}
+
+variable "create_fargate_log_group_for_karpenter" {
+  description = "value for create_fargate_log_group"
+  type        = bool
+  default     = false
+}
+
+variable "create_fargate_logging_policy_for_karpenter" {
+  description = "value for create_fargate_logging_policy"
+  type        = bool
+  default     = false
+}
+
+variable "karpenter_chart_version" {
+  description = "Chart version for Karpenter"
+  type        = string
+  default     = "v0.32.1"
+}
+
+variable "karpenter_default_subnet_selector_tags" {
+  description = "Subnet selector tags for Karpenter default node class"
+  type        = map(string)
+  default = {
+    "kubernetes.io/role/internal-elb" = "1"
+  }
+}

@@ -1,0 +1,14 @@
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: ${node_template_name}
+spec:
+  amiFamily: ${karpenter_ami_family}
+  blockDeviceMappings:
+    ${indent(4,karpenter_block_device_mapping_yaml)}
+  securityGroupSelector:
+    ${indent(4,karpenter_security_group_selector_map_yaml)}
+  subnetSelector:
+    ${indent(4,karpenter_subnet_selector_map_yaml)}
+  tags:
+    ${indent(4,karpenter_nodetemplate_tag_map_yaml)}

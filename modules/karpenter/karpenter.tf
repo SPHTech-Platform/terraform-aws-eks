@@ -1,8 +1,6 @@
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 19.15.0"
-
-  count = var.autoscaling_mode == "karpenter" ? 1 : 0
+  version = "~> 19.18.0"
 
   cluster_name = var.cluster_name
 
@@ -12,11 +10,11 @@ module "karpenter" {
   create_iam_role = false
   iam_role_arn    = var.worker_iam_role_arn
 
+  enable_karpenter_instance_profile_creation = true # Might be removed in later versions https://github.com/terraform-aws-modules/terraform-aws-eks/pull/2800/files
+
 }
 
 resource "helm_release" "karpenter" {
-
-  count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
   namespace        = var.karpenter_namespace
   create_namespace = true
@@ -27,31 +25,17 @@ resource "helm_release" "karpenter" {
   version    = var.karpenter_chart_version
 
   skip_crds = true # CRDs are managed by module.karpenter-crds
-
-  set {
-    name  = "settings.aws.clusterName"
-    value = var.cluster_name
-  }
-
-  set {
-    name  = "settings.aws.clusterEndpoint"
-    value = var.cluster_endpoint
-  }
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = try(module.karpenter[0].irsa_arn, "")
-  }
-
-  set {
-    name  = "settings.aws.defaultInstanceProfile"
-    value = try(module.karpenter[0].instance_profile_name, "")
-  }
-
-  set {
-    name  = "settings.aws.interruptionQueueName"
-    value = try(module.karpenter[0].queue_name, "")
-  }
+  values = [
+    <<-EOT
+    settings:
+      clusterName: ${var.cluster_name}
+      clusterEndpoint: ${var.cluster_endpoint}
+      interruptionQueueName: ${module.karpenter.queue_name}
+    serviceAccount:
+      annotations:
+        eks.amazonaws.com/role-arn: ${module.karpenter.irsa_arn}
+    EOT
+  ]
 
   depends_on = [
     module.karpenter[0].irsa_arn,
@@ -65,112 +49,62 @@ resource "helm_release" "karpenter" {
 
 module "karpenter-crds" {
   source  = "rpadovani/helm-crds/kubectl"
-  version = "0.3.0"
+  version = "~> 0.3.0"
 
   crds_urls = [
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_provisioners.yaml",
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_awsnodetemplates.yaml",
-    # "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_machines.yaml", #not part of release yet
+    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_machines.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
   ]
+
 }
 
-################
-##### CRD ######
-################
+#########################
+## KUBECTL NODEPOOL ##
+#########################
 
-resource "kubernetes_manifest" "karpenter_provisioner" {
+resource "kubectl_manifest" "karpenter_nodepool" {
 
-  for_each = { for provisioner in var.karpenter_provisioners : provisioner.name => provisioner if var.autoscaling_mode == "karpenter" }
+  for_each = { for nodepool in var.karpenter_nodepools : nodepool.nodepool_name => nodepool }
 
-  manifest = {
-    apiVersion = "karpenter.sh/v1alpha5"
-    kind       = "Provisioner"
-    metadata = {
-      name = each.value.name
-    }
-    spec = {
-      labels = each.value.karpenter_provisioner_node_labels
-      taints = each.value.karpenter_provisioner_node_taints
+  yaml_body = templatefile("${path.module}/templates/nodepool.tftpl", {
+    nodepool_name                          = each.value.nodepool_name
+    karpenter_nodepool_node_labels_yaml    = length(keys(each.value.karpenter_nodepool_node_labels)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_annotations_yaml    = length(keys(each.value.karpenter_nodepool_annotations)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_annotations), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    nodeclass_name                         = each.value.nodeclass_name
+    karpenter_nodepool_node_taints_yaml    = length(each.value.karpenter_nodepool_node_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_startup_taints_yaml = length(each.value.karpenter_nodepool_startup_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_startup_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_requirements_yaml            = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_disruption          = each.value.karpenter_nodepool_disruption
+    karpenter_nodepool_weight              = each.value.karpenter_nodepool_weight
+  })
 
-      requirements = [
-        {
-          key      = "node.kubernetes.io/instance-type"
-          operator = "In"
-          values   = each.value.karpenter_instance_types_list
-        },
-        {
-          key      = "karpenter.sh/capacity-type"
-          operator = "In"
-          values   = each.value.karpenter_capacity_type_list
-        },
-        {
-          key      = "kubernetes.io/arch"
-          operator = "In"
-          values   = each.value.karpenter_arch_list
-        },
-        {
-          key      = "kubernetes.io/os"
-          operator = "In"
-          values   = ["linux"]
-        },
-      ]
-      limits = {
-        resources = {
-          cpu = "1k"
-        }
-      }
-      providerRef = {
-        name = each.value.provider_ref_nodetemplate_name
-      }
-      ttlSecondsAfterEmpty = 30
-    }
-  }
-
-  computed_fields = ["spec.taints", "spec.requirements"]
-
-  depends_on = [
-    helm_release.karpenter
-  ]
+  depends_on = [module.karpenter-crds]
 }
 
-resource "kubernetes_manifest" "karpenter_node_template" {
+##########################
+## KUBECTL NODECLASS ##
+##########################
+resource "kubectl_manifest" "karpenter_nodeclass" {
+  for_each = { for nodeclass in var.karpenter_nodeclasses : nodeclass.nodeclass_name => nodeclass }
 
-  for_each = { for nodetemplate in var.karpenter_nodetemplates : nodetemplate.name => nodetemplate if var.autoscaling_mode == "karpenter" }
+  yaml_body = templatefile("${path.module}/templates/nodeclass.tftpl", {
+    nodeclass_name                             = each.value.nodeclass_name
+    CLUSTER_NAME                               = var.cluster_name
+    karpenter_subnet_selector_map_yaml         = length(each.value.karpenter_subnet_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_subnet_selector_maps)
+    karpenter_security_group_selector_map_yaml = length(each.value.karpenter_security_group_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_security_group_selector_maps)
+    karpenter_ami_selector_map_yaml            = length(each.value.karpenter_ami_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_ami_selector_maps)
+    karpenter_node_role                        = each.value.karpenter_node_role
+    karpenter_node_user_data                   = each.value.karpenter_node_user_data
+    karpenter_node_tags_map_yaml               = length(keys(each.value.karpenter_node_tags_map)) == 0 ? "" : yamlencode(each.value.karpenter_node_tags_map)
+    karpenter_node_metadata_options_yaml       = length(keys(each.value.karpenter_node_metadata_options)) == 0 ? "" : replace(yamlencode(each.value.karpenter_node_metadata_options), "/\"([0-9]+)\"/", "$1")
+    karpenter_ami_family                       = each.value.karpenter_ami_family
+    karpenter_block_device_mapping_yaml        = length(each.value.karpenter_block_device_mapping) == 0 ? "" : yamlencode(each.value.karpenter_block_device_mapping)
 
-  manifest = {
-    apiVersion = "karpenter.k8s.aws/v1alpha1"
-    kind       = "AWSNodeTemplate"
-    metadata = {
-      name = each.value.name
-    }
-    spec = {
-      subnetSelector        = each.value.karpenter_subnet_selector_map
-      securityGroupSelector = each.value.karpenter_security_group_selector_map
-      amiFamily             = each.value.karpenter_ami_family
-      blockDeviceMappings = [
-        {
-          deviceName = "/dev/xvda"
-          ebs = {
-            volumeSize = each.value.karpenter_root_volume_size
-            volumeType = "gp3"
-            encrypted  = true
-          }
-        },
-        {
-          deviceName = "/dev/xvdb"
-          ebs = {
-            volumeSize = each.value.karpenter_ephemeral_volume_size
-            volumeType = "gp3"
-            encrypted  = true
-          }
-        },
-      ]
+  })
 
-      tags = each.value.karpenter_nodetemplate_tag_map
-    }
-  }
-
-  depends_on = [
-    helm_release.karpenter
-  ]
+  depends_on = [module.karpenter-crds]
 }
