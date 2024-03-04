@@ -30,7 +30,7 @@ resource "helm_release" "karpenter" {
       interruptionQueueName: ${module.karpenter.queue_name}
     serviceAccount:
       annotations:
-        eks.amazonaws.com/role-arn: ${module.karpenter.iam_role_arn}
+        eks.amazonaws.com/role-arn: ${module.karpenter.node_iam_role_arn}
     EOT
   ]
 
