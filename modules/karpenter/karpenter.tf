@@ -7,8 +7,9 @@ module "karpenter" {
   irsa_oidc_provider_arn          = var.oidc_provider_arn
   irsa_namespace_service_accounts = ["karpenter:karpenter"]
 
-  create_iam_role   = false
-  node_iam_role_arn = var.worker_iam_role_arn
+  # create_iam_role      = false
+  create_node_iam_role = false
+  node_iam_role_arn    = var.worker_iam_role_arn
 }
 
 resource "helm_release" "karpenter" {
@@ -27,15 +28,15 @@ resource "helm_release" "karpenter" {
     settings:
       clusterName: ${var.cluster_name}
       clusterEndpoint: ${var.cluster_endpoint}
-      interruptionQueueName: ${module.karpenter.queue_name}
+      interruptionQueue: ${module.karpenter.queue_name}
     serviceAccount:
       annotations:
-        eks.amazonaws.com/role-arn: ${module.karpenter.node_iam_role_arn}
+        eks.amazonaws.com/role-arn: ${module.karpenter.iam_role_arn}
     EOT
   ]
 
   depends_on = [
-    module.karpenter[0].irsa_arn,
+    module.karpenter[0].iam_role_arn,
     module.karpenter-crds,
   ]
 }
