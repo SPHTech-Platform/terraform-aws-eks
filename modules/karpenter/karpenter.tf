@@ -4,11 +4,9 @@ module "karpenter" {
 
   cluster_name = var.cluster_name
 
-  irsa_oidc_provider_arn = var.oidc_provider_arn
-  irsa_namespace_service_accounts = [
-    "karpenter:karpenter",
-    "kube-system:karpenter",
-  ]
+  enable_irsa                     = true
+  irsa_oidc_provider_arn          = var.oidc_provider_arn
+  irsa_namespace_service_accounts = ["karpenter:karpenter"]
 
   # create_iam_role      = false
   create_node_iam_role = false
