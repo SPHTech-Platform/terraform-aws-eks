@@ -426,15 +426,15 @@ variable "karpenter_nodepools" {
     karpenter_requirements = [{
       key      = "karpenter.k8s.aws/instance-category"
       operator = "In"
-      values   = ["m"]
+      values   = ["t", "m"]
       }, {
       key      = "karpenter.k8s.aws/instance-cpu"
       operator = "In"
-      values   = ["4"]
+      values   = ["2", "4"]
       }, {
       key      = "karpenter.k8s.aws/instance-generation"
       operator = "Gt"
-      values   = ["5"]
+      values   = ["2"]
       }, {
       key      = "karpenter.sh/capacity-type"
       operator = "In"

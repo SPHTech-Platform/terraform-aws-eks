@@ -8,7 +8,7 @@ module "karpenter" {
   irsa_oidc_provider_arn          = var.oidc_provider_arn
   irsa_namespace_service_accounts = ["karpenter:karpenter"]
 
-  # create_iam_role      = false
+  create_access_entry  = false # Remove this entry when EKS module updated to 20.x.x
   create_node_iam_role = false
   node_iam_role_arn    = var.worker_iam_role_arn
 }
