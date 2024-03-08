@@ -432,6 +432,10 @@ variable "karpenter_nodepools" {
       operator = "In"
       values   = ["2", "4"]
       }, {
+      key      = "karpenter.k8s.aws/instance-memory"
+      operator = "Gt"
+      values   = ["2048"]
+      }, {
       key      = "karpenter.k8s.aws/instance-generation"
       operator = "Gt"
       values   = ["2"]
