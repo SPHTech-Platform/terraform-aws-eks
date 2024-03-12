@@ -51,9 +51,9 @@ locals {
   ])
 
   additional_karpenter_security_group_id_maps = [
-    for val in concat(var.additional_karpenter_security_group_ids, [module.eks.cluster_primary_security_group_id]) : {
+    for val in concat(var.additional_karpenter_security_group_ids, [module.eks.cluster_primary_security_group_id]) : tomap({
       "id" = val
-  }]
+  })]
 }
 
 module "karpenter" {
