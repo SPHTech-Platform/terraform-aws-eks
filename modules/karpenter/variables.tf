@@ -101,7 +101,7 @@ variable "karpenter_nodeclasses" {
   type = list(object({
     nodeclass_name                         = string
     karpenter_subnet_selector_maps         = list(map(any))
-    karpenter_security_group_selector_maps = list(any)
+    karpenter_security_group_selector_maps = list(map(any))
     karpenter_ami_selector_maps            = list(map(any))
     karpenter_node_role                    = string
     karpenter_node_tags_map                = map(string)
