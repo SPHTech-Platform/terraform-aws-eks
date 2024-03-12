@@ -521,3 +521,9 @@ variable "karpenter_default_subnet_selector_tags" {
     "kubernetes.io/role/internal-elb" = "1"
   }
 }
+
+variable "additional_karpenter_security_group_ids" {
+  description = "Additional security group IDs to add to the Karpenter node groups"
+  type        = list(string)
+  default     = []
+}
