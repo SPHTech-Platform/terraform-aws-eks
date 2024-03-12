@@ -5,7 +5,7 @@
 variable "karpenter_namespace" {
   description = "Namespace to deploy karpenter"
   type        = string
-  default     = "karpenter"
+  default     = "kube-system"
 }
 
 variable "karpenter_release_name" {

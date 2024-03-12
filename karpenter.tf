@@ -86,7 +86,7 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter
     kind       = "SecurityGroupPolicy"
     metadata = {
       name      = "fargate-karpenter-namespace-sg"
-      namespace = "karpenter"
+      namespace = "kube-system"
     }
     spec = {
       podSelector = {
