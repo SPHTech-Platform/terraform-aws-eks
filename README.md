@@ -246,6 +246,7 @@ module "karpenter" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_additional_karpenter_security_group_ids"></a> [additional\_karpenter\_security\_group\_ids](#input\_additional\_karpenter\_security\_group\_ids) | Additional security group IDs to add to the Karpenter node groups | `list(string)` | `[]` | no |
 | <a name="input_autoscaling_mode"></a> [autoscaling\_mode](#input\_autoscaling\_mode) | Autoscaling mode: cluster\_autoscaler or karpenter | `string` | `"karpenter"` | no |
 | <a name="input_aws_auth_fargate_profile_pod_execution_role_arns"></a> [aws\_auth\_fargate\_profile\_pod\_execution\_role\_arns](#input\_aws\_auth\_fargate\_profile\_pod\_execution\_role\_arns) | List of Fargate profile pod execution role ARNs to add to the aws-auth configmap | `list(string)` | `[]` | no |
 | <a name="input_cluster_additional_security_group_ids"></a> [cluster\_additional\_security\_group\_ids](#input\_cluster\_additional\_security\_group\_ids) | List of additional, externally created security group IDs to attach to the cluster control plane | `list(string)` | `[]` | no |
