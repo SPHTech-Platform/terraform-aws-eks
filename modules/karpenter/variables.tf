@@ -99,15 +99,19 @@ variable "karpenter_nodepools" {
 variable "karpenter_nodeclasses" {
   description = "List of nodetemplate maps"
   type = list(object({
-    nodeclass_name                         = string
-    karpenter_subnet_selector_maps         = list(map(any))
-    karpenter_security_group_selector_maps = list(map(any))
-    karpenter_ami_selector_maps            = list(map(any))
-    karpenter_node_role                    = string
-    karpenter_node_tags_map                = map(string)
-    karpenter_ami_family                   = string
-    karpenter_node_user_data               = string
-    karpenter_node_metadata_options        = map(any)
+    nodeclass_name                 = string
+    karpenter_subnet_selector_maps = list(map(any))
+    karpenter_security_group_selector_maps = list(object({
+      tags = optional(map(any))
+      id   = optional(string)
+      name = optional(string)
+    }))
+    karpenter_ami_selector_maps     = list(map(any))
+    karpenter_node_role             = string
+    karpenter_node_tags_map         = map(string)
+    karpenter_ami_family            = string
+    karpenter_node_user_data        = string
+    karpenter_node_metadata_options = map(any)
     karpenter_block_device_mapping = list(object({
       deviceName = string
       ebs = object({
