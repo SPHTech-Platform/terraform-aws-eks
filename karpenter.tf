@@ -11,11 +11,8 @@ locals {
         tags = var.karpenter_default_subnet_selector_tags,
         }
       ]
-      karpenter_node_role = aws_iam_role.workers.name
-      karpenter_security_group_selector_maps = [{
-        "id" = module.eks.cluster_primary_security_group_id
-        }, local.additional_karpenter_security_group_id_maps
-      ]
+      karpenter_node_role                    = aws_iam_role.workers.name
+      karpenter_security_group_selector_maps = local.additional_karpenter_security_group_id_maps
       karpenter_node_metadata_options = {
         httpEndpoint            = "enabled"
         httpProtocolIPv6        = var.cluster_ip_family != "ipv6" ? "disabled" : "enabled"
@@ -54,10 +51,9 @@ locals {
   ])
 
   additional_karpenter_security_group_id_maps = [
-    for val in var.additional_karpenter_security_group_ids : {
+    for val in concat(var.additional_karpenter_security_group_ids, [module.eks.cluster_primary_security_group_id]) : {
       "id" = val
-    }
-  ]
+  }]
 }
 
 module "karpenter" {

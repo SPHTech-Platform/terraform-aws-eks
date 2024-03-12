@@ -95,7 +95,7 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
     nodeclass_name                             = each.value.nodeclass_name
     CLUSTER_NAME                               = var.cluster_name
     karpenter_subnet_selector_map_yaml         = length(each.value.karpenter_subnet_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_subnet_selector_maps)
-    karpenter_security_group_selector_map_yaml = length(flatten(each.value.karpenter_security_group_selector_maps)) == 0 ? "" : yamlencode(flatten(each.value.karpenter_security_group_selector_maps))
+    karpenter_security_group_selector_map_yaml = length(each.value.karpenter_security_group_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_security_group_selector_maps)
     karpenter_ami_selector_map_yaml            = length(each.value.karpenter_ami_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_ami_selector_maps)
     karpenter_node_role                        = each.value.karpenter_node_role
     karpenter_node_user_data                   = each.value.karpenter_node_user_data
