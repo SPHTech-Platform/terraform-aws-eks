@@ -8,11 +8,11 @@ spec:
 
   # required, discovers subnets to attach to instances
   subnetSelectorTerms:
-  ${indent(4,karpenter_subnet_selector_map_yaml)}
+    ${indent(4,karpenter_subnet_selector_map_yaml)}
 
   # required, discovers security groups to attach to instances
   securityGroupSelectorTerms:
-  ${indent(4,karpenter_security_group_selector_map_yaml)}
+    ${indent(4,karpenter_security_group_selector_map_yaml)}
 
   # required, IAM role to use for the node identity
   role: ${karpenter_node_role}
