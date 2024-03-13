@@ -488,6 +488,12 @@ variable "karpenter_nodeclasses" {
   default = []
 }
 
+variable "create_fargate_profile_for_karpenter" {
+  description = "Create fargate profile flag"
+  type        = bool
+  default     = false
+}
+
 variable "create_aws_observability_ns_for_karpenter" {
   description = "Create aws-observability namespace flag"
   type        = bool

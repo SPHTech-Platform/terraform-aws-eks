@@ -164,6 +164,12 @@ variable "worker_iam_role_arn" {
 ##############
 ## FARGATE ###
 ##############
+variable "create_karpenter_fargate_profile" {
+  description = "Create Karpenter Fargate Profile"
+  type        = bool
+  default     = false
+}
+
 variable "subnet_ids" {
   description = "For Fargate subnet selection"
   type        = list(string)
