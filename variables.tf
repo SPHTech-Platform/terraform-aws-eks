@@ -426,15 +426,19 @@ variable "karpenter_nodepools" {
     karpenter_requirements = [{
       key      = "karpenter.k8s.aws/instance-category"
       operator = "In"
-      values   = ["m"]
+      values   = ["t", "m"]
       }, {
       key      = "karpenter.k8s.aws/instance-cpu"
       operator = "In"
-      values   = ["4"]
+      values   = ["2", "4"]
+      }, {
+      key      = "karpenter.k8s.aws/instance-memory"
+      operator = "Gt"
+      values   = ["2048"]
       }, {
       key      = "karpenter.k8s.aws/instance-generation"
       operator = "Gt"
-      values   = ["5"]
+      values   = ["2"]
       }, {
       key      = "karpenter.sh/capacity-type"
       operator = "In"
@@ -484,6 +488,12 @@ variable "karpenter_nodeclasses" {
   default = []
 }
 
+variable "create_fargate_profile_for_karpenter" {
+  description = "Create fargate profile flag"
+  type        = bool
+  default     = false
+}
+
 variable "create_aws_observability_ns_for_karpenter" {
   description = "Create aws-observability namespace flag"
   type        = bool
@@ -511,7 +521,7 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "v0.32.1"
+  default     = "v0.33.2"
 }
 
 variable "karpenter_default_subnet_selector_tags" {

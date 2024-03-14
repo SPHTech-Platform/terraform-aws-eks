@@ -1,4 +1,6 @@
 module "karpenter_fargate_profile" {
+  count = var.create_karpenter_fargate_profile ? 1 : 0
+
   source = "../fargate_profile"
 
   create_aws_observability_ns     = var.create_aws_observability_ns

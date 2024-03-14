@@ -75,10 +75,11 @@ module "karpenter" {
   karpenter_nodepools   = local.karpenter_nodepools
   karpenter_nodeclasses = local.karpenter_nodeclasses
 
-  create_fargate_logger_configmap = var.create_fargate_logger_configmap_for_karpenter
-  create_aws_observability_ns     = var.create_aws_observability_ns_for_karpenter
-  create_fargate_log_group        = var.create_fargate_log_group_for_karpenter
-  create_fargate_logging_policy   = var.create_fargate_logging_policy_for_karpenter
+  create_karpenter_fargate_profile = var.create_fargate_profile_for_karpenter
+  create_fargate_logger_configmap  = var.create_fargate_logger_configmap_for_karpenter
+  create_aws_observability_ns      = var.create_aws_observability_ns_for_karpenter
+  create_fargate_log_group         = var.create_fargate_log_group_for_karpenter
+  create_fargate_logging_policy    = var.create_fargate_logging_policy_for_karpenter
 
   # Required for Fargate profile
   subnet_ids = var.subnet_ids
@@ -92,7 +93,7 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter
     kind       = "SecurityGroupPolicy"
     metadata = {
       name      = "fargate-karpenter-namespace-sg"
-      namespace = "karpenter"
+      namespace = "kube-system"
     }
     spec = {
       podSelector = {

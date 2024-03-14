@@ -5,7 +5,7 @@
 variable "karpenter_namespace" {
   description = "Namespace to deploy karpenter"
   type        = string
-  default     = "karpenter"
+  default     = "kube-system"
 }
 
 variable "karpenter_release_name" {
@@ -29,7 +29,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "v0.32.1"
+  default     = "v0.33.2"
 }
 
 variable "karpenter_nodepools" {
@@ -164,6 +164,12 @@ variable "worker_iam_role_arn" {
 ##############
 ## FARGATE ###
 ##############
+variable "create_karpenter_fargate_profile" {
+  description = "Create Karpenter Fargate Profile"
+  type        = bool
+  default     = false
+}
+
 variable "subnet_ids" {
   description = "For Fargate subnet selection"
   type        = list(string)

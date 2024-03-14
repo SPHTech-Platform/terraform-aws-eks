@@ -1,17 +1,16 @@
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 19.18.0"
+  version = "~> 20.5.0"
 
   cluster_name = var.cluster_name
 
+  enable_irsa                     = true
   irsa_oidc_provider_arn          = var.oidc_provider_arn
-  irsa_namespace_service_accounts = ["karpenter:karpenter"]
+  irsa_namespace_service_accounts = ["${var.karpenter_namespace}:karpenter"]
 
-  create_iam_role = false
-  iam_role_arn    = var.worker_iam_role_arn
-
-  enable_karpenter_instance_profile_creation = true # Might be removed in later versions https://github.com/terraform-aws-modules/terraform-aws-eks/pull/2800/files
-
+  create_access_entry  = false # Remove this entry when EKS module updated to 20.x.x
+  create_node_iam_role = false
+  node_iam_role_arn    = var.worker_iam_role_arn
 }
 
 resource "helm_release" "karpenter" {
@@ -30,15 +29,15 @@ resource "helm_release" "karpenter" {
     settings:
       clusterName: ${var.cluster_name}
       clusterEndpoint: ${var.cluster_endpoint}
-      interruptionQueueName: ${module.karpenter.queue_name}
+      interruptionQueue: ${module.karpenter.queue_name}
     serviceAccount:
       annotations:
-        eks.amazonaws.com/role-arn: ${module.karpenter.irsa_arn}
+        eks.amazonaws.com/role-arn: ${module.karpenter.iam_role_arn}
     EOT
   ]
 
   depends_on = [
-    module.karpenter[0].irsa_arn,
+    module.karpenter[0].iam_role_arn,
     module.karpenter-crds,
   ]
 }
@@ -52,14 +51,10 @@ module "karpenter-crds" {
   version = "~> 0.3.0"
 
   crds_urls = [
-    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_provisioners.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_awsnodetemplates.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_machines.yaml",
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
     "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
   ]
-
 }
 
 #########################
