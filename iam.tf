@@ -75,6 +75,7 @@ module "vpc_cni_irsa_role" {
 
   attach_vpc_cni_policy = true
   vpc_cni_enable_ipv4   = true
+  vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
 
   oidc_providers = {
     main = {
