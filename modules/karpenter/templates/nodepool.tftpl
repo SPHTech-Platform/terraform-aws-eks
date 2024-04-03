@@ -104,7 +104,7 @@ spec:
     # Karpenter will respect the minimum of the currently active budgets, and will round up
     # when considering percentages. Duration and Schedule must be set together.
     budgets:
-    %{include(4, karpenter_nodepool_disruption_budgets_yaml)}
+    ${indent(4, karpenter_nodepool_disruption_budgets_yaml)}
 
   # Resource limits constrain the total size of the cluster.
   # Limits prevent Karpenter from creating new instances once the limit is exceeded.
