@@ -414,7 +414,7 @@ variable "karpenter_nodepools" {
       consolidate_after    = optional(string)
       expire_after         = string
     })
-    karpenter_nodepool_disruption_budgets = list(map(string))
+    karpenter_nodepool_disruption_budgets = list(map(any))
     karpenter_nodepool_weight             = number
   }))
   default = [{
