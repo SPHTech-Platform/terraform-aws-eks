@@ -9,14 +9,12 @@ data "aws_eks_addon_version" "latest_adot" {
 }
 
 resource "aws_eks_addon" "adot_operator" {
-  cluster_name      = var.cluster_name
-  addon_name        = "adot"
-  addon_version     = try(var.adot_addon_version, data.aws_eks_addon_version.latest_adot.version)
-  resolve_conflicts = var.resolve_conflicts_on_create #using this variable to resolve conflict as effect is the same
+  cluster_name  = var.cluster_name
+  addon_name    = "adot"
+  addon_version = try(var.adot_addon_version, data.aws_eks_addon_version.latest_adot.version)
 
-  # TODO: Use the bottom when the AWS provider upgrades to v5 as `resolve_conflicts` is deprecated
-  # resolve_conflicts_on_create = var.resolve_conflicts_on_create
-  # resolve_conflicts_on_update = var.resolve_conflicts_on_update
+  resolve_conflicts_on_create = var.resolve_conflicts_on_create
+  resolve_conflicts_on_update = var.resolve_conflicts_on_update
 
   depends_on = [
     helm_release.cert_manager,

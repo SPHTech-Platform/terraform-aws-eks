@@ -541,3 +541,27 @@ variable "additional_karpenter_security_group_ids" {
   type        = list(string)
   default     = []
 }
+
+variable "karpenter_pod_resources" {
+  description = "Karpenter Pod Resource"
+  type = object({
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+  })
+  default = {
+    requests = {
+      cpu    = "1"
+      memory = "2Gi"
+    }
+    limits = {
+      cpu    = "1"
+      memory = "2Gi"
+    }
+  }
+}

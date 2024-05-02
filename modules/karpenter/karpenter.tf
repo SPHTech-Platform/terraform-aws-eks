@@ -33,6 +33,14 @@ resource "helm_release" "karpenter" {
     serviceAccount:
       annotations:
         eks.amazonaws.com/role-arn: ${module.karpenter.iam_role_arn}
+    controller:
+      resources:
+        requests:
+          cpu: ${var.karpenter_pod_resources.requests.cpu}
+          memory: ${var.karpenter_pod_resources.requests.memory}
+        limits:
+          cpu: ${var.karpenter_pod_resources.limits.cpu}
+          memory: ${var.karpenter_pod_resources.limits.memory}
     EOT
   ]
 
