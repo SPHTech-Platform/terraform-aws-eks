@@ -13,7 +13,7 @@ locals {
     min_size = var.default_group_min_size
     max_size = var.default_group_max_size
 
-    subnet_ids = coalescelist(var.default_group_subnet_ids, var.subnet_ids)
+    subnet_ids = length(var.default_group_subnet_ids) > 0 || length(var.subnet_ids) > 0 ? coalescelist(var.default_group_subnet_ids, var.subnet_ids) : []
 
     enable_bootstrap_user_data = true
     # See https://github.com/bottlerocket-os/bottlerocket#settings
