@@ -71,6 +71,9 @@ config:
         Time_Key time
         Time_Format %d/%b/%Y:%H:%M:%S %z
 
+  service: |
+    [SERVICE]
+        HTTP_Listen [::]
 
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |
