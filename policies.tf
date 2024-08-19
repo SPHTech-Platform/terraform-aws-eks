@@ -2,7 +2,7 @@
 locals {
   workers_additional_assume_policy = jsondecode(var.workers_additional_assume_policy)
 
-  worker_assume_stmt            = data.aws_iam_policy_document.policy1.statement
+  worker_assume_stmt            = data.aws_iam_policy_document.ec2_assume_role_policy.statement
   worker_additional_assume_stmt = length(data.aws_iam_policy_document.workers_additional_assume_policy.statement) > 0
 
   worker_combined_assume_statements = concat(
