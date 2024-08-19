@@ -1,5 +1,5 @@
 locals {
-  source_policy_documents = length(var.workers_additional_assume_policy) ? [
+  source_policy_documents = length(var.workers_additional_assume_policy) > 0 ? [
     data.aws_iam_policy_document.ec2_assume_role_policy.json,
     data.aws_iam_policy_document.workers_additional_assume_policy.json
   ] : [data.aws_iam_policy_document.ec2_assume_role_policy.json]
