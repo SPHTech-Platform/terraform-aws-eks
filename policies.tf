@@ -1,9 +1,8 @@
 # Decode the JSON string for Additional assume policy
 locals {
-  workers_additional_assume_policy = jsondecode(var.workers_additional_assume_policy)
 
   worker_assume_stmt            = data.aws_iam_policy_document.ec2_assume_role_policy.statement
-  worker_additional_assume_stmt = length(data.aws_iam_policy_document.workers_additional_assume_policy.statement) > 0
+  worker_additional_assume_stmt = length(var.workers_additional_assume_policy) > 0 ? data.aws_iam_policy_document.workers_additional_assume_policy.json : ""
 
   worker_combined_assume_statements = concat(
     local.worker_assume_stmt,
@@ -35,9 +34,9 @@ data "aws_iam_policy_document" "ec2_assume_role_policy" {
   }
 }
 
-# Create a data source from the decoded JSON
 data "aws_iam_policy_document" "workers_additional_assume_policy" {
-  statement = local.workers_additional_assume_policy.statement
+  # Decode the JSON policy
+  policy_document = var.workers_additional_assume_policy
 }
 
 data "aws_iam_policy_document" "combined_assume_policy" {
