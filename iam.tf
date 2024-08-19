@@ -37,7 +37,7 @@ resource "aws_iam_role" "workers" {
   name        = coalesce(var.workers_iam_role, "${var.cluster_name}-workers")
   description = "IAM Role for the workers in EKS Cluster named ${var.cluster_name}"
 
-  assume_role_policy    = data.aws_iam_policy_document.ec2_assume_role_policy.json
+  assume_role_policy    = data.aws_iam_policy_document.combined_assume_policy.json
   permissions_boundary  = var.workers_iam_boundary
   force_detach_policies = true
 
