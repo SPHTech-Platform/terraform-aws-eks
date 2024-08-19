@@ -268,6 +268,7 @@ module "eks_essentials" {
 | <a name="input_rbac_create"></a> [rbac\_create](#input\_rbac\_create) | Create RBAC resources | `bool` | `true` | no |
 | <a name="input_replica_count"></a> [replica\_count](#input\_replica\_count) | Number of controller replicas | `number` | `1` | no |
 | <a name="input_resolve_conflicts_on_create"></a> [resolve\_conflicts\_on\_create](#input\_resolve\_conflicts\_on\_create) | value for resolve\_conflicts\_on\_create for aws\_eks\_addon resource | `string` | `"OVERWRITE"` | no |
+| <a name="input_resolve_conflicts_on_update"></a> [resolve\_conflicts\_on\_update](#input\_resolve\_conflicts\_on\_update) | value for resolve\_conflicts\_on\_update for aws\_eks\_addon resource | `string` | `"PRESERVE"` | no |
 | <a name="input_resources"></a> [resources](#input\_resources) | Resources for pods | `any` | <pre>{<br>  "limits": {<br>    "cpu": "100m",<br>    "memory": "300Mi"<br>  },<br>  "requests": {<br>    "cpu": "100m",<br>    "memory": "300Mi"<br>  }<br>}</pre> | no |
 | <a name="input_security_context"></a> [security\_context](#input\_security\_context) | Configure pod security context | `map(string)` | `{}` | no |
 | <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | Service acocunt annotations | `map(string)` | `{}` | no |
