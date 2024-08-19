@@ -29,7 +29,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "v0.33.2"
+  default     = "v0.34.6"
 }
 
 variable "karpenter_nodepools" {
@@ -52,7 +52,8 @@ variable "karpenter_nodepools" {
       consolidate_after    = optional(string)
       expire_after         = string
     })
-    karpenter_nodepool_weight = number
+    karpenter_nodepool_disruption_budgets = list(map(any))
+    karpenter_nodepool_weight             = number
   }))
   default = [{
     nodepool_name                     = "default"
@@ -92,6 +93,9 @@ variable "karpenter_nodepools" {
       # consolidate_after    = "10m"               # Only used if consolidation_policy is WhenEmpty
       expire_after = "168h" # 7d | 168h | 1w
     }
+    karpenter_nodepool_disruption_budgets = [{
+      nodes = "10%"
+    }]
     karpenter_nodepool_weight = 10
   }]
 }
@@ -198,4 +202,28 @@ variable "create_fargate_logging_policy" {
   description = "create_fargate_logging_policy flag"
   type        = bool
   default     = true
+}
+
+variable "karpenter_pod_resources" {
+  description = "Karpenter Pod Resource"
+  type = object({
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+  })
+  default = {
+    requests = {
+      cpu    = "1"
+      memory = "2Gi"
+    }
+    limits = {
+      cpu    = "1"
+      memory = "2Gi"
+    }
+  }
 }

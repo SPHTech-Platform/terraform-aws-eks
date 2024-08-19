@@ -33,6 +33,14 @@ resource "helm_release" "karpenter" {
     serviceAccount:
       annotations:
         eks.amazonaws.com/role-arn: ${module.karpenter.iam_role_arn}
+    controller:
+      resources:
+        requests:
+          cpu: ${var.karpenter_pod_resources.requests.cpu}
+          memory: ${var.karpenter_pod_resources.requests.memory}
+        limits:
+          cpu: ${var.karpenter_pod_resources.limits.cpu}
+          memory: ${var.karpenter_pod_resources.limits.memory}
     EOT
   ]
 
@@ -66,15 +74,16 @@ resource "kubectl_manifest" "karpenter_nodepool" {
   for_each = { for nodepool in var.karpenter_nodepools : nodepool.nodepool_name => nodepool }
 
   yaml_body = templatefile("${path.module}/templates/nodepool.tftpl", {
-    nodepool_name                          = each.value.nodepool_name
-    karpenter_nodepool_node_labels_yaml    = length(keys(each.value.karpenter_nodepool_node_labels)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_nodepool_annotations_yaml    = length(keys(each.value.karpenter_nodepool_annotations)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_annotations), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    nodeclass_name                         = each.value.nodeclass_name
-    karpenter_nodepool_node_taints_yaml    = length(each.value.karpenter_nodepool_node_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_nodepool_startup_taints_yaml = length(each.value.karpenter_nodepool_startup_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_startup_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_requirements_yaml            = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_nodepool_disruption          = each.value.karpenter_nodepool_disruption
-    karpenter_nodepool_weight              = each.value.karpenter_nodepool_weight
+    nodepool_name                              = each.value.nodepool_name
+    karpenter_nodepool_node_labels_yaml        = length(keys(each.value.karpenter_nodepool_node_labels)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_annotations_yaml        = length(keys(each.value.karpenter_nodepool_annotations)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_annotations), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    nodeclass_name                             = each.value.nodeclass_name
+    karpenter_nodepool_node_taints_yaml        = length(each.value.karpenter_nodepool_node_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_startup_taints_yaml     = length(each.value.karpenter_nodepool_startup_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_startup_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_requirements_yaml                = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_disruption              = each.value.karpenter_nodepool_disruption
+    karpenter_nodepool_weight                  = each.value.karpenter_nodepool_weight
+    karpenter_nodepool_disruption_budgets_yaml = replace(yamlencode(each.value.karpenter_nodepool_disruption_budgets), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
   })
 
   depends_on = [module.karpenter-crds]

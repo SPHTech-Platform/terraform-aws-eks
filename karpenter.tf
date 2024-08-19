@@ -72,8 +72,9 @@ module "karpenter" {
   oidc_provider_arn   = module.eks.oidc_provider_arn
   worker_iam_role_arn = aws_iam_role.workers.arn
 
-  karpenter_nodepools   = local.karpenter_nodepools
-  karpenter_nodeclasses = local.karpenter_nodeclasses
+  karpenter_nodepools     = local.karpenter_nodepools
+  karpenter_nodeclasses   = local.karpenter_nodeclasses
+  karpenter_pod_resources = var.karpenter_pod_resources
 
   create_karpenter_fargate_profile = var.create_fargate_profile_for_karpenter
   create_fargate_logger_configmap  = var.create_fargate_logger_configmap_for_karpenter
