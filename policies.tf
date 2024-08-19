@@ -1,13 +1,8 @@
-# Decode the JSON string for Additional assume policy
 locals {
-
-  worker_assume_stmt            = data.aws_iam_policy_document.ec2_assume_role_policy.statement
-  worker_additional_assume_stmt = length(var.workers_additional_assume_policy) > 0 ? data.aws_iam_policy_document.workers_additional_assume_policy.json : ""
-
-  worker_combined_assume_statements = concat(
-    local.worker_assume_stmt,
-    local.worker_additional_assume_stmt
-  )
+  source_policy_documents = length(var.workers_additional_assume_policy) ? [
+    data.aws_iam_policy_document.ec2_assume_role_policy.json,
+    data.aws_iam_policy_document.workers_additional_assume_policy.json
+  ] : [data.aws_iam_policy_document.ec2_assume_role_policy.json]
 }
 
 data "aws_iam_policy_document" "eks_assume_role_policy" {
@@ -36,11 +31,11 @@ data "aws_iam_policy_document" "ec2_assume_role_policy" {
 
 data "aws_iam_policy_document" "workers_additional_assume_policy" {
   # Decode the JSON policy
-  policy_document = var.workers_additional_assume_policy
+  source_policy_documents = [var.workers_additional_assume_policy]
 }
 
 data "aws_iam_policy_document" "combined_assume_policy" {
-  statement = local.worker_combined_assume_statements
+  source_policy_documents = local.source_policy_documents
 }
 
 # This policy is required for the KMS key used for EKS root volumes, so the cluster is allowed to enc/dec/attach encrypted EBS volumes
