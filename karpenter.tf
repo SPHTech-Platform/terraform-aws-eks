@@ -13,6 +13,12 @@ locals {
       karpenter_security_group_selector_map = {
         "aws-ids" = module.eks.cluster_primary_security_group_id
       }
+      karpenter_node_metadata_options = {
+        httpEndpoint            = "enabled"
+        httpProtocolIPv6        = var.cluster_ip_family != "ipv6" ? "disabled" : "enabled"
+        httpPutResponseHopLimit = 1
+        httpTokens              = "required"
+      }
       karpenter_nodetemplate_tag_map = {
         "karpenter.sh/discovery" = module.eks.cluster_name,
         "eks:cluster-name"       = module.eks.cluster_name,
