@@ -138,9 +138,16 @@ variable "karpenter_nodetemplates" {
     #     }
     #   }`
     # ]
+    karpenter_node_metadata_options = {
+      httpEndpoint            = "enabled"
+      httpProtocolIPv6        = "disabled"
+      httpPutResponseHopLimit = 1
+      httpTokens              = "required"
+    }
     karpenter_security_group_selector_map = {}
     karpenter_nodetemplate_tag_map        = {}
-    karpenter_ami_family                  = "Bottlerocket"
+
+    karpenter_ami_family = "Bottlerocket"
   }]
 }
 
