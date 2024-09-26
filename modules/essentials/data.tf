@@ -34,6 +34,7 @@ data "aws_iam_policy_document" "fluent_bit" {
       "logs:CreateLogStream",
       "logs:DescribeLogGroups",
       "logs:DescribeLogStreams",
+      "logs:PutRetentionPolicy",
     ]
   }
 }
