@@ -1361,12 +1361,6 @@ variable "fluent_bit_enabled" {
   default     = true
 }
 
-variable "create_fluent_bit_log_group" {
-  description = "Flag to create fluent-bit default log group."
-  type        = bool
-  default     = true
-}
-
 variable "fluent_bit_helm_config_defaults" {
   description = "Helm provider default config for Fluent Bit."
   type        = any
