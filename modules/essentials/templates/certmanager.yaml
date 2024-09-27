@@ -41,9 +41,6 @@ global:
     # renewal of a leadership.
     retryPeriod: ${leader_election_retry_period}
 
-# Deprecated: use crds.enabled and crds.keep instead.
-# installCRDs: ${install_crds}
-
 crds:
   enabled: ${crds_enabled}
   keep: ${crds_keep}
