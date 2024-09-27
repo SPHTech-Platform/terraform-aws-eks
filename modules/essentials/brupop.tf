@@ -8,7 +8,7 @@ locals {
     brupop_tag       = var.brupop_tag
   }
 
-  brupop_crd_values = yamlencode({ namespace : "${var.brupop_namespace}", apiserver_service_port : "${var.brupop_crd_apiserver_service_port}" })
+  brupop_crd_values = yamlencode({ namespace = var.brupop_namespace, apiserver_service_port = var.brupop_crd_apiserver_service_port })
 }
 
 resource "helm_release" "brupop_crd" {
