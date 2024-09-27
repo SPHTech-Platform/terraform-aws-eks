@@ -116,7 +116,7 @@ variable "cluster_autoscaler_chart_repository" {
 variable "cluster_autoscaler_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "9.26.0"
+  default     = "9.40.0"
 }
 
 variable "cluster_autoscaler_namespace" {
@@ -134,7 +134,7 @@ variable "cluster_autoscaler_image" {
 variable "cluster_autoscaler_tag" {
   description = "Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.27.0"
+  default     = "v1.31.0"
 }
 
 variable "cluster_autoscaler_replica" {
@@ -219,6 +219,22 @@ variable "cluster_autoscaler_pdb" {
   default = {
     maxUnavailable = 1
   }
+}
+
+variable "cluster_autoscaler_vpa" {
+  description = "VPA for Cluster AutoScaler"
+  type        = any
+  default = {
+    enabled         = false
+    updateMode      = "Auto"
+    containerPolicy = {}
+  }
+}
+
+variable "cluster_autoscaler_secret_key_ref_name_override" {
+  description = "Override the name of the secret key ref for Cluster Autoscaler"
+  type        = string
+  default     = ""
 }
 
 variable "create_pdb_for_coredns" {
@@ -558,28 +574,58 @@ variable "brupop_namespace" {
   default     = "brupop-bottlerocket-aws"
 }
 
+variable "brupop_crd_release_name" {
+  description = "Release name for brupop CRD"
+  type        = string
+  default     = "brupop-crd"
+}
+
+variable "brupop_crd_chart_name" {
+  description = "Chart name for brupop CRD"
+  type        = string
+  default     = "brupop/bottlerocket-shadow"
+}
+
+variable "brupop_crd_chart_repository" {
+  description = "Chart repository for brupop"
+  type        = string
+  default     = "https://bottlerocket-os.github.io/bottlerocket-update-operator"
+}
+
+variable "brupop_crd_chart_version" {
+  description = "Chart version for brupop CRD"
+  type        = string
+  default     = "1.0.0"
+}
+
+variable "brupop_crd_apiserver_service_port" {
+  description = "API server service port for brupop CRD"
+  type        = number
+  default     = 443
+}
+
 variable "brupop_release_name" {
   description = "Release name for brupop"
   type        = string
-  default     = "bottlerocket-brupop"
+  default     = "brupop-operator"
 }
 
 variable "brupop_chart_name" {
   description = "Chart name for brupop"
   type        = string
-  default     = "bottlerocket-brupop"
+  default     = "brupop/bottlerocket-update-operator"
 }
 
 variable "brupop_chart_repository" {
   description = "Chart repository for brupop"
   type        = string
-  default     = "oci://public.ecr.aws/sphmedia/helm/"
+  default     = "https://bottlerocket-os.github.io/bottlerocket-update-operator"
 }
 
 variable "brupop_chart_version" {
   description = "Chart version for brupop"
   type        = string
-  default     = "1.0.3"
+  default     = "1.4.0"
 }
 
 variable "brupop_image" {
@@ -591,7 +637,7 @@ variable "brupop_image" {
 variable "brupop_tag" {
   description = "Docker image tag for brupop. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v0.2.2"
+  default     = "v1.4.0"
 }
 
 ##############
@@ -618,7 +664,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "1.12.2"
+  default     = "1.15.1"
 }
 
 variable "certmanager_namespace" {

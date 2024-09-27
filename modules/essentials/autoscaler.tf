@@ -45,6 +45,9 @@ locals {
     pod_labels                  = jsonencode(var.cluster_autoscaler_pod_labels)
     service_annotations         = jsonencode(var.cluster_autoscaler_service_annotations)
     topology_spread_constraints = jsonencode(var.cluster_autoscaler_topology_spread_constraints)
+
+    vpa                          = jsonencode(var.cluster_autoscaler_vpa)
+    secret_key_ref_name_override = var.cluster_autoscaler_secret_key_ref_name_override
   }
 }
 
