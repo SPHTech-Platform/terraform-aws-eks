@@ -664,7 +664,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "1.15.1"
+  default     = "1.15.3"
 }
 
 variable "certmanager_namespace" {
@@ -772,8 +772,14 @@ variable "cluster_resource_namespace" {
   default     = ""
 }
 
-variable "install_crds" {
+variable "crds_enabled" {
   description = "Install CRDs with chart"
+  type        = bool
+  default     = true
+}
+
+variable "crds_keep" {
+  description = "Keep cert-manager custom resources"
   type        = bool
   default     = true
 }
@@ -986,6 +992,30 @@ variable "validating_webhook_configuration_annotations" {
   description = "Optional additional annotations to add to the webhook ValidatingWebhookConfiguration"
   type        = map(string)
   default     = {}
+}
+
+variable "validating_webhook_configuration" {
+  description = "Validating webhook configuration"
+  type        = any
+  default = {
+    namespcaceSelector = {
+      matchExpressions = [
+        {
+          key      = "cert-manager.io/disable-validation"
+          operator = "NotIn"
+          values   = ["true"]
+        }
+      ]
+    }
+  }
+}
+
+variable "mutating_webhook_configuration" {
+  description = "Mutating webhook configuration"
+  type        = any
+  default = {
+    namespcaceSelector = {}
+  }
 }
 
 variable "webhook_extra_args" {

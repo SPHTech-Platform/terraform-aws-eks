@@ -38,7 +38,8 @@ locals {
     service_account_annotations     = jsonencode(var.service_account_annotations)
     service_account_automount_token = var.service_account_automount_token
 
-    install_crds = var.install_crds
+    crds_enabled = var.crds_enabled
+    crds_keep    = var.crds_keep
 
     replica_count = var.replica_count
     strategy      = jsonencode(var.strategy)
@@ -85,6 +86,9 @@ locals {
 
     mutating_webhook_configuration_annotations   = jsonencode(var.mutating_webhook_configuration_annotations)
     validating_webhook_configuration_annotations = jsonencode(var.validating_webhook_configuration_annotations)
+
+    validating_webhook_configuration = jsonencode(var.validating_webhook_configuration)
+    mutating_webhook_configuration   = jsonencode(var.mutating_webhook_configuration)
 
     webhook_extra_args = jsonencode(var.webhook_extra_args)
     webhook_resources  = jsonencode(var.webhook_resources)
