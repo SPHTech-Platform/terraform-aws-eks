@@ -456,7 +456,7 @@ variable "node_termination_handler_chart_repository_url" {
 variable "node_termination_handler_chart_version" {
   description = "Chart version for Node Termination Handler"
   type        = string
-  default     = "0.17.0"
+  default     = "0.21.0"
 }
 
 variable "node_termination_handler_image" {
@@ -468,7 +468,7 @@ variable "node_termination_handler_image" {
 variable "node_termination_handler_tag" {
   description = "Docker image tag for Node Termination Handler. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.16.0"
+  default     = "v1.22.1"
 }
 
 variable "node_termination_handler_priority_class" {
@@ -1444,7 +1444,7 @@ variable "fluent_bit_helm_config_defaults" {
     name        = "fluent-bit"
     chart       = "fluent-bit"
     repository  = "https://fluent.github.io/helm-charts"
-    version     = "0.30.2"
+    version     = "0.47.9"
     namespace   = "logging"
     description = "Fluent Bit helm Chart deployment configuration"
   }
@@ -1460,7 +1460,7 @@ variable "fluent_bit_image_repository" {
 variable "fluent_bit_image_tag" {
   description = "Fluent Bit Image tag"
   type        = string
-  default     = "2.31.8"
+  default     = "2.32.0"
 }
 
 variable "fluent_bit_helm_config" {
