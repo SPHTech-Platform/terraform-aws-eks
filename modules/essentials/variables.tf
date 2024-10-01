@@ -583,7 +583,7 @@ variable "brupop_crd_release_name" {
 variable "brupop_crd_chart_name" {
   description = "Chart name for brupop CRD"
   type        = string
-  default     = "brupop/bottlerocket-shadow"
+  default     = "bottlerocket-shadow"
 }
 
 variable "brupop_crd_chart_repository" {
@@ -613,7 +613,7 @@ variable "brupop_release_name" {
 variable "brupop_chart_name" {
   description = "Chart name for brupop"
   type        = string
-  default     = "brupop/bottlerocket-update-operator"
+  default     = "bottlerocket-update-operator"
 }
 
 variable "brupop_chart_repository" {
