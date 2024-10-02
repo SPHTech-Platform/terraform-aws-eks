@@ -59,9 +59,9 @@ module "karpenter-crds" {
   version = "~> 0.3.0"
 
   crds_urls = [
-    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
   ]
 }
 
