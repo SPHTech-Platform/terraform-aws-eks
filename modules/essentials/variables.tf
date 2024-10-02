@@ -116,7 +116,7 @@ variable "cluster_autoscaler_chart_repository" {
 variable "cluster_autoscaler_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "9.26.0"
+  default     = "9.40.0"
 }
 
 variable "cluster_autoscaler_namespace" {
@@ -134,7 +134,7 @@ variable "cluster_autoscaler_image" {
 variable "cluster_autoscaler_tag" {
   description = "Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.27.0"
+  default     = "v1.31.0"
 }
 
 variable "cluster_autoscaler_replica" {
@@ -219,6 +219,22 @@ variable "cluster_autoscaler_pdb" {
   default = {
     maxUnavailable = 1
   }
+}
+
+variable "cluster_autoscaler_vpa" {
+  description = "VPA for Cluster AutoScaler"
+  type        = any
+  default = {
+    enabled         = false
+    updateMode      = "Auto"
+    containerPolicy = {}
+  }
+}
+
+variable "cluster_autoscaler_secret_key_ref_name_override" {
+  description = "Override the name of the secret key ref for Cluster Autoscaler"
+  type        = string
+  default     = ""
 }
 
 variable "create_pdb_for_coredns" {
@@ -440,7 +456,7 @@ variable "node_termination_handler_chart_repository_url" {
 variable "node_termination_handler_chart_version" {
   description = "Chart version for Node Termination Handler"
   type        = string
-  default     = "0.17.0"
+  default     = "0.21.0"
 }
 
 variable "node_termination_handler_image" {
@@ -452,7 +468,7 @@ variable "node_termination_handler_image" {
 variable "node_termination_handler_tag" {
   description = "Docker image tag for Node Termination Handler. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.16.0"
+  default     = "v1.22.1"
 }
 
 variable "node_termination_handler_priority_class" {
@@ -558,28 +574,58 @@ variable "brupop_namespace" {
   default     = "brupop-bottlerocket-aws"
 }
 
+variable "brupop_crd_release_name" {
+  description = "Release name for brupop CRD"
+  type        = string
+  default     = "brupop-crd"
+}
+
+variable "brupop_crd_chart_name" {
+  description = "Chart name for brupop CRD"
+  type        = string
+  default     = "bottlerocket-shadow"
+}
+
+variable "brupop_crd_chart_repository" {
+  description = "Chart repository for brupop"
+  type        = string
+  default     = "https://bottlerocket-os.github.io/bottlerocket-update-operator"
+}
+
+variable "brupop_crd_chart_version" {
+  description = "Chart version for brupop CRD"
+  type        = string
+  default     = "1.0.0"
+}
+
+variable "brupop_crd_apiserver_service_port" {
+  description = "API server service port for brupop CRD"
+  type        = number
+  default     = 443
+}
+
 variable "brupop_release_name" {
   description = "Release name for brupop"
   type        = string
-  default     = "bottlerocket-brupop"
+  default     = "brupop-operator"
 }
 
 variable "brupop_chart_name" {
   description = "Chart name for brupop"
   type        = string
-  default     = "bottlerocket-brupop"
+  default     = "bottlerocket-update-operator"
 }
 
 variable "brupop_chart_repository" {
   description = "Chart repository for brupop"
   type        = string
-  default     = "oci://public.ecr.aws/sphmedia/helm/"
+  default     = "https://bottlerocket-os.github.io/bottlerocket-update-operator"
 }
 
 variable "brupop_chart_version" {
   description = "Chart version for brupop"
   type        = string
-  default     = "1.0.3"
+  default     = "1.4.0"
 }
 
 variable "brupop_image" {
@@ -591,7 +637,7 @@ variable "brupop_image" {
 variable "brupop_tag" {
   description = "Docker image tag for brupop. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v0.2.2"
+  default     = "v1.4.0"
 }
 
 ##############
@@ -618,7 +664,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "1.12.2"
+  default     = "1.15.3"
 }
 
 variable "certmanager_namespace" {
@@ -726,8 +772,14 @@ variable "cluster_resource_namespace" {
   default     = ""
 }
 
-variable "install_crds" {
+variable "crds_enabled" {
   description = "Install CRDs with chart"
+  type        = bool
+  default     = true
+}
+
+variable "crds_keep" {
+  description = "Keep cert-manager custom resources"
   type        = bool
   default     = true
 }
@@ -940,6 +992,30 @@ variable "validating_webhook_configuration_annotations" {
   description = "Optional additional annotations to add to the webhook ValidatingWebhookConfiguration"
   type        = map(string)
   default     = {}
+}
+
+variable "validating_webhook_configuration" {
+  description = "Validating webhook configuration"
+  type        = any
+  default = {
+    namespcaceSelector = {
+      matchExpressions = [
+        {
+          key      = "cert-manager.io/disable-validation"
+          operator = "NotIn"
+          values   = ["true"]
+        }
+      ]
+    }
+  }
+}
+
+variable "mutating_webhook_configuration" {
+  description = "Mutating webhook configuration"
+  type        = any
+  default = {
+    namespcaceSelector = {}
+  }
 }
 
 variable "webhook_extra_args" {
@@ -1368,7 +1444,7 @@ variable "fluent_bit_helm_config_defaults" {
     name        = "fluent-bit"
     chart       = "fluent-bit"
     repository  = "https://fluent.github.io/helm-charts"
-    version     = "0.30.2"
+    version     = "0.47.9"
     namespace   = "logging"
     description = "Fluent Bit helm Chart deployment configuration"
   }
@@ -1384,7 +1460,7 @@ variable "fluent_bit_image_repository" {
 variable "fluent_bit_image_tag" {
   description = "Fluent Bit Image tag"
   type        = string
-  default     = "2.31.8"
+  default     = "2.32.0"
 }
 
 variable "fluent_bit_helm_config" {

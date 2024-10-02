@@ -41,7 +41,9 @@ global:
     # renewal of a leadership.
     retryPeriod: ${leader_election_retry_period}
 
-installCRDs: ${install_crds}
+crds:
+  enabled: ${crds_enabled}
+  keep: ${crds_keep}
 
 replicaCount: ${replica_count}
 
@@ -229,6 +231,9 @@ webhook:
 
   # Optional additional annotations to add to the webhook ValidatingWebhookConfiguration
   validatingWebhookConfigurationAnnotations: ${validating_webhook_configuration_annotations}
+
+  validatingWebhookConfiguration: ${validating_webhook_configuration}
+  mutatingWebhookConfiguration: ${mutating_webhook_configuration}
 
   # Optional additional arguments for webhook
   extraArgs: ${webhook_extra_args}
