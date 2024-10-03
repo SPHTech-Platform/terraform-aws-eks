@@ -73,7 +73,7 @@ module "fargate_profile" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_fargate_profile"></a> [fargate\_profile](#module\_fargate\_profile) | terraform-aws-modules/eks/aws//modules/fargate-profile | ~> 19.17.0 |
+| <a name="module_fargate_profile"></a> [fargate\_profile](#module\_fargate\_profile) | terraform-aws-modules/eks/aws//modules/fargate-profile | ~> 19.21.0 |
 
 ## Resources
 

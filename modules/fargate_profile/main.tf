@@ -1,6 +1,6 @@
 module "fargate_profile" {
   source  = "terraform-aws-modules/eks/aws//modules/fargate-profile"
-  version = "~> 19.17.0"
+  version = "~> 19.21.0"
 
   for_each          = var.fargate_profiles
   cluster_ip_family = var.cluster_ip_family
