@@ -5,7 +5,7 @@ locals {
     local.namespace
   )
 
-  namespace = var.fargate_mix_node_groups ? {
+  namespace = var.fargate_mix_node_groups || var.fargate_cluster ? {
     create_namespace = true
     namespace        = "metrics-server"
   } : { namespace = "kube-system" }

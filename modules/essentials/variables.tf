@@ -20,6 +20,12 @@ variable "fargate_mix_node_groups" {
   default     = false
 }
 
+variable "fargate_cluster" {
+  description = "Deploying workloads on Fargate, set this to TRUE"
+  type        = bool
+  default     = false
+}
+
 ############################
 # K8S Cluster Information
 ############################
@@ -1355,7 +1361,7 @@ variable "metrics_server_helm_config_defaults" {
     name        = "metrics-server"
     chart       = "metrics-server"
     repository  = "https://kubernetes-sigs.github.io/metrics-server/"
-    version     = "3.10.0"
+    version     = "3.12.1"
     description = "Metric server helm Chart deployment configuration"
   }
 }
@@ -1388,7 +1394,7 @@ variable "kube_state_metrics_helm_config_defaults" {
     name        = "kube-state-metrics"
     chart       = "kube-state-metrics"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "5.8.1"
+    version     = "5.25.1"
     namespace   = "kube-system"
     description = "kube-state-metrics helm Chart deployment configuration"
   }
@@ -1416,7 +1422,7 @@ variable "node_exporter_helm_config_defaults" {
     name        = "prometheus-node-exporter"
     chart       = "prometheus-node-exporter"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "4.18.1"
+    version     = "4.39.0"
     namespace   = "kube-system"
     description = "prometheus-node-exporter helm Chart deployment configuration"
   }
@@ -1497,4 +1503,10 @@ variable "fluent_bit_overwrite_helm_values" {
   description = "helm values for overwrite configuration"
   type        = string
   default     = ""
+}
+
+variable "ip_dual_stack_enabled" {
+  description = "Enable essentials to support EKS dual stack cluster"
+  type        = bool
+  default     = false
 }

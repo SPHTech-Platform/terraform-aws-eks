@@ -36,4 +36,11 @@ module "helm_node_exporter" {
   version = "~> 0.1.4"
 
   helm_config = local.node_exporter_helm_config
+
+  set_values = [
+    {
+      name  = "service.ipDualStack.enabled"
+      value = var.ip_dual_stack_enabled ? true : false
+    },
+  ]
 }
