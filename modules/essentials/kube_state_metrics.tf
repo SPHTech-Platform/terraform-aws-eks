@@ -18,5 +18,9 @@ module "helm_kube_state_metrics" {
       name  = "selfMonitor.enabled"
       value = true
     },
+    {
+      name  = "service.ipDualStack.enabled"
+      value = var.ip_dual_stack_enabled ? true : false
+    },
   ]
 }

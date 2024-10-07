@@ -331,6 +331,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "cloudwatch_log_group_tags" {
+  description = "A map of additional tags to add to the cloudwatch log group created"
+  type        = map(string)
+  default     = {}
+}
+
 variable "fargate_cluster" {
   description = "Whether to create eks cluster with fargate mode. If true, default node group also will be fargate, otherwise managed"
   type        = bool

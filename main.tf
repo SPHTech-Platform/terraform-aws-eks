@@ -28,7 +28,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.17.0"
+  version = "~> 19.21.0"
 
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
@@ -167,5 +167,6 @@ module "eks" {
   aws_auth_accounts                                = []
   aws_auth_fargate_profile_pod_execution_role_arns = concat(local.aws_auth_fargate_profile_pod_execution_role_arns, local.additional_aws_auth_fargate_profile_pod_execution_role_arns)
 
-  tags = var.tags
+  tags                      = var.tags
+  cloudwatch_log_group_tags = var.cloudwatch_log_group_tags
 }
