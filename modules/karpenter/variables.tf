@@ -49,7 +49,7 @@ variable "karpenter_nodepools" {
     )
     karpenter_nodepool_disruption = object({
       consolidation_policy = string
-      consolidate_after    = optional(string)
+      consolidate_after    = string
       expire_after         = string
     })
     karpenter_nodepool_disruption_budgets = list(map(any))
