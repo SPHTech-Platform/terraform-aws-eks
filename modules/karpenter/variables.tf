@@ -90,8 +90,8 @@ variable "karpenter_nodepools" {
     ]
     karpenter_nodepool_disruption = {
       consolidation_policy = "WhenEmptyOrUnderutilized" # WhenEmpty or WhenEmptyOrUnderutilized
-      # consolidate_after    = "10m"                      # Only used if consolidation_policy is WhenEmpty
-      expire_after = "168h" # 7d | 168h | 1w
+      consolidate_after    = "5m"
+      expire_after         = "168h" # 7d | 168h | 1w
     }
     karpenter_nodepool_disruption_budgets = [{
       nodes = "10%"
