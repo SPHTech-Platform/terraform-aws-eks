@@ -20,6 +20,11 @@ spec:
         ${indent(8, karpenter_nodepool_annotations_yaml)}
       %{ endif }
     spec:
+      # The amount of time a Node can live on the cluster before being removed
+      # Avoiding long-running Nodes helps to reduce security vulnerabilities as well as to reduce the chance of issues that can plague Nodes with long uptimes such as file fragmentation or memory leaks from system processes
+      # You can choose to disable expiration entirely by setting the string value 'Never' here. Defaults to 720h (30 days)
+      expireAfter: ${karpenter_nodepool_disruption.expire_after}
+
       # References the Cloud Provider's NodeClass resource, see your cloud provider specific documentation
       nodeClassRef:
         group: karpenter.k8s.aws
@@ -96,11 +101,6 @@ spec:
     %{ if karpenter_nodepool_disruption.consolidation_policy == "WhenEmpty"}
     consolidateAfter: ${karpenter_nodepool_disruption.consolidation_after}
      %{ endif }
-
-    # The amount of time a Node can live on the cluster before being removed
-    # Avoiding long-running Nodes helps to reduce security vulnerabilities as well as to reduce the chance of issues that can plague Nodes with long uptimes such as file fragmentation or memory leaks from system processes
-    # You can choose to disable expiration entirely by setting the string value 'Never' here. Defaults to 720h (30 days)
-    expireAfter: ${karpenter_nodepool_disruption.expire_after}
 
     # Budgets control the speed Karpenter can scale down nodes.
     # Karpenter will respect the minimum of the currently active budgets, and will round up

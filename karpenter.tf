@@ -28,7 +28,7 @@ locals {
       karpenter_node_user_data = ""
       karpenter_node_tags_map = {
         "karpenter.sh/discovery" = module.eks.cluster_name,
-        "eks:eks-cluster-name"   = module.eks.cluster_name,
+        "eks:cluster-name"       = module.eks.cluster_name,
       }
       karpenter_block_device_mapping = [
         {
