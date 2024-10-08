@@ -1,6 +1,6 @@
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 20.5.0"
+  version = "~> 20.24.3"
 
   cluster_name = var.cluster_name
 
@@ -8,9 +8,13 @@ module "karpenter" {
   irsa_oidc_provider_arn          = var.oidc_provider_arn
   irsa_namespace_service_accounts = ["${var.karpenter_namespace}:karpenter"]
 
-  create_access_entry  = false # Remove this entry when EKS module updated to 20.x.x
-  create_node_iam_role = false
-  node_iam_role_arn    = var.worker_iam_role_arn
+  create_access_entry   = false # Remove this entry when EKS module updated to 20.x.x
+  create_node_iam_role  = false
+  node_iam_role_arn     = var.worker_iam_role_arn
+  cluster_ip_family     = var.cluster_ip_family
+  enable_v1_permissions = var.enable_v1_permissions
+
+  create_pod_identity_association = var.create_pod_identity_association
 }
 
 resource "helm_release" "karpenter" {
@@ -105,7 +109,6 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
     karpenter_node_user_data                   = each.value.karpenter_node_user_data
     karpenter_node_tags_map_yaml               = length(keys(each.value.karpenter_node_tags_map)) == 0 ? "" : yamlencode(each.value.karpenter_node_tags_map)
     karpenter_node_metadata_options_yaml       = length(keys(each.value.karpenter_node_metadata_options)) == 0 ? "" : replace(yamlencode(each.value.karpenter_node_metadata_options), "/\"([0-9]+)\"/", "$1")
-    karpenter_ami_family                       = each.value.karpenter_ami_family
     karpenter_block_device_mapping_yaml        = length(each.value.karpenter_block_device_mapping) == 0 ? "" : yamlencode(each.value.karpenter_block_device_mapping)
 
   })

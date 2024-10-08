@@ -1,4 +1,4 @@
-apiVersion: karpenter.sh/v1beta1
+apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: ${nodepool_name}
@@ -22,6 +22,8 @@ spec:
     spec:
       # References the Cloud Provider's NodeClass resource, see your cloud provider specific documentation
       nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
         name: ${nodeclass_name}
 
       # Provisioned nodes will have these taints

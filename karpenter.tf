@@ -22,13 +22,14 @@ locals {
         httpPutResponseHopLimit = 1
         httpTokens              = "required"
       }
-      karpenter_ami_selector_maps = []
-      karpenter_node_user_data    = ""
+      karpenter_ami_selector_maps = [{
+        "alias" = "bottlerocket@latest"
+      }]
+      karpenter_node_user_data = ""
       karpenter_node_tags_map = {
         "karpenter.sh/discovery" = module.eks.cluster_name,
-        "eks:cluster-name"       = module.eks.cluster_name,
+        "eks:eks-cluster-name"   = module.eks.cluster_name,
       }
-      karpenter_ami_family = "Bottlerocket"
       karpenter_block_device_mapping = [
         {
           #karpenter_root_volume_size
@@ -69,6 +70,7 @@ module "karpenter" {
 
   cluster_name        = var.cluster_name
   cluster_endpoint    = module.eks.cluster_endpoint
+  cluster_ip_family   = var.cluster_ip_family
   oidc_provider_arn   = module.eks.oidc_provider_arn
   worker_iam_role_arn = aws_iam_role.workers.arn
 
@@ -84,6 +86,10 @@ module "karpenter" {
 
   # Required for Fargate profile
   subnet_ids = var.subnet_ids
+
+  # Enable for v1 Upgrade
+  enable_v1_permissions           = var.enable_v1_permissions_for_karpenter
+  create_pod_identity_association = var.create_pod_identity_association_for_karpenter
 }
 
 resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter" {

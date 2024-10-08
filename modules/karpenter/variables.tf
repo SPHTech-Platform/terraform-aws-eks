@@ -29,7 +29,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "0.37.4"
+  default     = "1.0.6"
 }
 
 variable "karpenter_nodepools" {
@@ -109,7 +109,6 @@ variable "karpenter_nodeclasses" {
     karpenter_ami_selector_maps            = list(map(any))
     karpenter_node_role                    = string
     karpenter_node_tags_map                = map(string)
-    karpenter_ami_family                   = string
     karpenter_node_user_data               = string
     karpenter_node_metadata_options        = map(any)
     karpenter_block_device_mapping = list(object({
@@ -138,8 +137,14 @@ variable "karpenter_nodeclasses" {
       httpPutResponseHopLimit = 1
       httpTokens              = "required"
     }
-    karpenter_ami_family = "Bottlerocket"
   }]
+}
+
+# TODO - make v1 permssions the default policy at next breaking change
+variable "enable_v1_permissions" {
+  description = "Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`)"
+  type        = bool
+  default     = true
 }
 
 ############################
@@ -163,6 +168,12 @@ variable "oidc_provider_arn" {
 variable "worker_iam_role_arn" {
   description = "Worker Nodes IAM Role arn"
   type        = string
+}
+
+variable "cluster_ip_family" {
+  description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. Note: If `ipv6` is specified, the `AmazonEKS_CNI_IPv6_Policy` must exist in the account. This policy is created by the EKS module with `create_cni_ipv6_iam_policy = true`"
+  type        = string
+  default     = "ipv4"
 }
 
 ##############
@@ -226,4 +237,26 @@ variable "karpenter_pod_resources" {
       memory = "2Gi"
     }
   }
+}
+
+###############################################################################
+# Pod Identity Association
+################################################################################
+# TODO - Change default to `true` at next breaking change
+variable "create_pod_identity_association" {
+  description = "Determines whether to create pod identity association"
+  type        = bool
+  default     = false
+}
+
+variable "namespace" {
+  description = "Namespace to associate with the Karpenter Pod Identity"
+  type        = string
+  default     = "kube-system"
+}
+
+variable "service_account" {
+  description = "Service account to associate with the Karpenter Pod Identity"
+  type        = string
+  default     = "karpenter"
 }

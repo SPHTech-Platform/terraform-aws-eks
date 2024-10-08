@@ -531,7 +531,7 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "0.37.4"
+  default     = "1.0.6"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
@@ -570,4 +570,18 @@ variable "karpenter_pod_resources" {
       memory = "2Gi"
     }
   }
+}
+
+# TODO - make v1 permssions the default policy at next breaking change
+variable "enable_v1_permissions_for_karpenter" {
+  description = "Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`)"
+  type        = bool
+  default     = true
+}
+
+# TODO - Change default to `true` at next breaking change
+variable "create_pod_identity_association_for_karpenter" {
+  description = "Determines whether to create pod identity association"
+  type        = bool
+  default     = false
 }
