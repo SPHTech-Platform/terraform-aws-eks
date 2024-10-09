@@ -29,7 +29,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "0.37.4"
+  default     = "0.37.5"
 }
 
 variable "karpenter_nodepools" {
