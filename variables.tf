@@ -424,9 +424,11 @@ variable "karpenter_nodepools" {
     karpenter_nodepool_weight             = number
   }))
   default = [{
-    nodepool_name                     = "default"
-    nodeclass_name                    = "default"
-    karpenter_nodepool_node_labels    = {}
+    nodepool_name  = "default"
+    nodeclass_name = "default"
+    karpenter_nodepool_node_labels = {
+      "bottlerocket.aws/updater-interface-version" = "2.0.0"
+    }
     karpenter_nodepool_annotations    = {}
     karpenter_nodepool_node_taints    = []
     karpenter_nodepool_startup_taints = []
@@ -582,6 +584,12 @@ variable "enable_v1_permissions_for_karpenter" {
 # TODO - Change default to `true` at next breaking change
 variable "create_pod_identity_association_for_karpenter" {
   description = "Determines whether to create pod identity association"
+  type        = bool
+  default     = false
+}
+
+variable "karpenter_upgrade" {
+  description = "Karpenter Upgrade"
   type        = bool
   default     = false
 }

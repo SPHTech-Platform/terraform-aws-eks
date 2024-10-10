@@ -18,7 +18,7 @@ terraform {
     # tflint-ignore: terraform_unused_required_providers
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.6"
+      version = ">= 2.15"
     }
   }
 }
