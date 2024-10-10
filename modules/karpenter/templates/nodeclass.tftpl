@@ -1,11 +1,8 @@
-apiVersion: karpenter.k8s.aws/v1beta1
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: ${nodeclass_name}
 spec:
-  # required, resolves a default ami and userdata
-  amiFamily: ${karpenter_ami_family}
-
   # required, discovers subnets to attach to instances
   subnetSelectorTerms:
     ${indent(4,karpenter_subnet_selector_map_yaml)}
