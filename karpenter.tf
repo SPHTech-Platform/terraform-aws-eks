@@ -69,7 +69,7 @@ locals {
 
   karpenter_update_nodepools = concat([
     for nodepool in local.karpenter_nodepools : merge(nodepool, {
-      nodepool_name  = "update"
+      nodepool_name  = "${nodepool.nodepool_name}-update"
       nodeclass_name = "update"
     })
   ], local.karpenter_nodepools)
