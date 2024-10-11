@@ -63,16 +63,17 @@ locals {
   # Kaprenter Update
   karpenter_update_nodeclasses = concat([
     for nodeclass in local.karpenter_nodeclasses : merge(nodeclass, {
-      nodeclass_name = "update"
+      nodeclass_name = "${nodeclass.nodeclass_name}-update"
     })
   ], local.karpenter_nodeclasses)
 
-  karpenter_update_nodepools = concat([
-    for nodepool in local.karpenter_nodepools : merge(nodepool, {
-      nodepool_name  = "${nodepool.nodepool_name}-update"
-      nodeclass_name = "update"
-    })
-  ], local.karpenter_nodepools)
+  karpenter_update_nodepools = concat(flatten([
+    for nodeclass in local.karpenter_nodeclasses : [
+      for nodepool in local.karpenter_nodepools : merge(nodepool, {
+        nodepool_name  = "${nodepool.nodepool_name}-update"
+        nodeclass_name = "${nodeclass.nodeclass_name}-update"
+    })]
+  ]), local.karpenter_nodepools)
 }
 
 module "karpenter" {
