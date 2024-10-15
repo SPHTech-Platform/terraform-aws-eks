@@ -74,7 +74,7 @@ module "vpc_cni_irsa_role" {
   role_description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
 
   attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = true
+  vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
   vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
 
   oidc_providers = {
@@ -111,4 +111,20 @@ resource "aws_iam_role_policy" "ebs_csi_kms" {
   role        = module.ebs_csi_irsa_role.iam_role_name
 
   policy = data.aws_iam_policy_document.kms_csi_ebs.json
+}
+
+####################################
+## Pod Identity Roles for Add-ons ##
+####################################
+module "aws_vpc_cni_pod_identity" {
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 1.5.0"
+
+  name = "aws-vpc-cni-${var.cluster_ip_family}"
+
+  attach_aws_vpc_cni_policy = true
+  aws_vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
+  aws_vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
+
+  tags = var.tags
 }

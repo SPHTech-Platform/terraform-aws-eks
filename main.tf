@@ -140,8 +140,25 @@ module "eks" {
         }
       })
       } : {
-      most_recent = true
-      reserve     = true
+      most_recent       = true
+      reserve           = true
+      resolve_conflicts = "OVERWRITE"
+    }
+    eks-pod-identity-agent = var.cluster_ip_family == "ipv4" ? {
+      most_recent       = true
+      reserve           = true
+      resolve_conflicts = "OVERWRITE"
+      configuration_values = jsonencode({
+        agent = {
+          additionalArgs = {
+            "-b" = "169.254.170.23"
+          }
+        }
+      })
+      } : {
+      most_recent       = true
+      reserve           = true
+      resolve_conflicts = "OVERWRITE"
     }
     },
     var.cluster_addons,

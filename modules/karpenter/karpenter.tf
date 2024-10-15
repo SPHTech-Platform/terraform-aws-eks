@@ -14,6 +14,7 @@ module "karpenter" {
   cluster_ip_family     = var.cluster_ip_family
   enable_v1_permissions = var.enable_v1_permissions
 
+  enable_pod_identity             = false
   create_pod_identity_association = var.create_pod_identity_association
 }
 
