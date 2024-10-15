@@ -571,3 +571,9 @@ variable "karpenter_pod_resources" {
     }
   }
 }
+
+variable "karpenter_upgrade" {
+  description = "Karpenter Upgrade"
+  type        = bool
+  default     = false
+}
