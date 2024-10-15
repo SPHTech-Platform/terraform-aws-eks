@@ -102,7 +102,9 @@ resource "kubectl_manifest" "karpenter_nodepool" {
     karpenter_nodepool_disruption_budgets_yaml = replace(yamlencode(each.value.karpenter_nodepool_disruption_budgets), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
   })
 
-  depends_on = [helm_release.karpenter]
+  depends_on = [
+    kubectl_manifest.karpenter_nodeclass
+  ]
 }
 
 ##########################
@@ -125,5 +127,7 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
 
   })
 
-  depends_on = [helm_release.karpenter]
+  depends_on = [
+    helm_release.karpenter
+  ]
 }
