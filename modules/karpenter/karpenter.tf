@@ -18,6 +18,17 @@ module "karpenter" {
   create_pod_identity_association = var.create_pod_identity_association
 }
 
+resource "helm_release" "karpenter-crd" {
+  namespace        = var.karpenter_crd_namespace
+  create_namespace = true
+
+  name       = var.karpenter_crd_release_name
+  repository = var.karpenter_crd_chart_repository
+  chart      = var.karpenter_crd_chart_name
+  version    = var.karpenter_crd_chart_version
+  skip_crds  = true
+}
+
 resource "helm_release" "karpenter" {
 
   namespace        = var.karpenter_namespace
@@ -51,24 +62,24 @@ resource "helm_release" "karpenter" {
 
   depends_on = [
     module.karpenter[0].iam_role_arn,
-    module.karpenter-crds,
+    helm_release.karpenter-crd,
   ]
 }
 
-###################
-## UPDATING CRDS ##
-###################
+# ###################
+# ## UPDATING CRDS ##
+# ###################
 
-module "karpenter-crds" {
-  source  = "rpadovani/helm-crds/kubectl"
-  version = "~> 0.3.0"
+# module "karpenter-crds" {
+#   source  = "rpadovani/helm-crds/kubectl"
+#   version = "~> 1.0.0"
 
-  crds_urls = [
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
-  ]
-}
+#   crds_urls = [
+#     "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
+#     "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
+#     "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
+#   ]
+# }
 
 #########################
 ## KUBECTL NODEPOOL ##
@@ -91,7 +102,7 @@ resource "kubectl_manifest" "karpenter_nodepool" {
     karpenter_nodepool_disruption_budgets_yaml = replace(yamlencode(each.value.karpenter_nodepool_disruption_budgets), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
   })
 
-  depends_on = [module.karpenter-crds]
+  depends_on = [helm_release.karpenter]
 }
 
 ##########################
@@ -114,5 +125,5 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
 
   })
 
-  depends_on = [module.karpenter-crds]
+  depends_on = [helm_release.karpenter]
 }

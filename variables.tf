@@ -541,6 +541,12 @@ variable "karpenter_chart_version" {
   default     = "1.0.6"
 }
 
+variable "karpenter_crd_chart_version" {
+  description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
+  type        = string
+  default     = "0.37.5"
+}
+
 variable "karpenter_default_subnet_selector_tags" {
   description = "Subnet selector tags for Karpenter default node class"
   type        = map(string)
