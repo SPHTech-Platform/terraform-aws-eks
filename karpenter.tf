@@ -58,6 +58,21 @@ locals {
       "id" = val
     }
   ]
+
+  # Kaprenter Update
+  karpenter_update_nodeclasses = concat([
+    for nodeclass in local.karpenter_nodeclasses : merge(nodeclass, {
+      nodeclass_name = "${nodeclass.nodeclass_name}-update"
+    })
+  ], local.karpenter_nodeclasses)
+
+  karpenter_update_nodepools = concat(flatten([
+    for nodeclass in local.karpenter_nodeclasses : [
+      for nodepool in local.karpenter_nodepools : merge(nodepool, {
+        nodepool_name  = "${nodepool.nodepool_name}-update"
+        nodeclass_name = "${nodeclass.nodeclass_name}-update"
+    })]
+  ]), local.karpenter_nodepools)
 }
 
 module "karpenter" {
@@ -72,8 +87,8 @@ module "karpenter" {
   oidc_provider_arn   = module.eks.oidc_provider_arn
   worker_iam_role_arn = aws_iam_role.workers.arn
 
-  karpenter_nodepools     = local.karpenter_nodepools
-  karpenter_nodeclasses   = local.karpenter_nodeclasses
+  karpenter_nodepools     = var.karpenter_upgrade ? local.karpenter_update_nodepools : local.karpenter_nodepools
+  karpenter_nodeclasses   = var.karpenter_upgrade ? local.karpenter_update_nodeclasses : local.karpenter_nodeclasses
   karpenter_pod_resources = var.karpenter_pod_resources
 
   create_karpenter_fargate_profile = var.create_fargate_profile_for_karpenter
