@@ -603,3 +603,9 @@ variable "enable_pod_identity" {
   type        = bool
   default     = true
 }
+
+variable "enable_pod_identity_for_karpenter" {
+  description = "Enable pod identity for karpenter"
+  type        = bool
+  default     = false
+}

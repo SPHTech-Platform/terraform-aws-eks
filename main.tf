@@ -92,9 +92,10 @@ module "eks" {
       resolve_conflicts = "OVERWRITE"
     }
     vpc-cni = var.fargate_cluster && var.enable_pod_identity ? {
-      most_recent       = true
-      reserve           = true
-      resolve_conflicts = "OVERWRITE"
+      most_recent              = true
+      reserve                  = true
+      resolve_conflicts        = "OVERWRITE"
+      service_account_role_arn = module.aws_vpc_cni_pod_identity[0].iam_role_arn
       configuration_values = jsonencode({
         env = {
           # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
@@ -125,9 +126,10 @@ module "eks" {
           }
         })
         } : (var.enable_pod_identity ? {
-          most_recent       = true
-          reserve           = true
-          resolve_conflicts = "OVERWRITE"
+          most_recent              = true
+          reserve                  = true
+          resolve_conflicts        = "OVERWRITE"
+          service_account_role_arn = module.aws_vpc_cni_pod_identity[0].iam_role_arn
           } : {
           most_recent              = true
           reserve                  = true
