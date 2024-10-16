@@ -67,6 +67,8 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 # IRSA for addon components
 ############################
 module "vpc_cni_irsa_role" {
+  count = var.enable_pod_identity ? 0 : 1
+
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.11.2"
 
@@ -117,6 +119,8 @@ resource "aws_iam_role_policy" "ebs_csi_kms" {
 ## Pod Identity Roles for Add-ons ##
 ####################################
 module "aws_vpc_cni_pod_identity" {
+  count = var.enable_pod_identity ? 1 : 0
+
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 1.5.0"
 
@@ -125,6 +129,12 @@ module "aws_vpc_cni_pod_identity" {
   attach_aws_vpc_cni_policy = true
   aws_vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
   aws_vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
+
+  # Pod Identity Associations
+  association_defaults = {
+    namespace       = "kube-system"
+    service_account = "aws-node"
+  }
 
   tags = var.tags
 }

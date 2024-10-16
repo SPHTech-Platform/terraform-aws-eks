@@ -87,13 +87,14 @@ module "eks" {
 
   cluster_addons = merge({
     kube-proxy = {
-      most_recent = true
-      reserve     = true
+      most_recent       = true
+      reserve           = true
+      resolve_conflicts = "OVERWRITE"
     }
-    vpc-cni = var.fargate_cluster ? {
-      most_recent              = true
-      reserve                  = true
-      service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
+    vpc-cni = var.fargate_cluster && var.enable_pod_identity ? {
+      most_recent       = true
+      reserve           = true
+      resolve_conflicts = "OVERWRITE"
       configuration_values = jsonencode({
         env = {
           # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
@@ -106,11 +107,33 @@ module "eks" {
           }
         }
       })
-      } : {
-      most_recent              = true
-      reserve                  = true
-      service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
-    }
+      } : (var.fargate_cluster ? {
+        most_recent              = true
+        reserve                  = true
+        resolve_conflicts        = "OVERWRITE"
+        service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
+        configuration_values = jsonencode({
+          env = {
+            # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
+            ENABLE_POD_ENI                    = "true"
+            POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
+          }
+          init = {
+            env = {
+              DISABLE_TCP_EARLY_DEMUX = "true"
+            }
+          }
+        })
+        } : (var.enable_pod_identity ? {
+          most_recent       = true
+          reserve           = true
+          resolve_conflicts = "OVERWRITE"
+          } : {
+          most_recent              = true
+          reserve                  = true
+          resolve_conflicts        = "OVERWRITE"
+          service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
+    }))
     aws-ebs-csi-driver = {
       most_recent              = true
       reserve                  = true

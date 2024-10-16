@@ -104,8 +104,11 @@ module "karpenter" {
   subnet_ids = var.subnet_ids
 
   # Enable for v1 Upgrade
-  enable_v1_permissions           = var.enable_v1_permissions_for_karpenter
-  create_pod_identity_association = var.create_pod_identity_association_for_karpenter
+  enable_v1_permissions = var.enable_v1_permissions_for_karpenter
+
+  # Enable Pod Identity
+  enable_pod_identity             = var.enable_pod_identity
+  create_pod_identity_association = var.enable_pod_identity ? true : false
 }
 
 resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter" {

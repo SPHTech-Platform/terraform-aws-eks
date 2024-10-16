@@ -28,7 +28,7 @@ variable "karpenter_crd_chart_repository" {
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "0.37.5"
+  default     = "1.0.6"
 }
 
 ###############
@@ -277,6 +277,12 @@ variable "karpenter_pod_resources" {
 # TODO - Change default to `true` at next breaking change
 variable "create_pod_identity_association" {
   description = "Determines whether to create pod identity association"
+  type        = bool
+  default     = false
+}
+
+variable "enable_pod_identity" {
+  description = "Determines whether to enable support for EKS pod identity"
   type        = bool
   default     = false
 }

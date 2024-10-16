@@ -544,7 +544,7 @@ variable "karpenter_chart_version" {
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "0.37.5"
+  default     = "1.0.6"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
@@ -592,15 +592,14 @@ variable "enable_v1_permissions_for_karpenter" {
   default     = true
 }
 
-# TODO - Change default to `true` at next breaking change
-variable "create_pod_identity_association_for_karpenter" {
-  description = "Determines whether to create pod identity association"
-  type        = bool
-  default     = false
-}
-
 variable "karpenter_upgrade" {
   description = "Karpenter Upgrade"
   type        = bool
   default     = false
+}
+
+variable "enable_pod_identity" {
+  description = "Enable pod identity"
+  type        = bool
+  default     = true
 }
