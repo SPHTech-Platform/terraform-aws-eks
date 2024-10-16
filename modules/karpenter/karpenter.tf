@@ -18,6 +18,9 @@ module "karpenter" {
   create_pod_identity_association = var.create_pod_identity_association
 }
 
+###############################
+## Karpenter CRDs Helm Chart ##
+###############################
 resource "helm_release" "karpenter-crd" {
   namespace        = var.karpenter_crd_namespace
   create_namespace = true
@@ -29,8 +32,10 @@ resource "helm_release" "karpenter-crd" {
   skip_crds  = true
 }
 
+##########################
+## Karpenter Helm Chart ##
+##########################
 resource "helm_release" "karpenter" {
-
   namespace        = var.karpenter_namespace
   create_namespace = true
 
@@ -39,7 +44,7 @@ resource "helm_release" "karpenter" {
   chart      = var.karpenter_chart_name
   version    = var.karpenter_chart_version
 
-  skip_crds = true # CRDs are managed by module.karpenter-crds
+  skip_crds = true # CRDs are managed by the karpenter-crd HelmRelease
   values = [
     <<-EOT
     settings:
@@ -66,50 +71,9 @@ resource "helm_release" "karpenter" {
   ]
 }
 
-# ###################
-# ## UPDATING CRDS ##
-# ###################
-
-# module "karpenter-crds" {
-#   source  = "rpadovani/helm-crds/kubectl"
-#   version = "~> 1.0.0"
-
-#   crds_urls = [
-#     "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
-#     "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
-#     "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
-#   ]
-# }
-
-#########################
-## KUBECTL NODEPOOL ##
-#########################
-
-resource "kubectl_manifest" "karpenter_nodepool" {
-
-  for_each = { for nodepool in var.karpenter_nodepools : nodepool.nodepool_name => nodepool }
-
-  yaml_body = templatefile("${path.module}/templates/nodepool.tftpl", {
-    nodepool_name                              = each.value.nodepool_name
-    karpenter_nodepool_node_labels_yaml        = length(keys(each.value.karpenter_nodepool_node_labels)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_nodepool_annotations_yaml        = length(keys(each.value.karpenter_nodepool_annotations)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_annotations), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    nodeclass_name                             = each.value.nodeclass_name
-    karpenter_nodepool_node_taints_yaml        = length(each.value.karpenter_nodepool_node_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_nodepool_startup_taints_yaml     = length(each.value.karpenter_nodepool_startup_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_startup_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_requirements_yaml                = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-    karpenter_nodepool_disruption              = each.value.karpenter_nodepool_disruption
-    karpenter_nodepool_weight                  = each.value.karpenter_nodepool_weight
-    karpenter_nodepool_disruption_budgets_yaml = replace(yamlencode(each.value.karpenter_nodepool_disruption_budgets), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
-  })
-
-  depends_on = [
-    kubectl_manifest.karpenter_nodeclass
-  ]
-}
-
-##########################
+#######################
 ## KUBECTL NODECLASS ##
-##########################
+#######################
 resource "kubectl_manifest" "karpenter_nodeclass" {
   for_each = { for nodeclass in var.karpenter_nodeclasses : nodeclass.nodeclass_name => nodeclass }
 
@@ -129,5 +93,30 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
 
   depends_on = [
     helm_release.karpenter
+  ]
+}
+
+######################
+## KUBECTL NODEPOOL ##
+######################
+resource "kubectl_manifest" "karpenter_nodepool" {
+
+  for_each = { for nodepool in var.karpenter_nodepools : nodepool.nodepool_name => nodepool }
+
+  yaml_body = templatefile("${path.module}/templates/nodepool.tftpl", {
+    nodepool_name                              = each.value.nodepool_name
+    karpenter_nodepool_node_labels_yaml        = length(keys(each.value.karpenter_nodepool_node_labels)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_labels), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_annotations_yaml        = length(keys(each.value.karpenter_nodepool_annotations)) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_annotations), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    nodeclass_name                             = each.value.nodeclass_name
+    karpenter_nodepool_node_taints_yaml        = length(each.value.karpenter_nodepool_node_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_node_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_startup_taints_yaml     = length(each.value.karpenter_nodepool_startup_taints) == 0 ? "" : replace(yamlencode(each.value.karpenter_nodepool_startup_taints), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_requirements_yaml                = replace(yamlencode(each.value.karpenter_requirements), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+    karpenter_nodepool_disruption              = each.value.karpenter_nodepool_disruption
+    karpenter_nodepool_weight                  = each.value.karpenter_nodepool_weight
+    karpenter_nodepool_disruption_budgets_yaml = replace(yamlencode(each.value.karpenter_nodepool_disruption_budgets), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
+  })
+
+  depends_on = [
+    kubectl_manifest.karpenter_nodeclass
   ]
 }
