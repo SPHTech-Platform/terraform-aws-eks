@@ -152,7 +152,9 @@ module "aws_ebs_csi_pod_identity" {
   name = "aws-ebs-csi"
 
   attach_aws_ebs_csi_policy = true
-  aws_ebs_csi_kms_arns      = module.kms_ebs.key_arn
+  aws_ebs_csi_kms_arns = [
+    module.kms_ebs.key_arn,
+  ]
   # Pod Identity Associations
   association_defaults = {
     namespace       = "kube-system"
