@@ -1,7 +1,39 @@
-############################
-# Karpenter
-############################
+##################
+# Karpenter CRDs #
+##################
+variable "karpenter_crd_namespace" {
+  description = "Namespace to deploy karpenter"
+  type        = string
+  default     = "kube-system"
+}
 
+variable "karpenter_crd_release_name" {
+  description = "Release name for Karpenter"
+  type        = string
+  default     = "karpenter-crd"
+}
+
+variable "karpenter_crd_chart_name" {
+  description = "Chart name for Karpenter"
+  type        = string
+  default     = "karpenter-crd"
+}
+
+variable "karpenter_crd_chart_repository" {
+  description = "Chart repository for Karpenter"
+  type        = string
+  default     = "oci://public.ecr.aws/karpenter"
+}
+
+variable "karpenter_crd_chart_version" {
+  description = "Chart version for Karpenter"
+  type        = string
+  default     = "1.0.6"
+}
+
+###############
+## Karpenter ##
+###############
 variable "karpenter_namespace" {
   description = "Namespace to deploy karpenter"
   type        = string
@@ -29,7 +61,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "0.37.5"
+  default     = "1.0.6"
 }
 
 variable "karpenter_nodepools" {
@@ -49,7 +81,7 @@ variable "karpenter_nodepools" {
     )
     karpenter_nodepool_disruption = object({
       consolidation_policy = string
-      consolidate_after    = optional(string)
+      consolidate_after    = string
       expire_after         = string
     })
     karpenter_nodepool_disruption_budgets = list(map(any))
@@ -89,9 +121,9 @@ variable "karpenter_nodepools" {
       }
     ]
     karpenter_nodepool_disruption = {
-      consolidation_policy = "WhenUnderutilized" # WhenUnderutilized or WhenEmpty
-      # consolidate_after    = "10m"               # Only used if consolidation_policy is WhenEmpty
-      expire_after = "168h" # 7d | 168h | 1w
+      consolidation_policy = "WhenEmptyOrUnderutilized" # WhenEmpty or WhenEmptyOrUnderutilized
+      consolidate_after    = "5m"
+      expire_after         = "168h" # 7d | 168h | 1w
     }
     karpenter_nodepool_disruption_budgets = [{
       nodes = "10%"
@@ -109,7 +141,6 @@ variable "karpenter_nodeclasses" {
     karpenter_ami_selector_maps            = list(map(any))
     karpenter_node_role                    = string
     karpenter_node_tags_map                = map(string)
-    karpenter_ami_family                   = string
     karpenter_node_user_data               = string
     karpenter_node_metadata_options        = map(any)
     karpenter_block_device_mapping = list(object({
@@ -138,8 +169,14 @@ variable "karpenter_nodeclasses" {
       httpPutResponseHopLimit = 1
       httpTokens              = "required"
     }
-    karpenter_ami_family = "Bottlerocket"
   }]
+}
+
+# TODO - make v1 permssions the default policy at next breaking change
+variable "enable_v1_permissions" {
+  description = "Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`)"
+  type        = bool
+  default     = true
 }
 
 ############################
@@ -163,6 +200,12 @@ variable "oidc_provider_arn" {
 variable "worker_iam_role_arn" {
   description = "Worker Nodes IAM Role arn"
   type        = string
+}
+
+variable "cluster_ip_family" {
+  description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. Note: If `ipv6` is specified, the `AmazonEKS_CNI_IPv6_Policy` must exist in the account. This policy is created by the EKS module with `create_cni_ipv6_iam_policy = true`"
+  type        = string
+  default     = "ipv4"
 }
 
 ##############
@@ -226,4 +269,20 @@ variable "karpenter_pod_resources" {
       memory = "2Gi"
     }
   }
+}
+
+###############################################################################
+# Pod Identity Association
+################################################################################
+# TODO - Change default to `true` at next breaking change
+variable "create_pod_identity_association" {
+  description = "Determines whether to create pod identity association"
+  type        = bool
+  default     = false
+}
+
+variable "enable_pod_identity" {
+  description = "Determines whether to enable support for EKS pod identity"
+  type        = bool
+  default     = false
 }

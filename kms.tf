@@ -1,6 +1,6 @@
 module "kms_secret" {
   source  = "SPHTech-Platform/kms/aws"
-  version = "~> 0.1.0"
+  version = "~> 0.2.0"
 
   key_description = "Encrypt Kubernetes secret for EKS Cluster ${var.cluster_name}"
   alias           = "alias/${join("-", [var.cluster_name, "secrets"])}"
@@ -10,7 +10,7 @@ module "kms_secret" {
 
 module "kms_ebs" {
   source  = "SPHTech-Platform/kms/aws"
-  version = "~> 0.1.0"
+  version = "~> 0.2.0"
 
   key_description = "EBS Key for EKS Cluster ${var.cluster_name}"
   alias           = "alias/${join("-", [var.cluster_name, "ebs"])}"

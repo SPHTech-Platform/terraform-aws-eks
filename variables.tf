@@ -387,6 +387,11 @@ variable "cluster_ip_family" {
   description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created"
   type        = string
   default     = "ipv4"
+
+  validation {
+    condition     = contains(["ipv4", "ipv6"], var.cluster_ip_family)
+    error_message = "Invalid IP family. Valid values are `ipv4` and `ipv6`"
+  }
 }
 ##########
 ## MODE ##
@@ -417,16 +422,18 @@ variable "karpenter_nodepools" {
     )
     karpenter_nodepool_disruption = object({
       consolidation_policy = string
-      consolidate_after    = optional(string)
+      consolidate_after    = string
       expire_after         = string
     })
     karpenter_nodepool_disruption_budgets = list(map(any))
     karpenter_nodepool_weight             = number
   }))
   default = [{
-    nodepool_name                     = "default"
-    nodeclass_name                    = "default"
-    karpenter_nodepool_node_labels    = {}
+    nodepool_name  = "default"
+    nodeclass_name = "default"
+    karpenter_nodepool_node_labels = {
+      "bottlerocket.aws/updater-interface-version" = "2.0.0"
+    }
     karpenter_nodepool_annotations    = {}
     karpenter_nodepool_node_taints    = []
     karpenter_nodepool_startup_taints = []
@@ -461,9 +468,9 @@ variable "karpenter_nodepools" {
       }
     ]
     karpenter_nodepool_disruption = {
-      consolidation_policy = "WhenUnderutilized" # WhenUnderutilized or WhenEmpty
-      # consolidate_after    = "10m"               # Only used if consolidation_policy is WhenEmpty
-      expire_after = "168h" # 7d | 168h | 1w
+      consolidation_policy = "WhenEmptyOrUnderutilized" # WhenEmptyOrUnderutilized or WhenEmpty
+      consolidate_after    = "10m"
+      expire_after         = "168h" # 7d | 168h | 1w
     }
     karpenter_nodepool_disruption_budgets = [{
       nodes = "10%"
@@ -531,7 +538,13 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "0.37.5"
+  default     = "1.0.6"
+}
+
+variable "karpenter_crd_chart_version" {
+  description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
+  type        = string
+  default     = "1.0.6"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
@@ -572,8 +585,27 @@ variable "karpenter_pod_resources" {
   }
 }
 
+# TODO - make v1 permssions the default policy at next breaking change
+variable "enable_v1_permissions_for_karpenter" {
+  description = "Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`)"
+  type        = bool
+  default     = true
+}
+
 variable "karpenter_upgrade" {
   description = "Karpenter Upgrade"
+  type        = bool
+  default     = false
+}
+
+variable "enable_pod_identity" {
+  description = "Enable pod identity"
+  type        = bool
+  default     = true
+}
+
+variable "enable_pod_identity_for_karpenter" {
+  description = "Enable pod identity for karpenter"
   type        = bool
   default     = false
 }
