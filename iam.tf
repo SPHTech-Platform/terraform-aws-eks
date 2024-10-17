@@ -67,7 +67,7 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 # IRSA for addon components
 ############################
 module "vpc_cni_irsa_role" {
-  count = var.enable_pod_identity ? 0 : 1
+  count = !var.enable_pod_identity ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.11.2"
@@ -90,6 +90,8 @@ module "vpc_cni_irsa_role" {
 }
 
 module "ebs_csi_irsa_role" {
+  count = !var.enable_pod_identity ? 1 : 0
+
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.11.2"
 
@@ -109,8 +111,10 @@ module "ebs_csi_irsa_role" {
 }
 
 resource "aws_iam_role_policy" "ebs_csi_kms" {
+  count = !var.enable_pod_identity ? 1 : 0
+
   name_prefix = "kms"
-  role        = module.ebs_csi_irsa_role.iam_role_name
+  role        = module.ebs_csi_irsa_role[0].iam_role_name
 
   policy = data.aws_iam_policy_document.kms_csi_ebs.json
 }
@@ -134,6 +138,25 @@ module "aws_vpc_cni_pod_identity" {
   association_defaults = {
     namespace       = "kube-system"
     service_account = "aws-node"
+  }
+
+  tags = var.tags
+}
+
+module "aws_ebs_csi_pod_identity" {
+  count = var.enable_pod_identity ? 1 : 0
+
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 1.5.0"
+
+  name = "aws-ebs-csi"
+
+  attach_aws_ebs_csi_policy = true
+  aws_ebs_csi_kms_arns      = module.kms_ebs.key_arn
+  # Pod Identity Associations
+  association_defaults = {
+    namespace       = "kube-system"
+    service_account = "ebs-csi-controller-sa"
   }
 
   tags = var.tags
