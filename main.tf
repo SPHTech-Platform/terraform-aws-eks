@@ -9,8 +9,9 @@ locals {
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.26.0"
+  source = "github.com/clowdhaus/terraform-aws-eks-migrate-v19-to-v20?ref=3f626cc493606881f38684fc366688c36571c5c5"
+  # source  = "terraform-aws-modules/eks/aws"
+  # version = "~> 20.26.0"
 
   cluster_name              = var.cluster_name
   cluster_version           = var.cluster_version
