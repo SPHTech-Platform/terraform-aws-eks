@@ -1,4 +1,26 @@
 locals {
+  aws_auth_fargate_profile_pod_execution_role_arns = var.fargate_cluster ? distinct(
+    compact(
+      concat(
+        values(module.fargate_profiles[0].fargate_profile_pod_execution_role_arn),
+        var.aws_auth_fargate_profile_pod_execution_role_arns,
+      )
+    )
+  ) : var.aws_auth_fargate_profile_pod_execution_role_arns
+
+  additional_aws_auth_fargate_profile_pod_execution_role_arns = var.autoscaling_mode == "karpenter" && var.create_fargate_profile_for_karpenter ? concat(values(module.karpenter[0].fargate_profile_pod_execution_role_arn)) : []
+
+  additional_role_mapping = var.autoscaling_mode == "karpenter" ? [
+    {
+      rolearn = aws_iam_role.workers.arn
+      groups = [
+        "system:bootstrappers",
+        "system:nodes",
+      ]
+      username = "system:node:{{EC2PrivateDNSName}}"
+    }
+  ] : []
+
   addon_vpc_cni_pod_identity = {
     most_recent                 = true
     resolve_conflicts_on_update = "OVERWRITE"
@@ -9,8 +31,7 @@ locals {
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.26.0"
+  source = "github.com/clowdhaus/terraform-aws-eks-migrate-v19-to-v20?ref=3f626cc493606881f38684fc366688c36571c5c5"
 
   cluster_name              = var.cluster_name
   cluster_version           = var.cluster_version
@@ -162,6 +183,16 @@ module "eks" {
   enable_irsa = true
 
   create_node_security_group = var.create_node_security_group
+
+  # aws-auth configmap
+  create_aws_auth_configmap                        = var.create_aws_auth_configmap
+  manage_aws_auth_configmap                        = var.manage_aws_auth_configmap
+  aws_auth_node_iam_role_arns_non_windows          = [aws_iam_role.workers.arn]
+  aws_auth_node_iam_role_arns_windows              = var.enable_cluster_windows_support ? [aws_iam_role.workers.arn] : []
+  aws_auth_roles                                   = concat(var.role_mapping, local.additional_role_mapping)
+  aws_auth_users                                   = var.user_mapping
+  aws_auth_accounts                                = []
+  aws_auth_fargate_profile_pod_execution_role_arns = concat(local.aws_auth_fargate_profile_pod_execution_role_arns, local.additional_aws_auth_fargate_profile_pod_execution_role_arns)
 
   tags                      = var.tags
   cloudwatch_log_group_tags = var.cloudwatch_log_group_tags
