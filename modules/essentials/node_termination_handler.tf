@@ -115,5 +115,5 @@ resource "aws_cloudwatch_event_target" "node_termination_handler_spot" {
 
   target_id = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
   rule      = aws_cloudwatch_event_rule.node_termination_handler_spot[0].name
-  arn       = module.node_termination_handler_sqs[0].sqs_queue_arn
+  arn       = module.node_termination_handler_sqs[0].queue_arn
 }
