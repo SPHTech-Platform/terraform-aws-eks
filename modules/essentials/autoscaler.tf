@@ -55,7 +55,7 @@ module "cluster_autoscaler_irsa_role" {
   count = var.autoscaling_mode == "cluster_autoscaler" ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.11.2"
+  version = "~> 5.47"
 
   role_name_prefix              = coalesce(var.cluster_autoscaler_iam_role, "${var.cluster_name}-autoscaler-")
   role_description              = "EKS Cluster ${var.cluster_name} Autoscaler"

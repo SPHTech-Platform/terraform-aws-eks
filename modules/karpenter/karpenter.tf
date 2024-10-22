@@ -1,14 +1,16 @@
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 20.24.3"
+  version = "~> 20.26.0"
 
   cluster_name = var.cluster_name
 
-  enable_irsa                     = true
+  enable_irsa                     = var.enable_irsa
   irsa_oidc_provider_arn          = var.oidc_provider_arn
   irsa_namespace_service_accounts = ["${var.karpenter_namespace}:karpenter"]
 
-  create_access_entry   = false # Remove this entry when EKS module updated to 20.x.x
+  create_access_entry = var.create_access_entry # use an existing Node IAM role from the EKS managed node group
+  access_entry_type   = var.access_entry_type
+
   create_node_iam_role  = false
   node_iam_role_arn     = var.worker_iam_role_arn
   cluster_ip_family     = var.cluster_ip_family

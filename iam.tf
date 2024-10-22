@@ -70,7 +70,7 @@ module "vpc_cni_irsa_role" {
   count = !var.enable_pod_identity ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.11.2"
+  version = "~> 5.47"
 
   role_name_prefix = "${var.cluster_name}-cni-"
   role_description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
@@ -93,7 +93,7 @@ module "ebs_csi_irsa_role" {
   count = !var.enable_pod_identity ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.11.2"
+  version = "~> 5.47"
 
   role_name_prefix = "${var.cluster_name}-ebs-csi-"
   role_description = "EKS Cluster ${var.cluster_name} EBS CSI Addon"

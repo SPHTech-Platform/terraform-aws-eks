@@ -18,6 +18,16 @@ variable "cluster_enabled_log_types" {
   default     = ["audit", "api", "authenticator"]
 }
 
+variable "authentication_mode" {
+  description = "The authentication mode for the cluster. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP`"
+  type        = string
+  default     = "API_AND_CONFIG_MAP"
+
+  validation {
+    condition     = contains(["CONFIG_MAP", "API", "API_AND_CONFIG_MAP"], var.authentication_mode)
+    error_message = "Invalid authentication mode. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP`"
+  }
+}
 #######################
 # Cluster IAM Role
 #######################
@@ -606,6 +616,31 @@ variable "enable_pod_identity" {
 
 variable "enable_pod_identity_for_karpenter" {
   description = "Enable pod identity for karpenter"
+  type        = bool
+  default     = false
+}
+
+################################################################################
+# Access Entry
+################################################################################
+
+variable "access_entries" {
+  description = "Map of access entries to add to the cluster"
+  type        = any
+  default     = {}
+}
+
+variable "enable_cluster_creator_admin_permissions" {
+  description = "Indicates whether or not to add the cluster creator (the identity used by Terraform) as an administrator via access entry"
+  type        = bool
+  default     = false
+}
+
+######################################################################
+## Migrating existing aws-auth ConfigMap entries to access entries
+######################################################################
+variable "migrate_aws_auth_to_access_entry" {
+  description = "Migrate existing aws-auth ConfigMap entries to access entries"
   type        = bool
   default     = false
 }

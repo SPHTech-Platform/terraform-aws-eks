@@ -192,11 +192,6 @@ variable "cluster_endpoint" {
   type        = string
 }
 
-variable "oidc_provider_arn" {
-  description = "ARN of the OIDC Provider for IRSA"
-  type        = string
-}
-
 variable "worker_iam_role_arn" {
   description = "Worker Nodes IAM Role arn"
   type        = string
@@ -271,6 +266,20 @@ variable "karpenter_pod_resources" {
   }
 }
 
+################################################################################
+# IAM Role for Service Account (IRSA)
+################################################################################
+variable "enable_irsa" {
+  description = "Determines whether to enable support for IAM role for service accounts"
+  type        = bool
+  default     = true
+}
+
+variable "oidc_provider_arn" {
+  description = "ARN of the OIDC Provider for IRSA"
+  type        = string
+}
+
 ###############################################################################
 # Pod Identity Association
 ################################################################################
@@ -285,4 +294,20 @@ variable "enable_pod_identity" {
   description = "Determines whether to enable support for EKS pod identity"
   type        = bool
   default     = false
+}
+
+################################################################################
+# Access Entry
+################################################################################
+
+variable "create_access_entry" {
+  description = "Determines whether an access entry is created for the IAM role used by the node IAM role, `enable` it when using self managed nodes"
+  type        = bool
+  default     = false
+}
+
+variable "access_entry_type" {
+  description = "Type of the access entry. `EC2_LINUX`, `FARGATE_LINUX`, or `EC2_WINDOWS`; defaults to `EC2_LINUX`"
+  type        = string
+  default     = "EC2_LINUX"
 }

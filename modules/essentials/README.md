@@ -62,18 +62,18 @@ module "eks_essentials" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.47 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.15 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.72 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.16 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.33 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.47 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.15 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.10 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.72 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.16 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.33 |
 
 ## Modules
 
@@ -133,7 +133,7 @@ module "eks_essentials" {
 | <a name="input_brupop_crd_chart_repository"></a> [brupop\_crd\_chart\_repository](#input\_brupop\_crd\_chart\_repository) | Chart repository for brupop | `string` | `"https://bottlerocket-os.github.io/bottlerocket-update-operator"` | no |
 | <a name="input_brupop_crd_chart_version"></a> [brupop\_crd\_chart\_version](#input\_brupop\_crd\_chart\_version) | Chart version for brupop CRD | `string` | `"1.0.0"` | no |
 | <a name="input_brupop_crd_release_name"></a> [brupop\_crd\_release\_name](#input\_brupop\_crd\_release\_name) | Release name for brupop CRD | `string` | `"brupop-crd"` | no |
-| <a name="input_brupop_enabled"></a> [brupop\_enabled](#input\_brupop\_enabled) | Enable Bottle Rocket Update Operator | `bool` | `true` | no |
+| <a name="input_brupop_enabled"></a> [brupop\_enabled](#input\_brupop\_enabled) | Enable Bottle Rocket Update Operator | `bool` | `false` | no |
 | <a name="input_brupop_image"></a> [brupop\_image](#input\_brupop\_image) | Docker image for brupop | `string` | `"public.ecr.aws/bottlerocket/bottlerocket-update-operator"` | no |
 | <a name="input_brupop_namespace"></a> [brupop\_namespace](#input\_brupop\_namespace) | Namespace for all resources under bottlerocket update operator | `string` | `"brupop-bottlerocket-aws"` | no |
 | <a name="input_brupop_release_name"></a> [brupop\_release\_name](#input\_brupop\_release\_name) | Release name for brupop | `string` | `"brupop-operator"` | no |
