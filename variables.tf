@@ -76,9 +76,9 @@ variable "create_aws_auth_configmap" {
 }
 
 variable "manage_aws_auth_configmap" {
-  description = "Determines whether to manage the contents of the aws-auth configmap"
+  description = "Determines whether to manage the contents of the aws-auth configmap. NOTE - make it `true` when `authentication_mode = CONFIG_MAP`"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "enable_cluster_windows_support" {

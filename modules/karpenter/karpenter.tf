@@ -16,7 +16,7 @@ module "karpenter" {
   cluster_ip_family     = var.cluster_ip_family
   enable_v1_permissions = var.enable_v1_permissions
 
-  enable_pod_identity             = var.enable_pod_identity
+  enable_pod_identity             = var.enable_pod_identity # can't `enable` when karpenter use fargate profile
   create_pod_identity_association = var.create_pod_identity_association
 }
 

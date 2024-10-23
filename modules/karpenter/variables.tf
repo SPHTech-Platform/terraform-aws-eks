@@ -291,7 +291,7 @@ variable "create_pod_identity_association" {
 }
 
 variable "enable_pod_identity" {
-  description = "Determines whether to enable support for EKS pod identity"
+  description = "Determines whether to enable support for EKS pod identity, DON'T `enable` if you are using FARGATE profile for Karpenter"
   type        = bool
   default     = false
 }
@@ -303,7 +303,7 @@ variable "enable_pod_identity" {
 variable "create_access_entry" {
   description = "Determines whether an access entry is created for the IAM role used by the node IAM role, `enable` it when using self managed nodes"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "access_entry_type" {

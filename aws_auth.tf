@@ -56,8 +56,8 @@ module "eks_aws_auth" {
   version = "~> 20.26.0"
 
   create_aws_auth_configmap = var.create_aws_auth_configmap
-  manage_aws_auth_configmap = var.manage_aws_auth_configmap
-  aws_auth_roles            = var.migrate_aws_auth_to_access_entry ? local.aws_auth_roles : var.role_mapping
+  manage_aws_auth_configmap = var.migrate_aws_auth_to_access_entry ? true : var.manage_aws_auth_configmap
+  aws_auth_roles            = var.migrate_aws_auth_to_access_entry || var.authentication_mode == "CONFIG_MAP" ? local.aws_auth_roles : var.role_mapping
   aws_auth_users            = var.user_mapping
   aws_auth_accounts         = []
 }
