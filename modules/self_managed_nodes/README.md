@@ -38,22 +38,22 @@ the type of images:
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.47 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.7 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.70 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.12 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.47 |
-| <a name="provider_time"></a> [time](#provider\_time) | >= 0.7 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.70 |
+| <a name="provider_time"></a> [time](#provider\_time) | >= 0.12 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_self_managed_group"></a> [self\_managed\_group](#module\_self\_managed\_group) | terraform-aws-modules/eks/aws//modules/self-managed-node-group | ~> 19.21.0 |
+| <a name="module_self_managed_group"></a> [self\_managed\_group](#module\_self\_managed\_group) | terraform-aws-modules/eks/aws//modules/self-managed-node-group | ~> 20.26.0 |
 
 ## Resources
 
@@ -76,7 +76,7 @@ the type of images:
 | <a name="input_force_irsa"></a> [force\_irsa](#input\_force\_irsa) | Force usage of IAM Roles for Service Account | `bool` | `true` | no |
 | <a name="input_node_termination_handler_event_name"></a> [node\_termination\_handler\_event\_name](#input\_node\_termination\_handler\_event\_name) | Override name of the Cloudwatch Event to handle termination of nodes | `string` | `""` | no |
 | <a name="input_node_termination_handler_sqs_arn"></a> [node\_termination\_handler\_sqs\_arn](#input\_node\_termination\_handler\_sqs\_arn) | ARN of the SQS queue used to handle node termination events | `string` | n/a | yes |
-| <a name="input_self_managed_node_group_defaults"></a> [self\_managed\_node\_group\_defaults](#input\_self\_managed\_node\_group\_defaults) | Map of self-managed node group default configurations to override the built in defaults | `any` | <pre>{<br>  "create_iam_role": false,<br>  "disk_size": 50,<br>  "ebs_optimized": true,<br>  "enable_monitoring": true,<br>  "instance_refresh": {<br>    "preferences": {<br>      "min_healthy_percentage": 66<br>    },<br>    "strategy": "Rolling"<br>  },<br>  "protect_from_scale_in": false,<br>  "update_launch_template_default_version": true<br>}</pre> | no |
+| <a name="input_self_managed_node_group_defaults"></a> [self\_managed\_node\_group\_defaults](#input\_self\_managed\_node\_group\_defaults) | Map of self-managed node group default configurations to override the built in defaults | `any` | <pre>{<br/>  "create_iam_role": false,<br/>  "disk_size": 50,<br/>  "ebs_optimized": true,<br/>  "enable_monitoring": true,<br/>  "instance_refresh": {<br/>    "preferences": {<br/>      "min_healthy_percentage": 66<br/>    },<br/>    "strategy": "Rolling"<br/>  },<br/>  "protect_from_scale_in": false,<br/>  "update_launch_template_default_version": true<br/>}</pre> | no |
 | <a name="input_self_managed_node_groups"></a> [self\_managed\_node\_groups](#input\_self\_managed\_node\_groups) | Map of self-managed node group definitions to create | `any` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for all resources | `map(string)` | `{}` | no |
 | <a name="input_worker_iam_instance_profile_arn"></a> [worker\_iam\_instance\_profile\_arn](#input\_worker\_iam\_instance\_profile\_arn) | Worker Nodes IAM Instance Profile ARN | `string` | n/a | yes |

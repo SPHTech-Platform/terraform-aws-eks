@@ -5,15 +5,15 @@ terraform {
     # tflint-ignore: terraform_unused_required_providers
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.47"
+      version = ">= 5.70"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = ">= 2.7"
+      version = ">= 2.16"
     }
     kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14"
+      source  = "alekc/kubectl"
+      version = ">= 2.1"
     }
   }
 }

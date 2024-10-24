@@ -1,20 +1,63 @@
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 20.5.0"
+  version = "~> 20.26.0"
 
   cluster_name = var.cluster_name
 
-  enable_irsa                     = true
+  enable_irsa                     = var.enable_irsa
   irsa_oidc_provider_arn          = var.oidc_provider_arn
   irsa_namespace_service_accounts = ["${var.karpenter_namespace}:karpenter"]
 
-  create_access_entry  = false # Remove this entry when EKS module updated to 20.x.x
-  create_node_iam_role = false
-  node_iam_role_arn    = var.worker_iam_role_arn
+  create_access_entry = var.create_access_entry # use an existing Node IAM role from the EKS managed node group
+  access_entry_type   = var.access_entry_type
+
+  create_node_iam_role  = false
+  node_iam_role_arn     = var.worker_iam_role_arn
+  cluster_ip_family     = var.cluster_ip_family
+  enable_v1_permissions = var.enable_v1_permissions
+
+  enable_pod_identity             = var.enable_pod_identity # can't `enable` when karpenter use fargate profile
+  create_pod_identity_association = var.create_pod_identity_association
 }
 
-resource "helm_release" "karpenter" {
+###################
+## UPDATING CRDS ##
+###################
+module "karpenter_crds" {
+  count = !var.karpenter_crd_helm_install ? 1 : 0
 
+  source  = "rpadovani/helm-crds/kubectl"
+  version = ">= 1.0"
+
+  crds_urls = [
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
+  ]
+
+  apply_only = true
+}
+
+###############################
+## Karpenter CRDs Helm Chart ##
+###############################
+resource "helm_release" "karpenter_crd" {
+  count = var.karpenter_crd_helm_install ? 1 : 0
+
+  namespace        = var.karpenter_crd_namespace
+  create_namespace = true
+
+  name       = var.karpenter_crd_release_name
+  repository = var.karpenter_crd_chart_repository
+  chart      = var.karpenter_crd_chart_name
+  version    = var.karpenter_crd_chart_version
+  skip_crds  = true
+}
+
+##########################
+## Karpenter Helm Chart ##
+##########################
+resource "helm_release" "karpenter" {
   namespace        = var.karpenter_namespace
   create_namespace = true
 
@@ -23,7 +66,7 @@ resource "helm_release" "karpenter" {
   chart      = var.karpenter_chart_name
   version    = var.karpenter_chart_version
 
-  skip_crds = true # CRDs are managed by module.karpenter-crds
+  skip_crds = true # CRDs are managed by the karpenter_crd HelmRelease
   values = [
     <<-EOT
     settings:
@@ -46,29 +89,39 @@ resource "helm_release" "karpenter" {
 
   depends_on = [
     module.karpenter[0].iam_role_arn,
-    module.karpenter-crds,
+    helm_release.karpenter_crd[0],
+    module.karpenter_crds[0]
   ]
 }
 
-###################
-## UPDATING CRDS ##
-###################
+#######################
+## KUBECTL NODECLASS ##
+#######################
+resource "kubectl_manifest" "karpenter_nodeclass" {
+  for_each = { for nodeclass in var.karpenter_nodeclasses : nodeclass.nodeclass_name => nodeclass }
 
-module "karpenter-crds" {
-  source  = "rpadovani/helm-crds/kubectl"
-  version = "~> 0.3.0"
+  yaml_body = templatefile("${path.module}/templates/nodeclass.tftpl", {
+    nodeclass_name                             = each.value.nodeclass_name
+    CLUSTER_NAME                               = var.cluster_name
+    karpenter_subnet_selector_map_yaml         = length(each.value.karpenter_subnet_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_subnet_selector_maps)
+    karpenter_security_group_selector_map_yaml = length(each.value.karpenter_security_group_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_security_group_selector_maps)
+    karpenter_ami_selector_map_yaml            = length(each.value.karpenter_ami_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_ami_selector_maps)
+    karpenter_node_role                        = each.value.karpenter_node_role
+    karpenter_node_user_data                   = each.value.karpenter_node_user_data
+    karpenter_node_tags_map_yaml               = length(keys(each.value.karpenter_node_tags_map)) == 0 ? "" : yamlencode(each.value.karpenter_node_tags_map)
+    karpenter_node_metadata_options_yaml       = length(keys(each.value.karpenter_node_metadata_options)) == 0 ? "" : replace(yamlencode(each.value.karpenter_node_metadata_options), "/\"([0-9]+)\"/", "$1")
+    karpenter_block_device_mapping_yaml        = length(each.value.karpenter_block_device_mapping) == 0 ? "" : yamlencode(each.value.karpenter_block_device_mapping)
 
-  crds_urls = [
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
+  })
+
+  depends_on = [
+    helm_release.karpenter
   ]
 }
 
-#########################
+######################
 ## KUBECTL NODEPOOL ##
-#########################
-
+######################
 resource "kubectl_manifest" "karpenter_nodepool" {
 
   for_each = { for nodepool in var.karpenter_nodepools : nodepool.nodepool_name => nodepool }
@@ -86,29 +139,17 @@ resource "kubectl_manifest" "karpenter_nodepool" {
     karpenter_nodepool_disruption_budgets_yaml = replace(yamlencode(each.value.karpenter_nodepool_disruption_budgets), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
   })
 
-  depends_on = [module.karpenter-crds]
+  depends_on = [
+    kubectl_manifest.karpenter_nodeclass
+  ]
 }
 
-##########################
-## KUBECTL NODECLASS ##
-##########################
-resource "kubectl_manifest" "karpenter_nodeclass" {
-  for_each = { for nodeclass in var.karpenter_nodeclasses : nodeclass.nodeclass_name => nodeclass }
+moved {
+  from = module.karpenter-crds
+  to   = module.karpenter_crds[0]
+}
 
-  yaml_body = templatefile("${path.module}/templates/nodeclass.tftpl", {
-    nodeclass_name                             = each.value.nodeclass_name
-    CLUSTER_NAME                               = var.cluster_name
-    karpenter_subnet_selector_map_yaml         = length(each.value.karpenter_subnet_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_subnet_selector_maps)
-    karpenter_security_group_selector_map_yaml = length(each.value.karpenter_security_group_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_security_group_selector_maps)
-    karpenter_ami_selector_map_yaml            = length(each.value.karpenter_ami_selector_maps) == 0 ? "" : yamlencode(each.value.karpenter_ami_selector_maps)
-    karpenter_node_role                        = each.value.karpenter_node_role
-    karpenter_node_user_data                   = each.value.karpenter_node_user_data
-    karpenter_node_tags_map_yaml               = length(keys(each.value.karpenter_node_tags_map)) == 0 ? "" : yamlencode(each.value.karpenter_node_tags_map)
-    karpenter_node_metadata_options_yaml       = length(keys(each.value.karpenter_node_metadata_options)) == 0 ? "" : replace(yamlencode(each.value.karpenter_node_metadata_options), "/\"([0-9]+)\"/", "$1")
-    karpenter_ami_family                       = each.value.karpenter_ami_family
-    karpenter_block_device_mapping_yaml        = length(each.value.karpenter_block_device_mapping) == 0 ? "" : yamlencode(each.value.karpenter_block_device_mapping)
-
-  })
-
-  depends_on = [module.karpenter-crds]
+moved {
+  from = helm_release.karpenter-crd
+  to   = helm_release.karpenter_crd[0]
 }

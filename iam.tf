@@ -67,14 +67,16 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 # IRSA for addon components
 ############################
 module "vpc_cni_irsa_role" {
+  count = !var.enable_pod_identity ? 1 : 0
+
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.11.2"
+  version = "~> 5.47"
 
   role_name_prefix = "${var.cluster_name}-cni-"
   role_description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
 
   attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = true
+  vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
   vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
 
   oidc_providers = {
@@ -88,8 +90,10 @@ module "vpc_cni_irsa_role" {
 }
 
 module "ebs_csi_irsa_role" {
+  count = !var.enable_pod_identity ? 1 : 0
+
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.11.2"
+  version = "~> 5.47"
 
   role_name_prefix = "${var.cluster_name}-ebs-csi-"
   role_description = "EKS Cluster ${var.cluster_name} EBS CSI Addon"
@@ -107,8 +111,55 @@ module "ebs_csi_irsa_role" {
 }
 
 resource "aws_iam_role_policy" "ebs_csi_kms" {
+  count = !var.enable_pod_identity ? 1 : 0
+
   name_prefix = "kms"
-  role        = module.ebs_csi_irsa_role.iam_role_name
+  role        = module.ebs_csi_irsa_role[0].iam_role_name
 
   policy = data.aws_iam_policy_document.kms_csi_ebs.json
+}
+
+####################################
+## Pod Identity Roles for Add-ons ##
+####################################
+module "aws_vpc_cni_pod_identity" {
+  count = var.enable_pod_identity ? 1 : 0
+
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 1.5.0"
+
+  name = "aws-vpc-cni-${var.cluster_ip_family}"
+
+  attach_aws_vpc_cni_policy = true
+  aws_vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
+  aws_vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
+
+  # Pod Identity Associations
+  association_defaults = {
+    namespace       = "kube-system"
+    service_account = "aws-node"
+  }
+
+  tags = var.tags
+}
+
+module "aws_ebs_csi_pod_identity" {
+  count = var.enable_pod_identity ? 1 : 0
+
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 1.5.0"
+
+  name = "aws-ebs-csi"
+
+  attach_aws_ebs_csi_policy = true
+  aws_ebs_csi_kms_arns = [
+    module.kms_ebs.key_arn,
+  ]
+  # Pod Identity Associations
+  association_defaults = {
+    namespace       = "kube-system"
+    service_account = "ebs-csi-controller-sa"
+  }
+
+  tags = var.tags
 }

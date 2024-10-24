@@ -18,6 +18,16 @@ variable "cluster_enabled_log_types" {
   default     = ["audit", "api", "authenticator"]
 }
 
+variable "authentication_mode" {
+  description = "The authentication mode for the cluster. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP`"
+  type        = string
+  default     = "API"
+
+  validation {
+    condition     = contains(["CONFIG_MAP", "API", "API_AND_CONFIG_MAP"], var.authentication_mode)
+    error_message = "Invalid authentication mode. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP`"
+  }
+}
 #######################
 # Cluster IAM Role
 #######################
@@ -66,9 +76,9 @@ variable "create_aws_auth_configmap" {
 }
 
 variable "manage_aws_auth_configmap" {
-  description = "Determines whether to manage the contents of the aws-auth configmap"
+  description = "Determines whether to manage the contents of the aws-auth configmap. NOTE - make it `true` when `authentication_mode = CONFIG_MAP`"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "enable_cluster_windows_support" {
@@ -387,6 +397,11 @@ variable "cluster_ip_family" {
   description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created"
   type        = string
   default     = "ipv4"
+
+  validation {
+    condition     = contains(["ipv4", "ipv6"], var.cluster_ip_family)
+    error_message = "Invalid IP family. Valid values are `ipv4` and `ipv6`"
+  }
 }
 ##########
 ## MODE ##
@@ -417,16 +432,18 @@ variable "karpenter_nodepools" {
     )
     karpenter_nodepool_disruption = object({
       consolidation_policy = string
-      consolidate_after    = optional(string)
+      consolidate_after    = string
       expire_after         = string
     })
     karpenter_nodepool_disruption_budgets = list(map(any))
     karpenter_nodepool_weight             = number
   }))
   default = [{
-    nodepool_name                     = "default"
-    nodeclass_name                    = "default"
-    karpenter_nodepool_node_labels    = {}
+    nodepool_name  = "default"
+    nodeclass_name = "default"
+    karpenter_nodepool_node_labels = {
+      "bottlerocket.aws/updater-interface-version" = "2.0.0"
+    }
     karpenter_nodepool_annotations    = {}
     karpenter_nodepool_node_taints    = []
     karpenter_nodepool_startup_taints = []
@@ -461,9 +478,9 @@ variable "karpenter_nodepools" {
       }
     ]
     karpenter_nodepool_disruption = {
-      consolidation_policy = "WhenUnderutilized" # WhenUnderutilized or WhenEmpty
-      # consolidate_after    = "10m"               # Only used if consolidation_policy is WhenEmpty
-      expire_after = "168h" # 7d | 168h | 1w
+      consolidation_policy = "WhenEmptyOrUnderutilized" # WhenEmptyOrUnderutilized or WhenEmpty
+      consolidate_after    = "10m"
+      expire_after         = "168h" # 7d | 168h | 1w
     }
     karpenter_nodepool_disruption_budgets = [{
       nodes = "10%"
@@ -528,10 +545,22 @@ variable "create_fargate_logging_policy_for_karpenter" {
   default     = false
 }
 
+variable "karpenter_crd_helm_install" {
+  description = "Install Karpenter CRDs from Helm, Note - Set to `false` if the Karpenter Deployed by Module Version <= 0.19.x"
+  type        = bool
+  default     = true
+}
+
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "0.37.5"
+  default     = "1.0.6"
+}
+
+variable "karpenter_crd_chart_version" {
+  description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
+  type        = string
+  default     = "1.0.6"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
@@ -572,8 +601,52 @@ variable "karpenter_pod_resources" {
   }
 }
 
+# TODO - make v1 permssions the default policy at next breaking change
+variable "enable_v1_permissions_for_karpenter" {
+  description = "Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`)"
+  type        = bool
+  default     = true
+}
+
 variable "karpenter_upgrade" {
   description = "Karpenter Upgrade"
+  type        = bool
+  default     = false
+}
+
+variable "enable_pod_identity" {
+  description = "Enable pod identity"
+  type        = bool
+  default     = true
+}
+
+variable "enable_pod_identity_for_karpenter" {
+  description = "Enable pod identity for karpenter"
+  type        = bool
+  default     = false
+}
+
+################################################################################
+# Access Entry
+################################################################################
+
+variable "access_entries" {
+  description = "Map of access entries to add to the cluster"
+  type        = any
+  default     = {}
+}
+
+variable "enable_cluster_creator_admin_permissions" {
+  description = "Indicates whether or not to add the cluster creator (the identity used by Terraform) as an administrator via access entry"
+  type        = bool
+  default     = false
+}
+
+######################################################################
+## Migrating existing aws-auth ConfigMap entries to access entries
+######################################################################
+variable "migrate_aws_auth_to_access_entry" {
+  description = "Migrate existing aws-auth ConfigMap entries to access entries, Note - Set to `true` when you need to change authentication mode from `CONFIG_MAP` to `API_AND_CONFIG_MAP`"
   type        = bool
   default     = false
 }

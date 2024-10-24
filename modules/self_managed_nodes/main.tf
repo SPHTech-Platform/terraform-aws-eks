@@ -58,7 +58,7 @@ locals {
 
 module "self_managed_group" {
   source  = "terraform-aws-modules/eks/aws//modules/self-managed-node-group"
-  version = "~> 19.21.0"
+  version = "~> 20.26.0"
 
   for_each = local.self_managed_node_groups
 
@@ -96,11 +96,12 @@ module "self_managed_group" {
   metrics_granularity     = try(each.value.metrics_granularity, local.self_managed_node_group_defaults.metrics_granularity, null)
   service_linked_role_arn = try(each.value.service_linked_role_arn, local.self_managed_node_group_defaults.service_linked_role_arn, null)
 
-  initial_lifecycle_hooks    = try(each.value.initial_lifecycle_hooks, local.self_managed_node_group_defaults.initial_lifecycle_hooks, [])
-  instance_refresh           = try(each.value.instance_refresh, local.self_managed_node_group_defaults.instance_refresh, {})
-  use_mixed_instances_policy = try(each.value.use_mixed_instances_policy, local.self_managed_node_group_defaults.use_mixed_instances_policy, false)
-  mixed_instances_policy     = try(each.value.mixed_instances_policy, local.self_managed_node_group_defaults.mixed_instances_policy, null)
-  warm_pool                  = try(each.value.warm_pool, local.self_managed_node_group_defaults.warm_pool, {})
+  initial_lifecycle_hooks     = try(each.value.initial_lifecycle_hooks, local.self_managed_node_group_defaults.initial_lifecycle_hooks, [])
+  instance_maintenance_policy = try(each.value.instance_maintenance_policy, local.self_managed_node_group_defaults.instance_maintenance_policy, {})
+  instance_refresh            = try(each.value.instance_refresh, local.self_managed_node_group_defaults.instance_refresh, {})
+  use_mixed_instances_policy  = try(each.value.use_mixed_instances_policy, local.self_managed_node_group_defaults.use_mixed_instances_policy, false)
+  mixed_instances_policy      = try(each.value.mixed_instances_policy, local.self_managed_node_group_defaults.mixed_instances_policy, null)
+  warm_pool                   = try(each.value.warm_pool, local.self_managed_node_group_defaults.warm_pool, {})
 
   create_schedule = try(each.value.create_schedule, local.self_managed_node_group_defaults.create_schedule, false)
   schedules       = try(each.value.schedules, local.self_managed_node_group_defaults.schedules, null)
@@ -166,6 +167,10 @@ module "self_managed_group" {
   iam_role_tags                 = try(each.value.iam_role_tags, local.self_managed_node_group_defaults.iam_role_tags, {})
   iam_role_attach_cni_policy    = try(each.value.iam_role_attach_cni_policy, local.self_managed_node_group_defaults.iam_role_attach_cni_policy, true)
   iam_role_additional_policies  = try(each.value.iam_role_additional_policies, local.self_managed_node_group_defaults.iam_role_additional_policies, {})
+
+  # Access Entry
+  create_access_entry = try(each.value.access_entry, local.self_managed_node_group_defaults.access_entry, true)
+  iam_role_arn        = try(each.value.iam_role_arn, local.self_managed_node_group_defaults.iam_role_arn, null)
 
   tags = merge(var.tags, try(each.value.tags, local.self_managed_node_group_defaults.tags, {}))
 }

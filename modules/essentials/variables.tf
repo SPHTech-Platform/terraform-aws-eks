@@ -571,7 +571,7 @@ variable "node_termination_service_account" {
 variable "brupop_enabled" {
   description = "Enable Bottle Rocket Update Operator"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "brupop_namespace" {

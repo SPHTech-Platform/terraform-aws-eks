@@ -47,7 +47,7 @@ module "node_termination_handler_irsa" {
   count = var.node_termination_handler_enable ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.11.2"
+  version = "~> 5.47"
 
   role_name_prefix              = coalesce(var.node_termination_handler_iam_role, "${var.cluster_name}-nth-")
   role_description              = "EKS Cluster ${var.cluster_name} Node Termination Handler"
@@ -76,11 +76,11 @@ module "node_termination_handler_sqs" {
   count = var.create_node_termination_handler_sqs ? 1 : 0
 
   source  = "terraform-aws-modules/sqs/aws"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
-  name                      = local.nth_sqs_name
-  message_retention_seconds = 300
-  policy                    = data.aws_iam_policy_document.node_termination_handler_sqs.json
+  name                          = local.nth_sqs_name
+  message_retention_seconds     = 300
+  source_queue_policy_documents = data.aws_iam_policy_document.node_termination_handler_sqs.json
 }
 
 data "aws_iam_policy_document" "node_termination_handler_sqs" {
@@ -115,5 +115,5 @@ resource "aws_cloudwatch_event_target" "node_termination_handler_spot" {
 
   target_id = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
   rule      = aws_cloudwatch_event_rule.node_termination_handler_spot[0].name
-  arn       = module.node_termination_handler_sqs[0].sqs_queue_arn
+  arn       = module.node_termination_handler_sqs[0].queue_arn
 }

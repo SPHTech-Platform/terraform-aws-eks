@@ -1,11 +1,11 @@
 repos:
   - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.22
+    rev: v0.1.23
     hooks:
       - id: shellcheck
 
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.11.2
+    rev: v3.12.2
     hooks:
       - id: markdown-link-check
         args:

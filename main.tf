@@ -1,26 +1,8 @@
 locals {
-  aws_auth_fargate_profile_pod_execution_role_arns = var.fargate_cluster ? distinct(
-    compact(
-      concat(
-        values(module.fargate_profiles[0].fargate_profile_pod_execution_role_arn),
-        var.aws_auth_fargate_profile_pod_execution_role_arns,
-      )
-    )
-  ) : var.aws_auth_fargate_profile_pod_execution_role_arns
-
-  additional_aws_auth_fargate_profile_pod_execution_role_arns = var.autoscaling_mode == "karpenter" && var.create_fargate_profile_for_karpenter ? concat(values(module.karpenter[0].fargate_profile_pod_execution_role_arn)) : []
-
-  additional_role_mapping = var.autoscaling_mode == "karpenter" ? [
-    {
-      rolearn = aws_iam_role.workers.arn
-      groups = [
-        "system:bootstrappers",
-        "system:nodes",
-      ]
-      username = "system:node:{{EC2PrivateDNSName}}"
-    }
-  ] : []
-
+  addon_vpc_cni_pod_identity = {
+    most_recent                 = true
+    resolve_conflicts_on_update = "OVERWRITE"
+  }
 }
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 #tfsec:ignore:aws-eks-no-public-cluster-access
@@ -28,11 +10,11 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21.0"
+  version = "~> 20.26.0"
 
-  cluster_name    = var.cluster_name
-  cluster_version = var.cluster_version
-
+  cluster_name              = var.cluster_name
+  cluster_version           = var.cluster_version
+  authentication_mode       = var.migrate_aws_auth_to_access_entry ? "API_AND_CONFIG_MAP" : var.authentication_mode
   cluster_enabled_log_types = var.cluster_enabled_log_types
 
   cluster_endpoint_private_access      = var.cluster_endpoint_private_access
@@ -87,13 +69,10 @@ module "eks" {
 
   cluster_addons = merge({
     kube-proxy = {
-      most_recent = true
-      reserve     = true
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
     }
-    vpc-cni = var.fargate_cluster ? {
-      most_recent              = true
-      reserve                  = true
-      service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
+    vpc-cni = var.fargate_cluster && var.enable_pod_identity ? merge(local.addon_vpc_cni_pod_identity, {
       configuration_values = jsonencode({
         env = {
           # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
@@ -106,21 +85,34 @@ module "eks" {
           }
         }
       })
+      }) : (var.fargate_cluster ? merge(local.addon_vpc_cni_pod_identity, {
+        service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
+        configuration_values = jsonencode({
+          env = {
+            # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
+            ENABLE_POD_ENI                    = "true"
+            POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
+          }
+          init = {
+            env = {
+              DISABLE_TCP_EARLY_DEMUX = "true"
+            }
+          }
+        })
+        }) : (var.enable_pod_identity ? local.addon_vpc_cni_pod_identity : merge(local.addon_vpc_cni_pod_identity, {
+          service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
+    })))
+    aws-ebs-csi-driver = var.enable_pod_identity ? {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
       } : {
-      most_recent              = true
-      reserve                  = true
-      service_account_role_arn = module.vpc_cni_irsa_role.iam_role_arn
-    }
-    aws-ebs-csi-driver = {
-      most_recent              = true
-      reserve                  = true
-      resolve_conflicts        = "OVERWRITE"
-      service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      service_account_role_arn    = module.ebs_csi_irsa_role[0].iam_role_arn
     }
     coredns = var.fargate_cluster ? {
-      most_recent       = true
-      reserve           = true
-      resolve_conflicts = "OVERWRITE"
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
       configuration_values = jsonencode({
         computeType = "Fargate"
         # https://github.com/aws-ia/terraform-aws-eks-blueprints/pull/1329
@@ -140,8 +132,22 @@ module "eks" {
         }
       })
       } : {
-      most_recent = true
-      reserve     = true
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+    }
+    eks-pod-identity-agent = var.cluster_ip_family == "ipv4" ? {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      configuration_values = jsonencode({
+        agent = {
+          additionalArgs = {
+            "-b" = "169.254.170.23"
+          }
+        }
+      })
+      } : {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
     }
     },
     var.cluster_addons,
@@ -157,16 +163,9 @@ module "eks" {
 
   create_node_security_group = var.create_node_security_group
 
-  # aws-auth configmap
-  create_aws_auth_configmap                        = var.create_aws_auth_configmap
-  manage_aws_auth_configmap                        = var.manage_aws_auth_configmap
-  aws_auth_node_iam_role_arns_non_windows          = [aws_iam_role.workers.arn]
-  aws_auth_node_iam_role_arns_windows              = var.enable_cluster_windows_support ? [aws_iam_role.workers.arn] : []
-  aws_auth_roles                                   = concat(var.role_mapping, local.additional_role_mapping)
-  aws_auth_users                                   = var.user_mapping
-  aws_auth_accounts                                = []
-  aws_auth_fargate_profile_pod_execution_role_arns = concat(local.aws_auth_fargate_profile_pod_execution_role_arns, local.additional_aws_auth_fargate_profile_pod_execution_role_arns)
-
   tags                      = var.tags
   cloudwatch_log_group_tags = var.cloudwatch_log_group_tags
+
+  access_entries                           = var.access_entries
+  enable_cluster_creator_admin_permissions = var.enable_cluster_creator_admin_permissions
 }
