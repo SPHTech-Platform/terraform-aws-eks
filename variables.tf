@@ -21,7 +21,7 @@ variable "cluster_enabled_log_types" {
 variable "authentication_mode" {
   description = "The authentication mode for the cluster. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP`"
   type        = string
-  default     = "API_AND_CONFIG_MAP"
+  default     = "API"
 
   validation {
     condition     = contains(["CONFIG_MAP", "API", "API_AND_CONFIG_MAP"], var.authentication_mode)
@@ -545,6 +545,12 @@ variable "create_fargate_logging_policy_for_karpenter" {
   default     = false
 }
 
+variable "karpenter_crd_helm_install" {
+  description = "Install Karpenter CRDs from Helm, Note - Set to `false` if the Karpenter Deployed by Module Version <= 0.19.x"
+  type        = bool
+  default     = true
+}
+
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
@@ -640,7 +646,7 @@ variable "enable_cluster_creator_admin_permissions" {
 ## Migrating existing aws-auth ConfigMap entries to access entries
 ######################################################################
 variable "migrate_aws_auth_to_access_entry" {
-  description = "Migrate existing aws-auth ConfigMap entries to access entries"
+  description = "Migrate existing aws-auth ConfigMap entries to access entries, Note - Set to `true` when you need to change authentication mode from `CONFIG_MAP` to `API_AND_CONFIG_MAP`"
   type        = bool
   default     = false
 }

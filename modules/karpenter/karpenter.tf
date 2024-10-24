@@ -20,10 +20,30 @@ module "karpenter" {
   create_pod_identity_association = var.create_pod_identity_association
 }
 
+###################
+## UPDATING CRDS ##
+###################
+module "karpenter_crds" {
+  count = !var.karpenter_crd_helm_install ? 1 : 0
+
+  source  = "rpadovani/helm-crds/kubectl"
+  version = ">= 1.0"
+
+  crds_urls = [
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
+    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
+  ]
+
+  apply_only = true
+}
+
 ###############################
 ## Karpenter CRDs Helm Chart ##
 ###############################
-resource "helm_release" "karpenter-crd" {
+resource "helm_release" "karpenter_crd" {
+  count = var.karpenter_crd_helm_install ? 1 : 0
+
   namespace        = var.karpenter_crd_namespace
   create_namespace = true
 
@@ -46,7 +66,7 @@ resource "helm_release" "karpenter" {
   chart      = var.karpenter_chart_name
   version    = var.karpenter_chart_version
 
-  skip_crds = true # CRDs are managed by the karpenter-crd HelmRelease
+  skip_crds = true # CRDs are managed by the karpenter_crd HelmRelease
   values = [
     <<-EOT
     settings:
@@ -69,7 +89,8 @@ resource "helm_release" "karpenter" {
 
   depends_on = [
     module.karpenter[0].iam_role_arn,
-    helm_release.karpenter-crd,
+    helm_release.karpenter_crd[0],
+    module.karpenter_crds[0]
   ]
 }
 
@@ -121,4 +142,14 @@ resource "kubectl_manifest" "karpenter_nodepool" {
   depends_on = [
     kubectl_manifest.karpenter_nodeclass
   ]
+}
+
+moved {
+  from = module.karpenter-crds
+  to   = module.karpenter_crds[0]
+}
+
+moved {
+  from = helm_release.karpenter-crd
+  to   = helm_release.karpenter_crd[0]
 }

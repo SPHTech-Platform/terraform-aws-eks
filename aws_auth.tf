@@ -61,3 +61,8 @@ module "eks_aws_auth" {
   aws_auth_users            = var.user_mapping
   aws_auth_accounts         = []
 }
+
+moved {
+  from = module.eks.kubernetes_config_map_v1_data.aws_auth[0]
+  to   = module.eks_aws_auth.kubernetes_config_map_v1_data.aws_auth[0]
+}

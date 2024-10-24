@@ -9,7 +9,6 @@
 
 ### Fresh Karpenter Cluster
 
-
 ### Migration from Karpenter v0.31.x
 
 ### Switching from Cluster Autoscaler Nodegroups to pure Karpenter

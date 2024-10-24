@@ -81,6 +81,7 @@ module "karpenter" {
 
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
+  karpenter_crd_helm_install  = var.karpenter_crd_helm_install
   karpenter_chart_version     = var.karpenter_chart_version
   karpenter_crd_chart_version = var.karpenter_crd_chart_version
 
