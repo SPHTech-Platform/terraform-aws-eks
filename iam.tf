@@ -163,3 +163,18 @@ module "aws_ebs_csi_pod_identity" {
 
   tags = var.tags
 }
+
+moved {
+  from = module.vpc_cni_irsa_role
+  to   = module.vpc_cni_irsa_role[0]
+}
+
+moved {
+  from = module.ebs_csi_irsa_role
+  to   = module.ebs_csi_irsa_role[0]
+}
+
+moved {
+  from = module.aws_vpc_cni_pod_identity
+  to   = module.aws_vpc_cni_pod_identity[0]
+}
