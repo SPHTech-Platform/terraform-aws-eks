@@ -614,14 +614,14 @@ variable "karpenter_upgrade" {
   default     = false
 }
 
-variable "enable_pod_identity" {
-  description = "Enable pod identity"
-  type        = bool
-  default     = true
-}
-
 variable "enable_pod_identity_for_karpenter" {
   description = "Enable pod identity for karpenter"
+  type        = bool
+  default     = false
+}
+
+variable "enable_pod_identity_for_eks_addons" {
+  description = "Enable pod identity for eks addons, Note - Default is `false` because AWS Terraform Provider still DOESN'T Support Pod Identity Association for EKS Addons"
   type        = bool
   default     = false
 }

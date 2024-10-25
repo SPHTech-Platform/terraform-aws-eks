@@ -72,7 +72,7 @@ module "eks" {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
     }
-    vpc-cni = var.fargate_cluster && var.enable_pod_identity ? merge(local.addon_vpc_cni_pod_identity, {
+    vpc-cni = var.fargate_cluster && var.enable_pod_identity_for_eks_addons ? merge(local.addon_vpc_cni_pod_identity, {
       configuration_values = jsonencode({
         env = {
           # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
@@ -99,10 +99,10 @@ module "eks" {
             }
           }
         })
-        }) : (var.enable_pod_identity ? local.addon_vpc_cni_pod_identity : merge(local.addon_vpc_cni_pod_identity, {
+        }) : (var.enable_pod_identity_for_eks_addons ? local.addon_vpc_cni_pod_identity : merge(local.addon_vpc_cni_pod_identity, {
           service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
     })))
-    aws-ebs-csi-driver = var.enable_pod_identity ? {
+    aws-ebs-csi-driver = var.enable_pod_identity_for_eks_addons ? {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       } : {
