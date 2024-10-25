@@ -614,12 +614,6 @@ variable "karpenter_upgrade" {
   default     = false
 }
 
-variable "enable_pod_identity" {
-  description = "Enable pod identity"
-  type        = bool
-  default     = true
-}
-
 variable "enable_pod_identity_for_karpenter" {
   description = "Enable pod identity for karpenter"
   type        = bool
