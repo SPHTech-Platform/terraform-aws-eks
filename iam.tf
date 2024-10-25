@@ -175,6 +175,6 @@ moved {
 }
 
 moved {
-  from = module.aws_vpc_cni_pod_identity
-  to   = module.aws_vpc_cni_pod_identity[0]
+  from = aws_iam_role_policy.ebs_csi_kms
+  to   = aws_iam_role_policy.ebs_csi_kms[0]
 }
