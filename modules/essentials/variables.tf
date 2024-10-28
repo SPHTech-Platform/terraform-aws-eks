@@ -1336,7 +1336,7 @@ variable "startupapicheck_tolerations" {
 variable "startupapicheck_image_repository" {
   description = "Image repository for startupapicheck"
   type        = string
-  default     = "quay.io/jetstack/cert-manager-ctl"
+  default     = "quay.io/jetstack/cert-manager-startupapicheck"
 }
 
 variable "startupapicheck_image_tag" {
