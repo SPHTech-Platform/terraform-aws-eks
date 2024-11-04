@@ -1510,3 +1510,9 @@ variable "ip_dual_stack_enabled" {
   type        = bool
   default     = false
 }
+
+variable "migrate_from_cluster_autoscaler" {
+  description = "Migrate from Cluster Autoscaler to Karpenter"
+  type        = bool
+  default     = false
+}

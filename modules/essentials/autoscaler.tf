@@ -1,5 +1,5 @@
 resource "helm_release" "cluster_autoscaler" {
-  count = var.autoscaling_mode == "cluster_autoscaler" ? 1 : 0
+  count = var.autoscaling_mode == "cluster_autoscaler" || var.migrate_from_cluster_autoscaler ? 1 : 0
 
   name       = var.cluster_autoscaler_release_name
   chart      = var.cluster_autoscaler_chart_name
@@ -52,7 +52,7 @@ locals {
 }
 
 module "cluster_autoscaler_irsa_role" {
-  count = var.autoscaling_mode == "cluster_autoscaler" ? 1 : 0
+  count = var.autoscaling_mode == "cluster_autoscaler" || var.migrate_from_cluster_autoscaler ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.11.2"
