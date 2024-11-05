@@ -11,6 +11,8 @@ module "karpenter" {
   create_access_entry  = false # Remove this entry when EKS module updated to 20.x.x
   create_node_iam_role = false
   node_iam_role_arn    = var.worker_iam_role_arn
+
+  enable_pod_identity = false # because IRSA is enabled
 }
 
 resource "helm_release" "karpenter" {
