@@ -80,7 +80,8 @@ module "karpenter" {
 
   count = var.autoscaling_mode == "karpenter" ? 1 : 0
 
-  karpenter_chart_version = var.karpenter_chart_version
+  karpenter_chart_version     = var.karpenter_chart_version
+  karpenter_crd_chart_version = var.karpenter_crd_chart_version
 
   cluster_name        = var.cluster_name
   cluster_endpoint    = module.eks.cluster_endpoint

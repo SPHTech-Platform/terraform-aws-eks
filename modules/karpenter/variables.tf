@@ -1,3 +1,42 @@
+##################
+# Karpenter CRDs #
+##################
+variable "karpenter_crd_helm_install" {
+  description = "Install Karpenter CRDs from Helm"
+  type        = bool
+  default     = true
+}
+
+variable "karpenter_crd_namespace" {
+  description = "Namespace to deploy karpenter"
+  type        = string
+  default     = "kube-system"
+}
+
+variable "karpenter_crd_release_name" {
+  description = "Release name for Karpenter"
+  type        = string
+  default     = "karpenter-crd"
+}
+
+variable "karpenter_crd_chart_name" {
+  description = "Chart name for Karpenter"
+  type        = string
+  default     = "karpenter-crd"
+}
+
+variable "karpenter_crd_chart_repository" {
+  description = "Chart repository for Karpenter"
+  type        = string
+  default     = "oci://public.ecr.aws/karpenter"
+}
+
+variable "karpenter_crd_chart_version" {
+  description = "Chart version for Karpenter"
+  type        = string
+  default     = "0.37.5"
+}
+
 ############################
 # Karpenter
 ############################

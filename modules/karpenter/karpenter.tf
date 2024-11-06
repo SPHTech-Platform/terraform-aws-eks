@@ -48,7 +48,7 @@ resource "helm_release" "karpenter" {
 
   depends_on = [
     module.karpenter[0].iam_role_arn,
-    module.karpenter-crds,
+    helm_release.karpenter_crd,
   ]
 }
 
@@ -56,15 +56,16 @@ resource "helm_release" "karpenter" {
 ## UPDATING CRDS ##
 ###################
 
-module "karpenter-crds" {
-  source  = "rpadovani/helm-crds/kubectl"
-  version = "~> 0.3.0"
+resource "helm_release" "karpenter_crd" {
 
-  crds_urls = [
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml",
-    "https://raw.githubusercontent.com/aws/karpenter/v${var.karpenter_chart_version}/pkg/apis/crds/karpenter.sh_nodepools.yaml",
-  ]
+  namespace        = var.karpenter_crd_namespace
+  create_namespace = true
+
+  name       = var.karpenter_crd_release_name
+  repository = var.karpenter_crd_chart_repository
+  chart      = var.karpenter_crd_chart_name
+  version    = var.karpenter_crd_chart_version
+  skip_crds  = true
 }
 
 #########################
@@ -88,7 +89,9 @@ resource "kubectl_manifest" "karpenter_nodepool" {
     karpenter_nodepool_disruption_budgets_yaml = replace(yamlencode(each.value.karpenter_nodepool_disruption_budgets), "/((?:^|\n)[\\s-]*)\"([\\w-]+)\":/", "$1$2:")
   })
 
-  depends_on = [module.karpenter-crds]
+  depends_on = [
+    kubectl_manifest.karpenter_nodeclass
+  ]
 }
 
 ##########################
@@ -112,5 +115,7 @@ resource "kubectl_manifest" "karpenter_nodeclass" {
 
   })
 
-  depends_on = [module.karpenter-crds]
+  depends_on = [
+    helm_release.karpenter
+  ]
 }
