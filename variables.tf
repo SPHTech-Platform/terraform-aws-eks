@@ -583,3 +583,9 @@ variable "karpenter_upgrade" {
   type        = bool
   default     = false
 }
+
+variable "create_fargate_security_group_policy" {
+  description = "Create security group policy"
+  type        = bool
+  default     = false
+}
