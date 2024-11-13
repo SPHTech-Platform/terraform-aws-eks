@@ -9,7 +9,12 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.27"
+  default     = "1.30"
+
+  validation {
+    condition = try(tonumber(var.cluster_version) < 1.31, false)
+    error_message = "EKS Cluster Version 1.31 is not supported by this module. Please use a version less than 1.31"
+  }
 }
 
 variable "cluster_enabled_log_types" {
