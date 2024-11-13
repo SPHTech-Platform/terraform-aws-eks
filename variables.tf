@@ -12,7 +12,7 @@ variable "cluster_version" {
   default     = "1.30"
 
   validation {
-    condition = try(tonumber(var.cluster_version) < 1.31, false)
+    condition     = try(tonumber(var.cluster_version) < 1.31, false)
     error_message = "EKS Cluster Version 1.31 is not supported by this module. Please use a version less than 1.31"
   }
 }
