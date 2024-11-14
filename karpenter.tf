@@ -103,7 +103,7 @@ module "karpenter" {
 }
 
 resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter" {
-  count = var.create_fargate_security_group_policy && var.fargate_cluster && var.create_node_security_group && var.autoscaling_mode == "karpenter" ? 1 : 0
+  count = var.fargate_cluster && var.create_node_security_group && var.autoscaling_mode == "karpenter" ? 1 : 0
 
   manifest = {
     apiVersion = "vpcresources.k8s.aws/v1beta1"
