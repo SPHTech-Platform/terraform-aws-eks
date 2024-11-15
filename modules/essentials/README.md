@@ -291,7 +291,7 @@ module "eks_essentials" {
 | <a name="input_startupapicheck_backoff_limit"></a> [startupapicheck\_backoff\_limit](#input\_startupapicheck\_backoff\_limit) | startupapicheck backoff limit | `number` | `4` | no |
 | <a name="input_startupapicheck_enabled"></a> [startupapicheck\_enabled](#input\_startupapicheck\_enabled) | Enable startupapicheck | `bool` | `true` | no |
 | <a name="input_startupapicheck_extra_args"></a> [startupapicheck\_extra\_args](#input\_startupapicheck\_extra\_args) | Extra args for startupapicheck | `list(any)` | `[]` | no |
-| <a name="input_startupapicheck_image_repository"></a> [startupapicheck\_image\_repository](#input\_startupapicheck\_image\_repository) | Image repository for startupapicheck | `string` | `"quay.io/jetstack/cert-manager-ctl"` | no |
+| <a name="input_startupapicheck_image_repository"></a> [startupapicheck\_image\_repository](#input\_startupapicheck\_image\_repository) | Image repository for startupapicheck | `string` | `"quay.io/jetstack/cert-manager-startupapicheck"` | no |
 | <a name="input_startupapicheck_image_tag"></a> [startupapicheck\_image\_tag](#input\_startupapicheck\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `any` | `null` | no |
 | <a name="input_startupapicheck_node_selector"></a> [startupapicheck\_node\_selector](#input\_startupapicheck\_node\_selector) | Node selector for startupapicheck | `map(string)` | `{}` | no |
 | <a name="input_startupapicheck_pod_labels"></a> [startupapicheck\_pod\_labels](#input\_startupapicheck\_pod\_labels) | Extra labels for startupapicheck pods | `map(string)` | `{}` | no |
