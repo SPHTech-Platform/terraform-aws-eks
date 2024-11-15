@@ -48,7 +48,7 @@ resource "helm_release" "karpenter" {
 
   depends_on = [
     module.karpenter[0].iam_role_arn,
-    helm_release.karpenter_crd,
+    helm_release.karpenter-crd,
   ]
 }
 
@@ -56,7 +56,7 @@ resource "helm_release" "karpenter" {
 ## UPDATING CRDS ##
 ###################
 
-resource "helm_release" "karpenter_crd" {
+resource "helm_release" "karpenter-crd" {
 
   namespace        = var.karpenter_crd_namespace
   create_namespace = true
