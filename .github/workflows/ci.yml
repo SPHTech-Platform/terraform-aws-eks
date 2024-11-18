@@ -2,6 +2,7 @@ name: terraform-ci
 on:
   pull_request:
 permissions:
+  id-token: write
   actions: read
   checks: read
   contents: read
@@ -9,6 +10,8 @@ permissions:
   security-events: write
 jobs:
   ci:
-    uses: SPHTech-Platform/reusable-workflows/.github/workflows/terraform.yaml@v2
+    uses: SPHTech-Platform/platform-reusable-workflow/.github/workflows/terraform.yaml@main
     with:
       upload_sarif: true
+      runner_label: platform-eng-ent-v2-dual
+    secrets: inherit

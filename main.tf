@@ -135,7 +135,6 @@ module "eks" {
       } : {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
-      pod_identity_association    = []
       service_account_role_arn    = module.ebs_csi_irsa_role[0].iam_role_arn
     }
     coredns = var.fargate_cluster ? {

@@ -12,9 +12,13 @@ repos:
           - "--config=mlc_config.json"
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.83.3
+    rev: v1.92.1
     hooks:
       - id: terraform_fmt
+      - id: terraform_providers_lock
+        args:
+          - --args=-platform=linux_amd64
+          - --args=-platform=darwin_amd64
       - id: terraform_validate
         args:
           - --hook-config=--retry-once-with-cleanup=true
@@ -33,7 +37,7 @@ repos:
           - "--args=--skip-check CKV_TF_1"
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.2.0
+    rev: v4.6.0
     hooks:
       # Git style
       - id: check-added-large-files
