@@ -3,7 +3,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "<= 5.75"
+      version = "5.76.0"
     }
     # tflint-ignore: terraform_unused_required_providers
     kubernetes = {
