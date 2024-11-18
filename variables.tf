@@ -355,7 +355,7 @@ variable "cloudwatch_log_group_tags" {
 variable "fargate_cluster" {
   description = "Whether to create eks cluster with fargate mode. If true, default node group also will be fargate, otherwise managed"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "fargate_profiles" {
@@ -628,7 +628,7 @@ variable "enable_pod_identity_for_karpenter" {
 variable "enable_pod_identity_for_eks_addons" {
   description = "Enable pod identity for eks addons, Note - Default is `false` because AWS Terraform Provider still DOESN'T Support Pod Identity Association for EKS Addons"
   type        = bool
-  default     = false
+  default     = true
 }
 
 ################################################################################

@@ -53,7 +53,7 @@ locals {
 
 module "eks_aws_auth" {
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
-  version = "~> 20.26.0"
+  version = "~> 20.29.0"
 
   create_aws_auth_configmap = var.create_aws_auth_configmap
   manage_aws_auth_configmap = var.migrate_aws_auth_to_access_entry ? true : var.manage_aws_auth_configmap

@@ -126,19 +126,13 @@ module "aws_vpc_cni_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 1.5.0"
+  version = "~> 1.6"
 
   name = "aws-vpc-cni-${var.cluster_ip_family}"
 
   attach_aws_vpc_cni_policy = true
   aws_vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
   aws_vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
-
-  # Pod Identity Associations
-  association_defaults = {
-    namespace       = "kube-system"
-    service_account = "aws-node"
-  }
 
   tags = var.tags
 }
@@ -147,7 +141,7 @@ module "aws_ebs_csi_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 1.5.0"
+  version = "~> 1.6"
 
   name = "aws-ebs-csi"
 
@@ -155,11 +149,6 @@ module "aws_ebs_csi_pod_identity" {
   aws_ebs_csi_kms_arns = [
     module.kms_ebs.key_arn,
   ]
-  # Pod Identity Associations
-  association_defaults = {
-    namespace       = "kube-system"
-    service_account = "ebs-csi-controller-sa"
-  }
 
   tags = var.tags
 }

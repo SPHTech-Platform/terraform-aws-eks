@@ -210,11 +210,11 @@ module "karpenter" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws_ebs_csi_pod_identity"></a> [aws\_ebs\_csi\_pod\_identity](#module\_aws\_ebs\_csi\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 1.5.0 |
-| <a name="module_aws_vpc_cni_pod_identity"></a> [aws\_vpc\_cni\_pod\_identity](#module\_aws\_vpc\_cni\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 1.5.0 |
+| <a name="module_aws_ebs_csi_pod_identity"></a> [aws\_ebs\_csi\_pod\_identity](#module\_aws\_ebs\_csi\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 1.6 |
+| <a name="module_aws_vpc_cni_pod_identity"></a> [aws\_vpc\_cni\_pod\_identity](#module\_aws\_vpc\_cni\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 1.6 |
 | <a name="module_ebs_csi_irsa_role"></a> [ebs\_csi\_irsa\_role](#module\_ebs\_csi\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.47 |
-| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 20.26.0 |
-| <a name="module_eks_aws_auth"></a> [eks\_aws\_auth](#module\_eks\_aws\_auth) | terraform-aws-modules/eks/aws//modules/aws-auth | ~> 20.26.0 |
+| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 20.29.0 |
+| <a name="module_eks_aws_auth"></a> [eks\_aws\_auth](#module\_eks\_aws\_auth) | terraform-aws-modules/eks/aws//modules/aws-auth | ~> 20.29.0 |
 | <a name="module_fargate_profiles"></a> [fargate\_profiles](#module\_fargate\_profiles) | ./modules/fargate_profile | n/a |
 | <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | ./modules/karpenter | n/a |
 | <a name="module_kms_ebs"></a> [kms\_ebs](#module\_kms\_ebs) | SPHTech-Platform/kms/aws | ~> 0.2.0 |
@@ -295,7 +295,7 @@ module "karpenter" {
 | <a name="input_eks_managed_node_groups"></a> [eks\_managed\_node\_groups](#input\_eks\_managed\_node\_groups) | Map of EKS managed node group definitions to create | `any` | `{}` | no |
 | <a name="input_enable_cluster_creator_admin_permissions"></a> [enable\_cluster\_creator\_admin\_permissions](#input\_enable\_cluster\_creator\_admin\_permissions) | Indicates whether or not to add the cluster creator (the identity used by Terraform) as an administrator via access entry | `bool` | `true` | no |
 | <a name="input_enable_cluster_windows_support"></a> [enable\_cluster\_windows\_support](#input\_enable\_cluster\_windows\_support) | Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth. | `bool` | `false` | no |
-| <a name="input_enable_pod_identity_for_eks_addons"></a> [enable\_pod\_identity\_for\_eks\_addons](#input\_enable\_pod\_identity\_for\_eks\_addons) | Enable pod identity for eks addons, Note - Default is `false` because AWS Terraform Provider still DOESN'T Support Pod Identity Association for EKS Addons | `bool` | `false` | no |
+| <a name="input_enable_pod_identity_for_eks_addons"></a> [enable\_pod\_identity\_for\_eks\_addons](#input\_enable\_pod\_identity\_for\_eks\_addons) | Enable pod identity for eks addons, Note - Default is `false` because AWS Terraform Provider still DOESN'T Support Pod Identity Association for EKS Addons | `bool` | `true` | no |
 | <a name="input_enable_pod_identity_for_karpenter"></a> [enable\_pod\_identity\_for\_karpenter](#input\_enable\_pod\_identity\_for\_karpenter) | Enable pod identity for karpenter | `bool` | `false` | no |
 | <a name="input_enable_v1_permissions_for_karpenter"></a> [enable\_v1\_permissions\_for\_karpenter](#input\_enable\_v1\_permissions\_for\_karpenter) | Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`) | `bool` | `true` | no |
 | <a name="input_fargate_cluster"></a> [fargate\_cluster](#input\_fargate\_cluster) | Whether to create eks cluster with fargate mode. If true, default node group also will be fargate, otherwise managed | `bool` | `false` | no |
