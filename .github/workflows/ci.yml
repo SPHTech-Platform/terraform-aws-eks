@@ -9,6 +9,16 @@ permissions:
   security-events: write
 jobs:
   ci:
+    steps:
+      # Add this step to clear the Terraform cache directory
+      - name: Clear Terraform Cache
+        run: rm -rf .terraform
+        # This ensures the cache directory is deleted before reinitializing Terraform
+
+      # Add this step to reinitialize Terraform with the -upgrade flag
+      - name: Initialize Terraform with upgrade
+        run: terraform init -upgrade
+        # This step ensures that all modules and providers are upgraded and reinitialized
     uses: SPHTech-Platform/reusable-workflows/.github/workflows/terraform.yaml@v2
     with:
       upload_sarif: true
