@@ -8,7 +8,7 @@ terraform {
     # tflint-ignore: terraform_unused_required_providers
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.33"
+      version = "2.33.0"
     }
     # tflint-ignore: terraform_unused_required_providers
     kubectl = {
@@ -18,7 +18,7 @@ terraform {
     # tflint-ignore: terraform_unused_required_providers
     helm = {
       source  = "hashicorp/helm"
-      version = ">= 2.16"
+      version = "2.16.0"
     }
   }
 }
