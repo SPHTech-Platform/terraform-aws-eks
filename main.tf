@@ -1,8 +1,78 @@
 locals {
-  addon_vpc_cni_pod_identity = {
-    most_recent                 = true
-    resolve_conflicts_on_update = "OVERWRITE"
+  addon_vpc_cni = {
+    fargate_pod_identity = {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      configuration_values = jsonencode({
+        env = {
+          # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
+          ENABLE_POD_ENI                    = "true"
+          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
+        }
+        init = {
+          env = {
+            DISABLE_TCP_EARLY_DEMUX = "true"
+          }
+        }
+      })
+      pod_identity_association = [{
+        role_arn        = module.aws_vpc_cni_pod_identity[0].iam_role_arn
+        service_account = "aws-node"
+      }]
+    }
+    fargate_irsa = {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      configuration_values = jsonencode({
+        env = {
+          # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
+          ENABLE_POD_ENI                    = "true"
+          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
+        }
+        init = {
+          env = {
+            DISABLE_TCP_EARLY_DEMUX = "true"
+          }
+        }
+      })
+      service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
+    }
+    nodegroup_irsa = {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      service_account_role_arn    = module.vpc_cni_irsa_role[0].iam_role_arn
+    }
+    nodegroup_pod_identity = {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      pod_identity_association = [{
+        role_arn        = module.aws_vpc_cni_pod_identity[0].iam_role_arn
+        service_account = "aws-node"
+      }]
+    }
   }
+
+  addon_vpc_cni_lookup = var.fargate_cluster && var.enable_pod_identity_for_eks_addons ? "fargate_pod_identity" : (
+    var.fargate_cluster ? "fargate_irsa" : (
+      var.enable_pod_identity_for_eks_addons ? "nodegroup_pod_identity" : "nodegroup_irsa"
+  ))
+
+  addon_aws_ebs_csi_driver = {
+    pod_identity = {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      pod_identity_association = [{
+        role_arn        = module.aws_ebs_csi_pod_identity[0].iam_role_arn
+        service_account = "ebs-csi-controller-sa"
+      }]
+    }
+    irsa = {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      service_account_role_arn    = module.ebs_csi_irsa_role[0].iam_role_arn
+    }
+  }
+  addon_aws_ebs_csi_driver_lookup = var.enable_pod_identity_for_eks_addons ? "pod_identity" : "irsa"
 }
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 #tfsec:ignore:aws-eks-no-public-cluster-access
@@ -10,7 +80,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.26.0"
+  version = "~> 20.29.0"
 
   cluster_name              = var.cluster_name
   cluster_version           = var.cluster_version
@@ -72,44 +142,8 @@ module "eks" {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
     }
-    vpc-cni = var.fargate_cluster && var.enable_pod_identity_for_eks_addons ? merge(local.addon_vpc_cni_pod_identity, {
-      configuration_values = jsonencode({
-        env = {
-          # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
-          ENABLE_POD_ENI                    = "true"
-          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
-        }
-        init = {
-          env = {
-            DISABLE_TCP_EARLY_DEMUX = "true"
-          }
-        }
-      })
-      }) : (var.fargate_cluster ? merge(local.addon_vpc_cni_pod_identity, {
-        service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
-        configuration_values = jsonencode({
-          env = {
-            # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
-            ENABLE_POD_ENI                    = "true"
-            POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
-          }
-          init = {
-            env = {
-              DISABLE_TCP_EARLY_DEMUX = "true"
-            }
-          }
-        })
-        }) : (var.enable_pod_identity_for_eks_addons ? local.addon_vpc_cni_pod_identity : merge(local.addon_vpc_cni_pod_identity, {
-          service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
-    })))
-    aws-ebs-csi-driver = var.enable_pod_identity_for_eks_addons ? {
-      most_recent                 = true
-      resolve_conflicts_on_update = "OVERWRITE"
-      } : {
-      most_recent                 = true
-      resolve_conflicts_on_update = "OVERWRITE"
-      service_account_role_arn    = module.ebs_csi_irsa_role[0].iam_role_arn
-    }
+    vpc-cni            = lookup(local.addon_vpc_cni, local.addon_vpc_cni_lookup, {})
+    aws-ebs-csi-driver = lookup(local.addon_aws_ebs_csi_driver, local.addon_aws_ebs_csi_driver_lookup, {})
     coredns = var.fargate_cluster ? {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
