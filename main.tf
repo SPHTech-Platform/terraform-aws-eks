@@ -72,7 +72,7 @@ locals {
       service_account_role_arn    = try(module.ebs_csi_irsa_role[0].iam_role_arn, null)
     }
   }
-  addon_aws_ebs_csi_drive_lookup = var.enable_pod_identity_for_eks_addons ? "pod_identity" : "irsa"
+  addon_aws_ebs_csi_driver_lookup = var.enable_pod_identity_for_eks_addons ? "pod_identity" : "irsa"
 }
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 #tfsec:ignore:aws-eks-no-public-cluster-access
@@ -143,7 +143,7 @@ module "eks" {
       resolve_conflicts_on_update = "OVERWRITE"
     }
     vpc-cni            = lookup(local.addon_vpc_cni, local.addon_vpc_cni_lookup, {})
-    aws-ebs-csi-driver = lookup(local.addon_aws_ebs_csi_driver, local.addon_aws_ebs_csi_drive_lookup, {})
+    aws-ebs-csi-driver = lookup(local.addon_aws_ebs_csi_driver, local.addon_aws_ebs_csi_driver_lookup, {})
     coredns = var.fargate_cluster ? {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
