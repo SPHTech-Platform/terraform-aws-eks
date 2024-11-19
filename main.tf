@@ -16,7 +16,7 @@ locals {
         }
       })
       pod_identity_association = [{
-        role_arn        = module.aws_vpc_cni_pod_identity[0].iam_role_arn
+        role_arn        = try(module.aws_vpc_cni_pod_identity[0].iam_role_arn, null)
         service_account = "aws-node"
       }]
     }
@@ -35,18 +35,18 @@ locals {
           }
         }
       })
-      service_account_role_arn = module.vpc_cni_irsa_role[0].iam_role_arn
+      service_account_role_arn = try(module.vpc_cni_irsa_role[0].iam_role_arn, null)
     }
     nodegroup_irsa = {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
-      service_account_role_arn    = module.vpc_cni_irsa_role[0].iam_role_arn
+      service_account_role_arn    = try(module.vpc_cni_irsa_role[0].iam_role_arn, null)
     }
     nodegroup_pod_identity = {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       pod_identity_association = [{
-        role_arn        = module.aws_vpc_cni_pod_identity[0].iam_role_arn
+        role_arn        = try(module.aws_vpc_cni_pod_identity[0].iam_role_arn, null)
         service_account = "aws-node"
       }]
     }
@@ -62,14 +62,14 @@ locals {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       pod_identity_association = [{
-        role_arn        = module.aws_ebs_csi_pod_identity[0].iam_role_arn
+        role_arn        = try(module.aws_ebs_csi_pod_identity[0].iam_role_arn, null)
         service_account = "ebs-csi-controller-sa"
       }]
     }
     irsa = {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
-      service_account_role_arn    = module.ebs_csi_irsa_role[0].iam_role_arn
+      service_account_role_arn    = try(module.ebs_csi_irsa_role[0].iam_role_arn, null)
     }
   }
   addon_aws_ebs_csi_driver_lookup = var.enable_pod_identity_for_eks_addons ? "pod_identity" : "irsa"
