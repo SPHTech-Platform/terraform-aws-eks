@@ -67,7 +67,7 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 # IRSA for addon components
 ############################
 module "vpc_cni_irsa_role" {
-  count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
+  count = !var.remove_addons_irsa_roles ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.47"
@@ -90,7 +90,7 @@ module "vpc_cni_irsa_role" {
 }
 
 module "ebs_csi_irsa_role" {
-  count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
+  count = !var.remove_addons_irsa_roles ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.47"
@@ -111,7 +111,7 @@ module "ebs_csi_irsa_role" {
 }
 
 resource "aws_iam_role_policy" "ebs_csi_kms" {
-  count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
+  count = !var.remove_addons_irsa_roles ? 1 : 0
 
   name_prefix = "kms"
   role        = module.ebs_csi_irsa_role[0].iam_role_name

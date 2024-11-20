@@ -655,3 +655,9 @@ variable "migrate_aws_auth_to_access_entry" {
   type        = bool
   default     = false
 }
+
+variable "remove_addons_irsa_roles" {
+  description = "Remove IRSA roles for EKS Addons"
+  type        = bool
+  default     = false
+}
