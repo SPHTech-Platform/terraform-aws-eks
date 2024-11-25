@@ -576,10 +576,10 @@ variable "karpenter_default_subnet_selector_tags" {
   }
 }
 
-variable "additional_karpenter_security_group_ids" {
-  description = "Additional security group IDs to add to the Karpenter node groups"
-  type        = list(string)
-  default     = []
+variable "additional_karpenter_security_group_selector_tags" {
+  description = "Additional security group tags to add to the Karpenter node groups"
+  type        = map(string)
+  default     = {}
 }
 
 variable "karpenter_pod_resources" {
