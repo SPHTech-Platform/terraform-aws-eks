@@ -21,6 +21,9 @@ locals {
     }
   ] : []
 
+  node_security_group_tags = merge({
+    "karpenter.sh/discovery" = var.cluster_name
+  }, var.node_security_group_tags)
 }
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 #tfsec:ignore:aws-eks-no-public-cluster-access
@@ -78,6 +81,7 @@ module "eks" {
     }
   }, var.node_security_group_additional_rules)
   node_security_group_enable_recommended_rules = var.node_security_group_enable_recommended_rules
+  node_security_group_tags                     = local.node_security_group_tags
 
   create_kms_key = false # Created in kms.tf
   cluster_encryption_config = {
