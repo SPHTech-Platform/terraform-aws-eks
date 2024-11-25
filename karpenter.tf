@@ -12,10 +12,11 @@ locals {
         }
       ]
       karpenter_node_role = aws_iam_role.workers.name
-      karpenter_security_group_selector_maps = flatten(concat([{
-        "id" = module.eks.cluster_primary_security_group_id
-        }, local.additional_karpenter_security_group_id_maps
-      ]))
+      karpenter_security_group_selector_maps = [{
+        tags = merge({
+          "karpenter.sh/discovery" = module.eks.cluster_name
+        }, var.additional_karpenter_security_group_selector_tags)
+      }]
       karpenter_node_metadata_options = {
         httpEndpoint            = "enabled"
         httpProtocolIPv6        = var.cluster_ip_family != "ipv6" ? "disabled" : "enabled"
@@ -53,12 +54,6 @@ locals {
       ]
     },
   ])
-
-  additional_karpenter_security_group_id_maps = [
-    for val in var.additional_karpenter_security_group_ids : {
-      "id" = val
-    }
-  ]
 
   # Kaprenter Upgrade
   karpenter_upgrade_nodeclasses = concat([
