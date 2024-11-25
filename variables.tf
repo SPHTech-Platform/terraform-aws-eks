@@ -195,6 +195,12 @@ variable "create_node_security_group" {
   default     = true
 }
 
+variable "node_security_group_tags" {
+  description = "A map of additional tags to add to the node security group created"
+  type        = map(string)
+  default     = {}
+}
+
 variable "worker_security_group_name" {
   description = "Worker security group name"
   type        = string
