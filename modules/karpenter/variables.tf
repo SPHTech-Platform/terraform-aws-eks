@@ -1,12 +1,6 @@
 ##################
 # Karpenter CRDs #
 ##################
-variable "karpenter_crd_helm_install" {
-  description = "Install Karpenter CRDs from Helm"
-  type        = bool
-  default     = true
-}
-
 variable "karpenter_crd_namespace" {
   description = "Namespace to deploy karpenter"
   type        = string

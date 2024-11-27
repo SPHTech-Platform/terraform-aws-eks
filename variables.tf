@@ -9,11 +9,11 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.30"
+  default     = "1.31"
 
   validation {
-    condition     = try(tonumber(var.cluster_version) < 1.31, false)
-    error_message = "EKS Cluster Version 1.31 is not supported by this module. Please use a version less than 1.31"
+    condition     = try(tonumber(var.cluster_version) < 1.32, false)
+    error_message = "EKS Cluster Version 1.32 is not supported by this module. Please use a version less than 1.32"
   }
 }
 
@@ -66,55 +66,6 @@ variable "workers_iam_boundary" {
 variable "iam_role_additional_policies" {
   description = "Additional policies to be added to the IAM role"
   type        = set(string)
-  default     = []
-}
-
-#######################
-# Cluster RBAC (AWS Auth)
-#######################
-
-# For Self managed nodes groups set the create_aws_auth to true
-variable "create_aws_auth_configmap" {
-  description = "Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap`"
-  type        = bool
-  default     = false
-}
-
-variable "manage_aws_auth_configmap" {
-  description = "Determines whether to manage the contents of the aws-auth configmap. NOTE - make it `true` when `authentication_mode = CONFIG_MAP`"
-  type        = bool
-  default     = false
-}
-
-variable "enable_cluster_windows_support" {
-  description = "Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth."
-  type        = bool
-  default     = false
-}
-
-variable "role_mapping" {
-  description = "List of IAM roles to give access to the EKS cluster"
-  type = list(object({
-    rolearn  = string
-    username = string
-    groups   = list(string)
-  }))
-  default = []
-}
-
-variable "user_mapping" {
-  description = "List of IAM Users to give access to the EKS Cluster"
-  type = list(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-  default = []
-}
-
-variable "aws_auth_fargate_profile_pod_execution_role_arns" {
-  description = "List of Fargate profile pod execution role ARNs to add to the aws-auth configmap"
-  type        = list(string)
   default     = []
 }
 
@@ -300,6 +251,12 @@ variable "default_group_node_labels" {
 
 variable "only_critical_addons_enabled" {
   description = "Enabling this option will taint default node group with CriticalAddonsOnly=true:NoSchedule taint. Changing this forces a new resource to be created."
+  type        = bool
+  default     = false
+}
+
+variable "enable_cluster_windows_support" {
+  description = "Enable Windows support for the cluster"
   type        = bool
   default     = false
 }
@@ -556,12 +513,6 @@ variable "create_fargate_logging_policy_for_karpenter" {
   default     = false
 }
 
-variable "karpenter_crd_helm_install" {
-  description = "Install Karpenter CRDs from Helm, Note - Set to `false` if the Karpenter Deployed by Module Version <= 0.19.x"
-  type        = bool
-  default     = true
-}
-
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
@@ -651,13 +602,4 @@ variable "enable_cluster_creator_admin_permissions" {
   description = "Indicates whether or not to add the cluster creator (the identity used by Terraform) as an administrator via access entry"
   type        = bool
   default     = true
-}
-
-######################################################################
-## Migrating existing aws-auth ConfigMap entries to access entries
-######################################################################
-variable "migrate_aws_auth_to_access_entry" {
-  description = "Migrate existing aws-auth ConfigMap entries to access entries, Note - Set to `true` when you need to change authentication mode from `CONFIG_MAP` to `API_AND_CONFIG_MAP`"
-  type        = bool
-  default     = false
 }
