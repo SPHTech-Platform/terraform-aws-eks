@@ -9,11 +9,11 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.30"
+  default     = "1.31"
 
   validation {
-    condition     = try(tonumber(var.cluster_version) < 1.31, false)
-    error_message = "EKS Cluster Version 1.31 is not supported by this module. Please use a version less than 1.31"
+    condition     = try(tonumber(var.cluster_version) < 1.32, false)
+    error_message = "EKS Cluster Version 1.32 is not supported by this module. Please use a version less than 1.32"
   }
 }
 
@@ -556,22 +556,16 @@ variable "create_fargate_logging_policy_for_karpenter" {
   default     = false
 }
 
-variable "karpenter_crd_helm_install" {
-  description = "Install Karpenter CRDs from Helm, Note - Set to `false` if the Karpenter Deployed by Module Version <= 0.19.x"
-  type        = bool
-  default     = true
-}
-
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.0.6"
+  default     = "1.0.8"
 }
 
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "1.0.6"
+  default     = "1.0.8"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
@@ -651,13 +645,4 @@ variable "enable_cluster_creator_admin_permissions" {
   description = "Indicates whether or not to add the cluster creator (the identity used by Terraform) as an administrator via access entry"
   type        = bool
   default     = true
-}
-
-######################################################################
-## Migrating existing aws-auth ConfigMap entries to access entries
-######################################################################
-variable "migrate_aws_auth_to_access_entry" {
-  description = "Migrate existing aws-auth ConfigMap entries to access entries, Note - Set to `true` when you need to change authentication mode from `CONFIG_MAP` to `API_AND_CONFIG_MAP`"
-  type        = bool
-  default     = false
 }
