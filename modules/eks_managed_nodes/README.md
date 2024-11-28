@@ -16,7 +16,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks_managed_node_group"></a> [eks\_managed\_node\_group](#module\_eks\_managed\_node\_group) | terraform-aws-modules/eks/aws//modules/eks-managed-node-group | ~> 20.26.0 |
+| <a name="module_eks_managed_node_group"></a> [eks\_managed\_node\_group](#module\_eks\_managed\_node\_group) | terraform-aws-modules/eks/aws//modules/eks-managed-node-group | ~> 20.29.0 |
 
 ## Resources
 

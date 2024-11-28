@@ -52,17 +52,14 @@ locals {
 }
 
 module "eks_aws_auth" {
+  count = var.authentication_mode != "API" ? 1 : 0
+
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
   version = "~> 20.29.0"
 
   create_aws_auth_configmap = var.create_aws_auth_configmap
-  manage_aws_auth_configmap = var.migrate_aws_auth_to_access_entry ? true : var.manage_aws_auth_configmap
-  aws_auth_roles            = var.migrate_aws_auth_to_access_entry || var.authentication_mode == "CONFIG_MAP" ? local.aws_auth_roles : var.role_mapping
+  manage_aws_auth_configmap = var.manage_aws_auth_configmap
+  aws_auth_roles            = local.aws_auth_roles
   aws_auth_users            = var.user_mapping
   aws_auth_accounts         = []
-}
-
-moved {
-  from = module.eks.kubernetes_config_map_v1_data.aws_auth[0]
-  to   = module.eks_aws_auth.kubernetes_config_map_v1_data.aws_auth[0]
 }

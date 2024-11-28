@@ -88,7 +88,7 @@ module "eks" {
 
   cluster_name              = var.cluster_name
   cluster_version           = var.cluster_version
-  authentication_mode       = var.migrate_aws_auth_to_access_entry ? "API_AND_CONFIG_MAP" : var.authentication_mode
+  authentication_mode       = var.authentication_mode
   cluster_enabled_log_types = var.cluster_enabled_log_types
 
   cluster_endpoint_private_access      = var.cluster_endpoint_private_access

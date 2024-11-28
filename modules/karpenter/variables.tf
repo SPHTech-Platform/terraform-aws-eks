@@ -1,12 +1,6 @@
 ##################
 # Karpenter CRDs #
 ##################
-variable "karpenter_crd_helm_install" {
-  description = "Install Karpenter CRDs from Helm"
-  type        = bool
-  default     = true
-}
-
 variable "karpenter_crd_namespace" {
   description = "Namespace to deploy karpenter"
   type        = string
@@ -34,7 +28,7 @@ variable "karpenter_crd_chart_repository" {
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.0.6"
+  default     = "1.0.8"
 }
 
 ###############
@@ -67,7 +61,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.0.6"
+  default     = "1.0.8"
 }
 
 variable "karpenter_nodepools" {
