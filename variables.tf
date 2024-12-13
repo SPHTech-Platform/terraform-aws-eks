@@ -423,16 +423,18 @@ variable "karpenter_nodepools" {
     )
     karpenter_nodepool_disruption = object({
       consolidation_policy = string
-      consolidate_after    = optional(string)
+      consolidate_after    = string
       expire_after         = string
     })
     karpenter_nodepool_disruption_budgets = list(map(any))
     karpenter_nodepool_weight             = number
   }))
   default = [{
-    nodepool_name                     = "default"
-    nodeclass_name                    = "default"
-    karpenter_nodepool_node_labels    = {}
+    nodepool_name  = "default"
+    nodeclass_name = "default"
+    karpenter_nodepool_node_labels = {
+      "bottlerocket.aws/updater-interface-version" = "2.0.0"
+    }
     karpenter_nodepool_annotations    = {}
     karpenter_nodepool_node_taints    = []
     karpenter_nodepool_startup_taints = []
@@ -467,9 +469,9 @@ variable "karpenter_nodepools" {
       }
     ]
     karpenter_nodepool_disruption = {
-      consolidation_policy = "WhenUnderutilized" # WhenUnderutilized or WhenEmpty
-      # consolidate_after    = "10m"               # Only used if consolidation_policy is WhenEmpty
-      expire_after = "168h" # 7d | 168h | 1w
+      consolidation_policy = "WhenEmptyOrUnderutilized" # WhenEmptyOrUnderutilized or WhenEmpty
+      consolidate_after    = "10m"
+      expire_after         = "168h" # 7d | 168h | 1w
     }
     karpenter_nodepool_disruption_budgets = [{
       nodes = "10%"
@@ -487,7 +489,6 @@ variable "karpenter_nodeclasses" {
     karpenter_ami_selector_maps            = list(map(any))
     karpenter_node_role                    = string
     karpenter_node_tags_map                = map(string)
-    karpenter_ami_family                   = string
     karpenter_node_user_data               = string
     karpenter_node_metadata_options        = map(any)
     karpenter_block_device_mapping = list(object({
