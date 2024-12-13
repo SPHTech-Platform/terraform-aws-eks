@@ -23,13 +23,14 @@ locals {
         httpPutResponseHopLimit = 1
         httpTokens              = "required"
       }
-      karpenter_ami_selector_maps = []
-      karpenter_node_user_data    = ""
+      karpenter_ami_selector_maps = [{
+        "alias" = "bottlerocket@latest"
+      }]
+      karpenter_node_user_data = ""
       karpenter_node_tags_map = {
         "karpenter.sh/discovery" = module.eks.cluster_name,
         "eks:cluster-name"       = module.eks.cluster_name,
       }
-      karpenter_ami_family = "Bottlerocket"
       karpenter_block_device_mapping = [
         {
           #karpenter_root_volume_size
