@@ -667,3 +667,9 @@ variable "remove_addons_irsa_roles" {
   type        = bool
   default     = false
 }
+
+variable "create_fargate_node_security_group_policy" {
+  description = "Create Fargate Node Security Group Policy"
+  type        = bool
+  default     = false
+}
