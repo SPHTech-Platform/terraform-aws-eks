@@ -673,3 +673,9 @@ variable "create_fargate_node_security_group_policy" {
   type        = bool
   default     = false
 }
+
+variable "create_fargate_node_security_group_policy_for_karpenter" {
+  description = "Create Fargate Node Security Group Policy"
+  type        = bool
+  default     = false
+}
