@@ -509,7 +509,6 @@ variable "karpenter_nodeclasses" {
     karpenter_ami_selector_maps            = list(map(any))
     karpenter_node_role                    = string
     karpenter_node_tags_map                = map(string)
-    karpenter_ami_family                   = string
     karpenter_node_user_data               = string
     karpenter_node_metadata_options        = map(any)
     karpenter_block_device_mapping = list(object({
@@ -626,9 +625,9 @@ variable "enable_pod_identity_for_karpenter" {
 }
 
 variable "enable_pod_identity_for_eks_addons" {
-  description = "Enable pod identity for eks addons, Note - Default is `false` because AWS Terraform Provider still DOESN'T Support Pod Identity Association for EKS Addons"
+  description = "Enable pod identity for eks addons"
   type        = bool
-  default     = true
+  default     = false
 }
 
 ################################################################################
