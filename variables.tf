@@ -560,6 +560,12 @@ variable "additional_karpenter_security_group_selector_tags" {
   default     = {}
 }
 
+variable "karpenter_ephemeral_volume_size" {
+  description = "Karpenter Ephemeral Volume Size"
+  type        = string
+  default     = "50Gi"
+}
+
 variable "karpenter_pod_resources" {
   description = "Karpenter Pod Resource"
   type = object({
