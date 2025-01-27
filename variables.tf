@@ -589,3 +589,9 @@ variable "karpenter_upgrade" {
   type        = bool
   default     = false
 }
+
+variable "remove_essential_node_group" {
+  description = "Remove Essential Node Group"
+  type        = bool
+  default     = false
+}

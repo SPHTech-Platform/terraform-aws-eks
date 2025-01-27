@@ -93,7 +93,7 @@ data "aws_arn" "cluster" {
 module "node_groups" {
   source = "./modules/eks_managed_nodes"
 
-  count = !var.fargate_cluster ? 1 : 0
+  count = !var.remove_essential_node_group ? 1 : 0
 
   cluster_name    = split("/", data.aws_arn.cluster.resource)[1]
   cluster_version = module.eks.cluster_version
