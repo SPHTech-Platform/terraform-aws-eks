@@ -45,7 +45,7 @@ locals {
           "deviceName" = "/dev/xvdb",
           "ebs" = {
             "encrypted"           = true
-            "volumeSize"          = "50Gi"
+            "volumeSize"          = var.karpenter_ephemeral_volume_size
             "volumeType"          = "gp3"
             "deleteOnTermination" = true
           }
