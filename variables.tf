@@ -581,7 +581,7 @@ variable "additional_karpenter_security_group_selector_tags" {
   default     = {}
 }
 
-variable "var.karpenter_ephemeral_volume_size" {
+variable "karpenter_ephemeral_volume_size" {
   description = "Ephemeral volume size for Karpenter node groups"
   type        = string
   default     = "50Gi"
