@@ -671,11 +671,17 @@ variable "remove_addons_irsa_roles" {
 variable "create_fargate_node_security_group_policy" {
   description = "Create Fargate Node Security Group Policy"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "create_fargate_node_security_group_policy_for_karpenter" {
   description = "Create Fargate Node Security Group Policy"
   type        = bool
-  default     = false
+  default     = true
+}
+
+variable "karpenter_ephemeral_volume_size" {
+  description = "Ephemeral volume size for Karpenter"
+  type        = string
+  default     = "50Gi"
 }
