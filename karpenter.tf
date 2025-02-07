@@ -11,12 +11,8 @@ locals {
         tags = var.karpenter_default_subnet_selector_tags,
         }
       ]
-      karpenter_node_role = aws_iam_role.workers.name
-      karpenter_security_group_selector_maps = [{
-        tags = merge({
-          "karpenter.sh/discovery" = module.eks.cluster_name
-        }, var.additional_karpenter_security_group_selector_tags)
-      }]
+      karpenter_node_role                    = aws_iam_role.workers.name
+      karpenter_security_group_selector_maps = var.karpenter_security_group_selector_terms_type == "ids" ? local.additional_karpenter_security_group_ids : local.additional_karpenter_security_group_tags
       karpenter_node_metadata_options = {
         httpEndpoint            = "enabled"
         httpProtocolIPv6        = var.cluster_ip_family != "ipv6" ? "disabled" : "enabled"
@@ -69,6 +65,24 @@ locals {
         nodeclass_name = "${nodeclass.nodeclass_name}-upgrade"
     })]
   ]), local.karpenter_nodepools)
+
+  # Kaprenter Security Groups Selector
+  additional_karpenter_security_group_ids = flatten(concat([{
+    "id" = module.eks.cluster_primary_security_group_id
+    }, local.additional_karpenter_security_group_id_maps
+  ]))
+
+  additional_karpenter_security_group_id_maps = [
+    for val in var.additional_karpenter_security_group_selector_ids : {
+      "id" = val
+    }
+  ]
+
+  additional_karpenter_security_group_tags = [{
+    tags = merge({
+      "karpenter.sh/discovery" = module.eks.cluster_name
+    }, var.additional_karpenter_security_group_selector_tags)
+  }]
 }
 
 module "karpenter" {

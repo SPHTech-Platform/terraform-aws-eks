@@ -588,6 +588,23 @@ variable "additional_karpenter_security_group_selector_tags" {
   default     = {}
 }
 
+variable "additional_karpenter_security_group_selector_ids" {
+  description = "Additional security group IDs to add to the Karpenter node groups"
+  type        = list(string)
+  default     = []
+}
+
+variable "karpenter_security_group_selector_terms_type" {
+  description = "Type of terms to use in the security group selector"
+  type        = string
+  default     = "tags"
+
+  validation {
+    condition     = contains(["tags", "ids"], var.karpenter_security_group_selector_terms_type)
+    error_message = "Invalid security group selector terms type. Valid values are `tags` or `ids`"
+  }
+}
+
 variable "karpenter_pod_resources" {
   description = "Karpenter Pod Resource"
   type = object({
