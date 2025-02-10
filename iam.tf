@@ -126,7 +126,7 @@ module "aws_vpc_cni_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 1.7.0"
+  version = "~> 1.10"
 
   name = "aws-vpc-cni-${var.cluster_ip_family}"
 
@@ -141,7 +141,7 @@ module "aws_ebs_csi_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 1.7.0"
+  version = "~> 1.10"
 
   name = "aws-ebs-csi"
 
