@@ -55,7 +55,7 @@ module "eks_aws_auth" {
   count = var.authentication_mode != "API" ? 1 : 0
 
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
-  version = "~> 20.29.0"
+  version = "~> 20.33.1"
 
   create_aws_auth_configmap = var.create_aws_auth_configmap
   manage_aws_auth_configmap = var.manage_aws_auth_configmap

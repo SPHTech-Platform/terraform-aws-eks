@@ -33,6 +33,12 @@ variable "authentication_mode" {
     error_message = "Invalid authentication mode. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP`"
   }
 }
+
+variable "cluster_compute_config" {
+  description = "Configuration block for the cluster compute configuration"
+  type        = any
+  default     = {}
+}
 #######################
 # Cluster IAM Role
 #######################
@@ -558,13 +564,13 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.0.8"
+  default     = "1.2.1"
 }
 
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "1.0.8"
+  default     = "1.2.1"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
@@ -576,9 +582,26 @@ variable "karpenter_default_subnet_selector_tags" {
 }
 
 variable "additional_karpenter_security_group_selector_tags" {
-  description = "Additional security group tags to add to the Karpenter node groups"
+  description = "Additional security group tags to add to the Karpenter node groups. Pass values if `karpenter_security_group_selector_terms_type = tags`"
   type        = map(string)
   default     = {}
+}
+
+variable "additional_karpenter_security_group_selector_ids" {
+  description = "Additional security group IDs to add to the Karpenter node groups, Pass values if `karpenter_security_group_selector_terms_type = ids`"
+  type        = list(string)
+  default     = []
+}
+
+variable "karpenter_security_group_selector_terms_type" {
+  description = "Type of terms to use in the security group selector"
+  type        = string
+  default     = "tags"
+
+  validation {
+    condition     = contains(["tags", "ids"], var.karpenter_security_group_selector_terms_type)
+    error_message = "Invalid security group selector terms type. Valid values are `tags` or `ids`"
+  }
 }
 
 variable "karpenter_ephemeral_volume_size" {
