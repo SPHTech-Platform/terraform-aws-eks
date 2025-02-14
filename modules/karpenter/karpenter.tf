@@ -64,6 +64,8 @@ resource "helm_release" "karpenter" {
         limits:
           cpu: ${var.karpenter_pod_resources.limits.cpu}
           memory: ${var.karpenter_pod_resources.limits.memory}
+    serviceMonitor:
+      enabled: ${var.enable_service_monitoring}
     EOT
   ]
 

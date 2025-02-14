@@ -6,7 +6,6 @@
 - Migration for v0.31.x
 - Switching from Cluster Autoscaler Nodegroups to pure Karpenter
 
-
 ### Fresh Karpenter Cluster
 
 ### Migration from Karpenter v0.31.x
@@ -63,6 +62,7 @@
 | <a name="input_create_pod_identity_association"></a> [create\_pod\_identity\_association](#input\_create\_pod\_identity\_association) | Determines whether to create pod identity association | `bool` | `false` | no |
 | <a name="input_enable_irsa"></a> [enable\_irsa](#input\_enable\_irsa) | Determines whether to enable support for IAM role for service accounts | `bool` | `true` | no |
 | <a name="input_enable_pod_identity"></a> [enable\_pod\_identity](#input\_enable\_pod\_identity) | Determines whether to enable support for EKS pod identity, DON'T `enable` if you are using FARGATE profile for Karpenter | `bool` | `false` | no |
+| <a name="input_enable_service_monitoring"></a> [enable\_service\_monitoring](#input\_enable\_service\_monitoring) | Allow scraping of Karpenter metrics | `bool` | `false` | no |
 | <a name="input_enable_v1_permissions"></a> [enable\_v1\_permissions](#input\_enable\_v1\_permissions) | Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`) | `bool` | `true` | no |
 | <a name="input_karpenter_chart_name"></a> [karpenter\_chart\_name](#input\_karpenter\_chart\_name) | Chart name for Karpenter | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_chart_repository"></a> [karpenter\_chart\_repository](#input\_karpenter\_chart\_repository) | Chart repository for Karpenter | `string` | `"oci://public.ecr.aws/karpenter"` | no |
