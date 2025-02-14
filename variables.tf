@@ -659,6 +659,12 @@ variable "enable_pod_identity_for_eks_addons" {
   default     = false
 }
 
+variable "enable_karpenter_service_monitoring" {
+  description = "Allow scraping of Karpenter metrics"
+  type        = bool
+  default     = false
+}
+
 ################################################################################
 # Access Entry
 ################################################################################

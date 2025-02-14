@@ -266,6 +266,12 @@ variable "karpenter_pod_resources" {
   }
 }
 
+variable "enable_service_monitoring" {
+  description = "Allow scraping of Karpenter metrics"
+  type        = bool
+  default     = false
+}
+
 ################################################################################
 # IAM Role for Service Account (IRSA)
 ################################################################################

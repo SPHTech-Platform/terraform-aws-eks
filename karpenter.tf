@@ -120,6 +120,9 @@ module "karpenter" {
   ## AWS Fargate aren’t supported EKS Pod Identities ##
   enable_pod_identity             = !var.fargate_cluster ? var.enable_pod_identity_for_karpenter : false
   create_pod_identity_association = !var.fargate_cluster && var.enable_pod_identity_for_karpenter ? true : false
+
+  # Metrics scraping
+  enable_service_monitoring = var.enable_karpenter_service_monitoring
 }
 
 resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter" {
