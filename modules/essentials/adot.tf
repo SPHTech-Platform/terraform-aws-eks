@@ -3,6 +3,8 @@ data "aws_eks_cluster" "cluster" {
 }
 
 data "aws_eks_addon_version" "latest_adot" {
+  count = length(var.adot_addon_version) == 0 ? 1 : 0
+
   addon_name         = "adot"
   kubernetes_version = data.aws_eks_cluster.cluster.version
   most_recent        = true
@@ -11,7 +13,7 @@ data "aws_eks_addon_version" "latest_adot" {
 resource "aws_eks_addon" "adot_operator" {
   cluster_name  = var.cluster_name
   addon_name    = "adot"
-  addon_version = try(var.adot_addon_version, data.aws_eks_addon_version.latest_adot.version)
+  addon_version = try(var.adot_addon_version, data.aws_eks_addon_version.latest_adot[0].version)
 
   resolve_conflicts_on_create = var.resolve_conflicts_on_create
   resolve_conflicts_on_update = var.resolve_conflicts_on_update
