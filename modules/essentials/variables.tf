@@ -1505,6 +1505,43 @@ variable "fluent_bit_overwrite_helm_values" {
   default     = ""
 }
 
+variable "fluent_bit_liveness_probe" {
+  description = "Liveness probe for fluent-bit"
+  type        = map(any)
+  default = {
+    httpGet = {
+      path = "/"
+      port = "2020"
+    }
+  }
+}
+
+variable "fluent_bit_readiness_probe" {
+  description = "Readiness probe for fluent-bit"
+  type        = map(any)
+  default = {
+    httpGet = {
+      path = "/api/v1/health"
+      port = "2020"
+    }
+  }
+}
+
+variable "fluent_bit_resources" {
+  description = "Resources for fluent-bit"
+  type        = map(any)
+  default = {
+    requests = {
+      cpu    = "100m"
+      memory = "128Mi"
+    }
+    limits = {
+      cpu    = "100m"
+      memory = "128Mi"
+    }
+  }
+}
+
 variable "ip_dual_stack_enabled" {
   description = "Enable essentials to support EKS dual stack cluster"
   type        = bool
