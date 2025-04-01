@@ -9,6 +9,23 @@ locals {
       ]
     }
   )
+  affinity = {
+    nodeAffinity = {
+      requiredDuringSchedulingIgnoredDuringExecution = {
+        nodeSelectorTerms = [
+          {
+            matchExpressions = [
+              {
+                key      = "eks.amazonaws.com/compute-type"
+                operator = "NotIn"
+                values   = ["fargate"]
+              },
+            ]
+          },
+        ]
+      }
+    }
+  }
 
   default_helm_values = var.fluent_bit_overwrite_helm_values != null && var.fluent_bit_overwrite_helm_values != "" ? var.fluent_bit_overwrite_helm_values : templatefile("${path.module}/templates/fluent_bit.yaml", {
     log_group_name       = local.log_group_name,
@@ -19,6 +36,7 @@ locals {
     readiness_probe      = jsonencode(var.fluent_bit_readiness_probe),
     resources            = jsonencode(var.fluent_bit_resources),
     tolerations          = jsonencode(var.fluent_bit_tolerations),
+    affinity             = jsonencode(local.affinity),
   })
 
   fluent_bit_helm_config = merge(
