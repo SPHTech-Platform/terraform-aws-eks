@@ -1553,6 +1553,12 @@ variable "fluent_bit_tolerations" {
   ]
 }
 
+variable "fluent_bit_log_group_retention" {
+  description = "Number of days to retain the cloudwatch logs"
+  type        = number
+  default     = 30
+}
+
 variable "ip_dual_stack_enabled" {
   description = "Enable essentials to support EKS dual stack cluster"
   type        = bool

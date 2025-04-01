@@ -19,6 +19,7 @@ locals {
     readiness_probe      = jsonencode(var.fluent_bit_readiness_probe),
     resources            = jsonencode(var.fluent_bit_resources),
     tolerations          = jsonencode(var.fluent_bit_tolerations),
+    log_retention_days   = jsonencode(var.fluent_bit_log_group_retention),
   })
 
   fluent_bit_helm_config = merge(

@@ -102,6 +102,7 @@ config:
         log_stream_template $kubernetes['namespace_name'].$kubernetes['pod_name'].$kubernetes['container_name']
         log_stream_prefix fluentbit-
         auto_create_group false
+        log_retention_days ${log_retention_days}
 
 #  extraFiles: {}
 #     upstream.conf: |
