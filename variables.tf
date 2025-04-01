@@ -75,6 +75,12 @@ variable "iam_role_additional_policies" {
   default     = []
 }
 
+variable "workers_additional_assume_policy" {
+  description = "Additional Worker role Assume Policy JSON document"
+  type        = string
+  default     = ""
+}
+
 #######################
 # Cluster RBAC (AWS Auth)
 #######################
