@@ -1511,7 +1511,7 @@ variable "fluent_bit_liveness_probe" {
   default = {
     httpGet = {
       path = "/"
-      port = "2020"
+      port = 2020
     }
   }
 }
@@ -1522,7 +1522,7 @@ variable "fluent_bit_readiness_probe" {
   default = {
     httpGet = {
       path = "/api/v1/health"
-      port = "2020"
+      port = 2020
     }
   }
 }
