@@ -38,6 +38,8 @@ readinessProbe: ${readiness_probe}
 
 resources: ${resources}
 
+affinity: ${affinity}
+
 tolerations: ${tolerations}
 
 flush: 1
