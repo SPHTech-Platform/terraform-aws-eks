@@ -38,6 +38,8 @@ readinessProbe: ${readiness_probe}
 
 resources: ${resources}
 
+tolerations: ${tolerations}
+
 flush: 1
 
 metricsPort: 2020

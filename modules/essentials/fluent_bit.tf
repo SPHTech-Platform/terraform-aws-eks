@@ -18,6 +18,7 @@ locals {
     liveness_probe       = jsonencode(var.fluent_bit_liveness_probe),
     readiness_probe      = jsonencode(var.fluent_bit_readiness_probe),
     resources            = jsonencode(var.fluent_bit_resources),
+    tolerations          = jsonencode(var.fluent_bit_tolerations),
   })
 
   fluent_bit_helm_config = merge(

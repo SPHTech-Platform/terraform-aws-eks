@@ -1542,6 +1542,17 @@ variable "fluent_bit_resources" {
   }
 }
 
+variable "fluent_bit_tolerations" {
+  description = "Tolerations for fluent-bit"
+  type        = list(any)
+  default = [
+    {
+      operator = "Exists"
+      effect   = "NoSchedule"
+    }
+  ]
+}
+
 variable "ip_dual_stack_enabled" {
   description = "Enable essentials to support EKS dual stack cluster"
   type        = bool
