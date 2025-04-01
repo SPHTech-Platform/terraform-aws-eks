@@ -32,23 +32,11 @@ service:
 #   prometheus.io/port: "2020"
 #   prometheus.io/scrape: "true"
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
+livenessProbe: ${liveness_probe}
 
-readinessProbe:
-  httpGet:
-    path: /api/v1/health
-    port: http
+readinessProbe: ${readiness_probe}
 
-resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+resources: ${resources}
 
 flush: 1
 
@@ -70,7 +58,6 @@ config:
         Time_Keep Off
         Time_Key time
         Time_Format %d/%b/%Y:%H:%M:%S %z
-
 
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |

@@ -15,13 +15,15 @@ locals {
     service_account_name = local.service_account_name,
     image_repository     = var.fluent_bit_image_repository,
     image_tag            = var.fluent_bit_image_tag,
+    liveness_probe       = jsonencode(var.fluent_bit_liveness_probe),
+    readiness_probe      = jsonencode(var.fluent_bit_readiness_probe),
+    resources            = jsonencode(var.fluent_bit_resources),
   })
 
   fluent_bit_helm_config = merge(
     local.default_helm_config,
     var.fluent_bit_helm_config
   )
-
 }
 
 #tfsec:ignore:aws-cloudwatch-log-group-customer-key Not using CMK to save cost
