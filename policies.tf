@@ -41,10 +41,10 @@ data "aws_iam_policy_document" "kms_ebs" {
 
     principals {
       type = "AWS"
-      identifiers = flatten([
-        var.autoscaling_mode != "karpenter" ? local.asg_role : "", # required for the ASG to manage encrypted volumes for nodes
-        aws_iam_role.cluster.arn,                                  # required for the cluster / persistentvolume-controller to create encrypted PVCs
-      ])
+      identifiers = [
+        local.asg_role,           # required for the ASG to manage encrypted volumes for nodes
+        aws_iam_role.cluster.arn, # required for the cluster / persistentvolume-controller to create encrypted PVCs
+      ]
     }
   }
 
@@ -55,10 +55,10 @@ data "aws_iam_policy_document" "kms_ebs" {
 
     principals {
       type = "AWS"
-      identifiers = flatten([
-        var.autoscaling_mode != "karpenter" ? local.asg_role : "", # required for the ASG to manage encrypted volumes for nodes
-        aws_iam_role.cluster.arn,                                  # required for the cluster / persistentvolume-controller to create encrypted PVCs
-      ])
+      identifiers = [
+        local.asg_role,           # required for the ASG to manage encrypted volumes for nodes
+        aws_iam_role.cluster.arn, # required for the cluster / persistentvolume-controller to create encrypted PVCs
+      ]
     }
 
     condition {
