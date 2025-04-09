@@ -53,10 +53,10 @@ variable "worker_iam_role_name" {
 ########
 # ADOT
 ########
-variable "adot_addon_version" {
-  description = "value of the adot addon version"
-  type        = string
-  default     = null
+variable "adot_addon" {
+  description = "value of the adot addon"
+  type        = any
+  default     = {}
 }
 
 ############################
@@ -1490,7 +1490,7 @@ variable "fluent_bit_log_group_retention" {
 variable "resolve_conflicts_on_update" {
   description = "value for resolve_conflicts_on_update for aws_eks_addon resource"
   type        = string
-  default     = "PRESERVE"
+  default     = "OVERWRITE"
 }
 
 variable "resolve_conflicts_on_create" {
