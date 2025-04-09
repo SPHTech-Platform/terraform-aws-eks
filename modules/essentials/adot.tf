@@ -14,7 +14,7 @@ resource "aws_eks_addon" "adot_operator" {
   cluster_name = var.cluster_name
   addon_name   = "adot"
 
-  addon_version        = coalesce(try(var.adot_addon.addon_version, null), data.aws_eks_addon_version.latest_adot[0].version)
+  addon_version        = try(var.adot_addon.addon_version, data.aws_eks_addon_version.latest_adot[0].version)
   configuration_values = try(var.adot_addon.configuration_values, null)
 
   dynamic "pod_identity_association" {
