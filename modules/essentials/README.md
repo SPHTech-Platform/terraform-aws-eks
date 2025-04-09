@@ -122,7 +122,7 @@ module "eks_essentials" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_adot_addon_version"></a> [adot\_addon\_version](#input\_adot\_addon\_version) | value of the adot addon version | `string` | `null` | no |
+| <a name="input_adot_addon"></a> [adot\_addon](#input\_adot\_addon) | value of the adot addon | `any` | `{}` | no |
 | <a name="input_affinity"></a> [affinity](#input\_affinity) | Pod affinity | `map(string)` | `{}` | no |
 | <a name="input_autoscaling_mode"></a> [autoscaling\_mode](#input\_autoscaling\_mode) | Autoscaling mode: cluster\_autoscaler or karpenter | `string` | `"cluster_autoscaler"` | no |
 | <a name="input_brupop_chart_name"></a> [brupop\_chart\_name](#input\_brupop\_chart\_name) | Chart name for brupop | `string` | `"bottlerocket-update-operator"` | no |
