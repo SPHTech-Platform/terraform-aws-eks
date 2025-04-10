@@ -1,12 +1,17 @@
+locals {
+  cluster_version_parts = split(".", data.aws_eks_cluster.cluster.version)
+
+  # Calculate the previous minor version string (e.g., "1.29" -> "1.28")
+  target_eks_version = "${local.cluster_version_parts[0]}.${tostring(tonumber(local.cluster_version_parts[1]) - 1)}"
+}
+
 data "aws_eks_cluster" "cluster" {
   name = var.cluster_name
 }
 
 data "aws_eks_addon_version" "latest_adot" {
-  count = try(var.adot_addon.addon_version, null) == null ? 1 : 0
-
   addon_name         = "adot"
-  kubernetes_version = data.aws_eks_cluster.cluster.version
+  kubernetes_version = local.target_eks_version
   most_recent        = true
 }
 
@@ -14,7 +19,7 @@ resource "aws_eks_addon" "adot_operator" {
   cluster_name = var.cluster_name
   addon_name   = "adot"
 
-  addon_version        = try(var.adot_addon.addon_version, data.aws_eks_addon_version.latest_adot[0].version)
+  addon_version        = coalesce(try(var.adot_addon.addon_version, null), data.aws_eks_addon_version.latest_adot.version)
   configuration_values = try(var.adot_addon.configuration_values, null)
 
   dynamic "pod_identity_association" {
