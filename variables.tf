@@ -9,7 +9,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.31"
+  default     = "1.32"
 
   validation {
     condition     = try(tonumber(var.cluster_version) < 1.33, false)
@@ -564,13 +564,13 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.2.1"
+  default     = "1.3.3"
 }
 
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "1.2.1"
+  default     = "1.3.3"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
