@@ -9,7 +9,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.31"
+  default     = "1.32"
 
   validation {
     condition     = try(tonumber(var.cluster_version) < 1.33, false)
