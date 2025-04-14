@@ -96,12 +96,12 @@ config:
 
 %{if length(excluded_namespaces) > 0}
     [FILTER]
-        Name  grep
-        Match kube.*
-%{for namespace in excluded_namespaces}
-        Exclude $kubernetes['namespace_name'] ${namespace}
-%{endfor}
-%{endif}
+        Name    grep
+        Match   kube.*
+%{ for namespace in excluded_namespaces ~}
+        Exclude kubernetes['namespace_name'] ${namespace}
+%{ endfor ~}
+%{ endif }
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
