@@ -93,7 +93,6 @@ config:
         Key_Name log
         Parser custom_apache
         Reserve_Data true
-
 %{if length(excluded_namespaces) > 0}
     [FILTER]
       Name           grep
