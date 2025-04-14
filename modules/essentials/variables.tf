@@ -1490,7 +1490,7 @@ variable "fluent_bit_log_group_retention" {
 variable "resolve_conflicts_on_update" {
   description = "value for resolve_conflicts_on_update for aws_eks_addon resource"
   type        = string
-  default     = "OVERWRITE"
+  default     = "PRESERVE"
 }
 
 variable "resolve_conflicts_on_create" {
