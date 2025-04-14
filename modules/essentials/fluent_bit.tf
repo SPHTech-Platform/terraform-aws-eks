@@ -37,7 +37,7 @@ locals {
     resources            = jsonencode(var.fluent_bit_resources),
     tolerations          = jsonencode(var.fluent_bit_tolerations),
     affinity             = jsonencode(local.affinity),
-    excluded_namespaces  = var.excluded_namespaces
+    excluded_namespaces  = var.fluent_bit_excluded_namespaces
   })
 
   fluent_bit_helm_config = merge(

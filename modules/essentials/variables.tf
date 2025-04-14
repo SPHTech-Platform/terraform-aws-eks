@@ -1559,6 +1559,6 @@ variable "ip_dual_stack_enabled" {
   default     = false
 }
 
-variable "excluded_namespaces" {
+variable "fluent_bit_excluded_namespaces" {
   default = []
 }
