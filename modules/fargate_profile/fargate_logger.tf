@@ -26,6 +26,7 @@ locals {
         Keep_Log Off
         Buffer_Size 0
         Kube_Meta_Cache_TTL 300s
+        K8S-Logging.Exclude On
     EOF
     parsers_conf = <<-EOF
     [PARSER]
