@@ -1558,3 +1558,7 @@ variable "ip_dual_stack_enabled" {
   type        = bool
   default     = false
 }
+
+variable "excluded_namespaces" {
+  default = []
+}
