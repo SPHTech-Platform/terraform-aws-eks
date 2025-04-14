@@ -1558,3 +1558,9 @@ variable "ip_dual_stack_enabled" {
   type        = bool
   default     = false
 }
+
+variable "fluent_bit_excluded_namespaces" {
+  description = "Namespaces to exclude from fluent-bit"
+  type        = list(string)
+  default     = []
+}
