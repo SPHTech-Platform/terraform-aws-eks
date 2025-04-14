@@ -99,7 +99,7 @@ config:
         Name    grep
         Match   kube.*
 %{ for namespace in excluded_namespaces ~}
-        Exclude kubernetes['namespace_name'] ${namespace}
+        Exclude $kubernetes['namespace_name'] ${namespace}
 %{ endfor ~}
 %{ endif }
 
