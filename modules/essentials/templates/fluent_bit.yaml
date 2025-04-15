@@ -147,7 +147,7 @@ config:
 %{if s3_bucket_name != null}
     [OUTPUT]
         Name s3
-        Match kube.*
+        Match kube_s3.*
         region ap-southeast-1
         bucket ${s3_bucket_name}
         compression gzip
