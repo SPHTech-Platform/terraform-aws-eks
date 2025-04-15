@@ -10,10 +10,6 @@ module "fluentbit_s3_bucket" {
     enabled = false
   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
-
   resource "random_string" "s3_suffix" {
     length  = 8
     special = false
