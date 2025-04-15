@@ -38,3 +38,35 @@ data "aws_iam_policy_document" "fluent_bit" {
     ]
   }
 }
+
+data "aws_iam_policy_document" "fluent_bit_cw_and_s3" {
+
+  for_each = var.enable_fluent_bit_s3_bucket ? [1] : []
+
+  statement {
+    sid       = "PutLogEvents"
+    effect    = "Allow"
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
+    actions   = ["logs:PutLogEvents"]
+  }
+
+  statement {
+    sid       = "CreateCWLogs"
+    effect    = "Allow"
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:PutRetentionPolicy",
+    ]
+  }
+  statement {
+    sid       = "S3"
+    effect    = "Allow"
+    resources = ["${module.fluentbit_s3_bucket[0].bucket_arn}/*"]
+    actions   = ["s3:PutObject"]
+  }
+}
