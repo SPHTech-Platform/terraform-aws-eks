@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "fluent_bit" {
 
 data "aws_iam_policy_document" "fluent_bit_cw_and_s3" {
 
-  for_each = var.enable_fluent_bit_s3_bucket ? [1] : []
+  for_each = var.fluent_bit_s3_bucket_enable ? [1] : []
 
   statement {
     sid       = "PutLogEvents"
