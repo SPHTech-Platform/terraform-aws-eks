@@ -75,6 +75,18 @@ config:
         Mem_Buf_Limit 5MB
         Skip_Long_Lines On
 
+%{if s3_bucket_name != null}
+    [INPUT]
+        Name tail
+        Tag kube_s3.*
+        Path /var/log/containers/*.log
+        DB /var/log/flb_kube_s3.db
+        multiline.parser docker, cri
+        Docker_Mode On
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+%{ endif }
+
   ## https://docs.fluentbit.io/manual/pipeline/filters
   filters: |
     [FILTER]
@@ -103,6 +115,24 @@ config:
 %{ endfor ~}
 %{ endif }
 
+%{if s3_bucket_name != null}
+    [FILTER]
+        Name kubernetes
+        Match kube_s3.*
+        Kube_URL https://kubernetes.default.svc.cluster.local:443
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+        Buffer_Size 31k
+
+    [FILTER]
+        Name parser
+        Match kube_s3.*
+        Key_Name log
+        Parser custom_apache
+        Reserve_Data true
+%{ endif }
+
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
@@ -113,6 +143,17 @@ config:
         log_stream_template $kubernetes['namespace_name'].$kubernetes['pod_name'].$kubernetes['container_name']
         log_stream_prefix fluentbit-
         auto_create_group false
+
+%{if s3_bucket_name != null}
+    [OUTPUT]
+        Name s3
+        Match kube_s3.*
+        region ap-southeast-1
+        bucket ${s3_bucket_name}
+        compression gzip
+        storage_class REDUCED_REDUNDANCY
+        retry_limit 2
+%{ endif }
 
 #  extraFiles: {}
 #     upstream.conf: |

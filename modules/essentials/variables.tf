@@ -1564,3 +1564,9 @@ variable "fluent_bit_excluded_namespaces" {
   type        = list(string)
   default     = []
 }
+
+variable "fluent_bit_s3_bucket_enable" {
+  description = "S3 bucket name to store fluentbit logs"
+  type        = bool
+  default     = false
+}
