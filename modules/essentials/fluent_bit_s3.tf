@@ -10,13 +10,7 @@ module "fluentbit_s3_bucket" {
     enabled = false
   }
 
-  resource "random_string" "s3_suffix" {
-    length  = 8
-    special = false
-    upper   = false
-  }
-
-  lifecycle_rules = [
+  lifecycle_rule = [
     {
       id                                     = "log-expiration"
       enabled                                = true
@@ -38,4 +32,10 @@ module "fluentbit_s3_bucket" {
       ]
     }
   ]
+}
+
+resource "random_string" "s3_suffix" {
+  length  = 8
+  special = false
+  upper   = false
 }
