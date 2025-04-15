@@ -117,7 +117,7 @@ config:
 
 %{if s3_bucket_name != null}
     [FILTER]
-        Name kubernetes_s3
+        Name kubernetes
         Match kube_s3.*
         Kube_URL https://kubernetes.default.svc.cluster.local:443
         Merge_Log On
@@ -126,7 +126,7 @@ config:
         Buffer_Size 31k
 
     [FILTER]
-        Name parser_s3
+        Name parser
         Match kube_s3.*
         Key_Name log
         Parser custom_apache
