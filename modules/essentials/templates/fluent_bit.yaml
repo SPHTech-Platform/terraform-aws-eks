@@ -77,7 +77,7 @@ config:
 
 %{if s3_bucket_name != null}
     [INPUT]
-        Name tail_s3
+        Name tail
         Tag kube_s3.*
         Path /var/log/containers/*.log
         DB /var/log/flb_kube_s3.db
