@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "fluent_bit" {
 
 data "aws_iam_policy_document" "fluent_bit_cw_and_s3" {
 
-  for_each = var.fluent_bit_s3_bucket_enable ? [1] : []
+  for_each = var.fluent_bit_s3_bucket_enable ? { "enabled" = 1 } : {}
 
   statement {
     sid       = "PutLogEvents"
@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "fluent_bit_cw_and_s3" {
   statement {
     sid       = "S3"
     effect    = "Allow"
-    resources = ["${module.fluentbit_s3_bucket[0].bucket_arn}/*"]
+    resources = ["${module.fluentbit_s3_bucket[0].s3_bucket_arn}/*"]
     actions   = ["s3:PutObject"]
   }
 }
