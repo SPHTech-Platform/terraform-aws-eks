@@ -1,5 +1,5 @@
 module "fluentbit_s3_bucket" {
-  count = var.fluent_bit_s3_bucket_enable ? 1 : 0
+  count = var.fluent_bit_enable_s3_output ? 1 : 0
 
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 4.6.1"

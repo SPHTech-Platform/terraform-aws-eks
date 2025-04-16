@@ -1565,8 +1565,14 @@ variable "fluent_bit_excluded_namespaces" {
   default     = []
 }
 
-variable "fluent_bit_s3_bucket_enable" {
-  description = "S3 bucket name to store fluentbit logs"
+variable "fluent_bit_enable_s3_output" {
+  description = "Enable S3 output logging"
   type        = bool
   default     = false
+}
+
+variable "fluent_bit_enable_cw_output" {
+  description = "Enable cloudwatch logging"
+  type        = bool
+  default     = true
 }
