@@ -39,6 +39,7 @@ locals {
     affinity             = jsonencode(local.affinity),
     excluded_namespaces  = var.fluent_bit_excluded_namespaces,
     s3_bucket_name       = var.fluent_bit_s3_bucket_enable ? module.fluentbit_s3_bucket[0].s3_bucket_id : null,
+    cw_disable           = var.fluent_bit_s3_bucket_enable ? var.fluent_bit_cw_disable : false
   })
 
   fluent_bit_helm_config = merge(

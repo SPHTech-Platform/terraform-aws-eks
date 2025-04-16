@@ -1570,3 +1570,9 @@ variable "fluent_bit_s3_bucket_enable" {
   type        = bool
   default     = false
 }
+
+variable "fluent_bit_cw_disable" {
+  description = "Disable cloudwatch logging"
+  type        = bool
+  default     = false
+}
