@@ -135,7 +135,7 @@ config:
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
-%{if cw_disable == false}
+%{if cw_enable == true}
     [OUTPUT]
         Name cloudwatch_logs
         Match kube.*
