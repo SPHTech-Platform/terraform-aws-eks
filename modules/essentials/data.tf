@@ -17,7 +17,6 @@ data "aws_sqs_queue" "node_termination_handler" {
 }
 
 data "aws_iam_policy_document" "fluent_bit_s3" {
-  count = var.fluent_bit_enable_s3_output ? 1 : 0
   statement {
     sid       = "S3"
     effect    = "Allow"
@@ -27,7 +26,6 @@ data "aws_iam_policy_document" "fluent_bit_s3" {
 }
 
 data "aws_iam_policy_document" "fluent_bit_cw" {
-  count = var.fluent_bit_enable_cw_output ? 1 : 0
   statement {
     sid       = "PutLogEvents"
     effect    = "Allow"
@@ -50,7 +48,7 @@ data "aws_iam_policy_document" "fluent_bit_cw" {
 
 data "aws_iam_policy_document" "fluent_bit_combined" {
   source_policy_documents = concat(
-    var.fluent_bit_enable_s3_output ? [data.aws_iam_policy_document.fluent_bit_s3[0].json] : [],
-    var.fluent_bit_enable_cw_output ? [data.aws_iam_policy_document.fluent_bit_cw[0].json] : []
+    var.fluent_bit_enable_s3_output ? [data.aws_iam_policy_document.fluent_bit_s3.json] : [],
+    var.fluent_bit_enable_cw_output ? [data.aws_iam_policy_document.fluent_bit_cw.json] : []
   )
 }
