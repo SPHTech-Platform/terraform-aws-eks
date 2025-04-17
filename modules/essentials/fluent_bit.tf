@@ -94,7 +94,7 @@ resource "aws_iam_policy" "fluent_bit_irsa" {
 
   name        = "${var.cluster_name}-fluentbit"
   description = "IAM Policy for AWS for FluentBit IRSA"
-  policy      = var.fluent_bit_enable_s3_output ? data.aws_iam_policy_document.fluent_bit_cw_and_s3["enabled"].json : data.aws_iam_policy_document.fluent_bit.json
+  policy      = data.aws_iam_policy_document.fluent_bit.json
 }
 
 moved {
