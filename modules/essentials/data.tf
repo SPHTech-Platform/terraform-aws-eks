@@ -16,41 +16,38 @@ data "aws_sqs_queue" "node_termination_handler" {
   name = data.aws_arn.node_termination_handler_sqs[0].resource
 }
 
-data "aws_iam_policy_document" "fluent_bit_s3" {
-  count = var.fluent_bit_enable_s3_output ? 1 : 0
-  statement {
-    sid       = "S3"
-    effect    = "Allow"
-    resources = ["${module.fluentbit_s3_bucket[0].s3_bucket_arn}/*"]
-    actions   = ["s3:PutObject"]
+data "aws_iam_policy_document" "fluent_bit" {
+  dynamic "statement" {
+    for_each = var.fluent_bit_enable_s3_output ? [1] : []
+    content {
+      sid       = "S3"
+      effect    = "Allow"
+      resources = ["${module.fluentbit_s3_bucket[0].s3_bucket_arn}/*"]
+      actions   = ["s3:PutObject"]
+    }
   }
-}
-
-data "aws_iam_policy_document" "fluent_bit_cw" {
-  count = var.fluent_bit_enable_cw_output ? 1 : 0
-  statement {
-    sid       = "PutLogEvents"
-    effect    = "Allow"
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
-    actions   = ["logs:PutLogEvents"]
+  dynamic "statement" {
+    for_each = var.fluent_bit_enable_cw_output ? [1] : []
+    content {
+      sid       = "PutLogEvents"
+      effect    = "Allow"
+      resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
+      actions   = ["logs:PutLogEvents"]
+    }
   }
-  statement {
-    sid       = "CreateCWLogs"
-    effect    = "Allow"
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"]
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:DescribeLogGroups",
-      "logs:DescribeLogStreams",
-      "logs:PutRetentionPolicy",
-    ]
+  dynamic "statement" {
+    for_each = var.fluent_bit_enable_cw_output ? [1] : []
+    content {
+      sid       = "CreateCWLogs"
+      effect    = "Allow"
+      resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+      actions = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams",
+        "logs:PutRetentionPolicy",
+      ]
+    }
   }
-}
-
-data "aws_iam_policy_document" "fluent_bit_combined" {
-  source_policy_documents = concat(
-    var.fluent_bit_enable_s3_output ? [data.aws_iam_policy_document.fluent_bit_s3[0].json] : [],
-    var.fluent_bit_enable_cw_output ? [data.aws_iam_policy_document.fluent_bit_cw[0].json] : []
-  )
 }
