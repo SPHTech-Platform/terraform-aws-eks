@@ -12,4 +12,4 @@ jobs:
     uses: SPHTech-Platform/reusable-workflows/.github/workflows/terraform.yaml@v2
     with:
       upload_sarif: true
-      checkov_skip_path: "-f modules/essentials/templates/nodelocaldns.yaml"
+      checkov_skip_path: "modules/essentials/templates/nodelocaldns.yaml"
