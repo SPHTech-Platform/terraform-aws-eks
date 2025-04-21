@@ -1576,3 +1576,42 @@ variable "fluent_bit_enable_cw_output" {
   type        = bool
   default     = true
 }
+
+########################
+# Node Local DNS Cache #
+########################
+variable "nodelocaldns_enabled" {
+  description = "Enable Node Local DNS Cache"
+  type        = bool
+  default     = false
+}
+
+variable "nodelocaldns_release_name" {
+  description = "Release name for Node Local DNS Cache"
+  type        = string
+  default     = "node-local-dns"
+}
+
+variable "nodelocaldns_chart_name" {
+  description = "Chart name for Node Local DNS Cache"
+  type        = string
+  default     = "node-local-dns"
+}
+
+variable "nodelocaldns_chart_repository" {
+  description = "Chart Repository URL for Node Local DNS Cache"
+  type        = string
+  default     = "https://lablabs.github.io/k8s-nodelocaldns-helm"
+}
+
+variable "nodelocaldns_chart_version" {
+  description = "Chart version for Node Local DNS Cache"
+  type        = string
+  default     = "2.1.0"
+}
+
+variable "nodelocaldns_namespace" {
+  description = "Namespace to deploy Node Local DNS Cache"
+  type        = string
+  default     = "kube-system"
+}
