@@ -11,23 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# checkov:skip=CKV_K8S_13: "Memory limits should be set"
-# checkov:skip=CKV_K8S_37: "Minimize the admission of containers with capabilities assigned"
-# checkov:skip=CKV_K8S_15: "Image Pull Policy should be Always"
-# checkov:skip=CKV_K8S_29: "Apply security context to your pods and containers"
-# checkov:skip=CKV_K8S_20: "Containers should not run with allowPrivilegeEscalation"
-# checkov:skip=CKV_K8S_38: "Ensure that Service Account Tokens are only mounted where necessary"
-# checkov:skip=CKV_K8S_28: "Minimize the admission of containers with the NET_RAW capability"
-# checkov:skip=CKV_K8S_11: "CPU limits should be set"
-# checkov:skip=CKV_K8S_43: "Image should use digest"
-# checkov:skip=CKV_K8S_9: "Readiness Probe Should be Configured"
-# checkov:skip=CKV_K8S_31: "Ensure that the seccomp profile is set to docker/default or runtime/default"
-# checkov:skip=CKV_K8S_19: "Containers should not share the host network namespace"
-# checkov:skip=CKV_K8S_25: "Minimize the admission of containers with added capability"
-# checkov:skip=CKV_K8S_40: "Containers should run as a high UID to avoid host conflict"
-# checkov:skip=CKV_K8S_22: "Use read-only filesystem for containers where possible"
-# checkov:skip=CKV_K8S_23: "Minimize the admission of root containers"
-# checkov:skip=CKV2_K8S_6: "Minimize the admission of pods which lack an associated NetworkPolicy"
+#checkov:skip=CKV_K8S_13:Memory limits should be set
+#checkov:skip=CKV_K8S_37:Minimize the admission of containers with capabilities assigned
+#checkov:skip=CKV_K8S_15:Image Pull Policy should be Always
+#checkov:skip=CKV_K8S_29:Apply security context to your pods and containers
+#checkov:skip=CKV_K8S_20:Containers should not run with allowPrivilegeEscalation
+#checkov:skip=CKV_K8S_38:Ensure that Service Account Tokens are only mounted where necessary
+#checkov:skip=CKV_K8S_28:Minimize the admission of containers with the NET_RAW capability
+#checkov:skip=CKV_K8S_11:CPU limits should be set
+#checkov:skip=CKV_K8S_43:Image should use digest
+#checkov:skip=CKV_K8S_9:Readiness Probe Should be Configured
+#checkov:skip=CKV_K8S_31:Ensure that the seccomp profile is set to docker/default or runtime/default
+#checkov:skip=CKV_K8S_19:Containers should not share the host network namespace
+#checkov:skip=CKV_K8S_25:Minimize the admission of containers with added capability
+#checkov:skip=CKV_K8S_40:Containers should run as a high UID to avoid host conflict
+#checkov:skip=CKV_K8S_22:Use read-only filesystem for containers where possible
+#checkov:skip=CKV_K8S_23:Minimize the admission of root containers
+#checkov:skip=CKV2_K8S_6:Minimize the admission of pods which lack an associated NetworkPolicy
 #
 
 apiVersion: v1
