@@ -1576,3 +1576,28 @@ variable "fluent_bit_enable_cw_output" {
   type        = bool
   default     = true
 }
+
+# NodeLocal DNS Cache
+variable "node_local_dns_cache_enabled" {
+  description = "Enable NodeLocal DNS Cache"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_domain_name" {
+  description = "The domain name for the cluster"
+  type        = string
+  default     = "cluster.local"
+}
+
+variable "node_local_dns_address" {
+  description = "The local DNS IP address"
+  type        = string
+  default     = "169.254.20.10"
+}
+
+variable "nodelocal_dns_cache_image_tag" {
+  description = "The image tag for the nodelocal DNS cache"
+  type        = string
+  default     = "1.25.0"
+}

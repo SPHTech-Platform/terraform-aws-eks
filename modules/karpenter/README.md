@@ -66,10 +66,10 @@
 | <a name="input_enable_v1_permissions"></a> [enable\_v1\_permissions](#input\_enable\_v1\_permissions) | Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`) | `bool` | `true` | no |
 | <a name="input_karpenter_chart_name"></a> [karpenter\_chart\_name](#input\_karpenter\_chart\_name) | Chart name for Karpenter | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_chart_repository"></a> [karpenter\_chart\_repository](#input\_karpenter\_chart\_repository) | Chart repository for Karpenter | `string` | `"oci://public.ecr.aws/karpenter"` | no |
-| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Karpenter | `string` | `"1.0.8"` | no |
+| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Karpenter | `string` | `"1.3.3"` | no |
 | <a name="input_karpenter_crd_chart_name"></a> [karpenter\_crd\_chart\_name](#input\_karpenter\_crd\_chart\_name) | Chart name for Karpenter | `string` | `"karpenter-crd"` | no |
 | <a name="input_karpenter_crd_chart_repository"></a> [karpenter\_crd\_chart\_repository](#input\_karpenter\_crd\_chart\_repository) | Chart repository for Karpenter | `string` | `"oci://public.ecr.aws/karpenter"` | no |
-| <a name="input_karpenter_crd_chart_version"></a> [karpenter\_crd\_chart\_version](#input\_karpenter\_crd\_chart\_version) | Chart version for Karpenter | `string` | `"1.0.8"` | no |
+| <a name="input_karpenter_crd_chart_version"></a> [karpenter\_crd\_chart\_version](#input\_karpenter\_crd\_chart\_version) | Chart version for Karpenter | `string` | `"1.3.3"` | no |
 | <a name="input_karpenter_crd_namespace"></a> [karpenter\_crd\_namespace](#input\_karpenter\_crd\_namespace) | Namespace to deploy karpenter | `string` | `"kube-system"` | no |
 | <a name="input_karpenter_crd_release_name"></a> [karpenter\_crd\_release\_name](#input\_karpenter\_crd\_release\_name) | Release name for Karpenter | `string` | `"karpenter-crd"` | no |
 | <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | Namespace to deploy karpenter | `string` | `"kube-system"` | no |
