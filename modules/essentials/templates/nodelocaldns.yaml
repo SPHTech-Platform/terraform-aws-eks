@@ -169,8 +169,8 @@ spec:
         securityContext:
           capabilities:
             add:
-            # checkov:skip=CKV_K8S_37:Minimize the admission of containers with capabilities assigned
             - NET_ADMIN
+          # checkov:skip=CKV_K8S_37:Minimize the admission of containers with capabilities assigned
         ports:
         - containerPort: 53
           name: dns
