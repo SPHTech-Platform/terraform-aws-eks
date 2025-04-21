@@ -5,7 +5,7 @@ data "kubernetes_service" "kube_dns" {
   }
 }
 
-# Not compatible with `IPVS`/`NFTables` mode of kube-proxy, code is only for `IPTABLES` mode 
+# Not compatible with `IPVS`/`NFTables` mode of kube-proxy, code is only for `IPTABLES` mode
 resource "kubectl_manifest" "nodelocaldns" {
   count = var.node_local_dns_cache_enabled ? 1 : 0
 
