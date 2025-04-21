@@ -167,8 +167,8 @@ spec:
             memory: 100Mi
         args: [ "-localip", "${PILLAR__LOCAL__DNS},${PILLAR__DNS__SERVER}", "-conf", "/etc/Corefile", "-upstreamsvc", "kube-dns-upstream" ]
         securityContext:
-          # checkov:skip=CKV_K8S_37:Minimize the admission of containers with capabilities assigned
           capabilities:
+            # checkov:skip=CKV_K8S_37:Minimize the admission of containers with capabilities assigned
             add:
             - NET_ADMIN
         ports:
