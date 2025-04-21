@@ -101,7 +101,6 @@ data:
         prometheus :9253
         }
 ---
-# checkov:skip-resource:Skipping all checks for node-local-dns DaemonSet
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -170,7 +169,6 @@ spec:
           capabilities:
             add:
             - NET_ADMIN
-          # checkov:skip=CKV_K8S_37:Minimize the admission of containers with capabilities assigned
         ports:
         - containerPort: 53
           name: dns
