@@ -1630,7 +1630,7 @@ variable "nodelocaldns_localdns_ip" {
 
 variable "nodelocaldns_affinity" {
   description = "Node Local DNS Cache affinity"
-  type        = map(string)
+  type        = map(any)
   default = {
     "nodeAffinity" = {
       "requiredDuringSchedulingIgnoredDuringExecution" = {
