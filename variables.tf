@@ -517,6 +517,7 @@ variable "karpenter_nodeclasses" {
     karpenter_node_tags_map                = map(string)
     karpenter_node_user_data               = string
     karpenter_node_metadata_options        = map(any)
+    karpenter_node_kubelet_yaml            = map(any)
     karpenter_block_device_mapping = list(object({
       deviceName = string
       ebs = object({
@@ -608,6 +609,12 @@ variable "karpenter_ephemeral_volume_size" {
   description = "Ephemeral volume size for Karpenter node groups"
   type        = string
   default     = "50Gi"
+}
+
+variable "karpenter_nodeclass_kubelet_clusterdns_ips" {
+  description = "Cluster DNS IPs for Karpenter node classes"
+  type        = list(string)
+  default     = []
 }
 
 variable "karpenter_pod_resources" {

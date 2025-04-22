@@ -1,3 +1,9 @@
+locals {
+  tag          = var.nodelocaldns_image_tag
+  local_dns_ip = var.nodelocaldns_localdns_ip
+  affinity     = jsonencode(var.nodelocaldns_affinity)
+}
+
 data "kubernetes_service" "kube_dns" {
   metadata {
     name      = "kube-dns"

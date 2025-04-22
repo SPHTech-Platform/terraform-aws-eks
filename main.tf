@@ -169,11 +169,19 @@ module "eks" {
             # request/limit to ensure we can fit within that task
             memory = "256M"
           }
+          autoScaling = {
+            enabled = true
+          }
         }
       })
       } : {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
+      configuration_values = jsonencode({
+        autoScaling = {
+          enabled = true
+        }
+      })
     }
     eks-pod-identity-agent = var.cluster_ip_family == "ipv4" ? {
       most_recent                 = true

@@ -143,6 +143,7 @@ variable "karpenter_nodeclasses" {
     karpenter_node_tags_map                = map(string)
     karpenter_node_user_data               = string
     karpenter_node_metadata_options        = map(any)
+    karpenter_node_kubelet_yaml            = map(any)
     karpenter_block_device_mapping = list(object({
       deviceName = string
       ebs = object({
@@ -163,6 +164,7 @@ variable "karpenter_nodeclasses" {
     karpenter_subnet_selector_maps         = []
     karpenter_security_group_selector_maps = []
     karpenter_node_tags_map                = {}
+    karpenter_node_kubelet_yaml            = {}
     karpenter_node_metadata_options = {
       httpEndpoint            = "enabled"
       httpProtocolIPv6        = "disabled"

@@ -1615,3 +1615,53 @@ variable "nodelocaldns_namespace" {
   type        = string
   default     = "kube-system"
 }
+
+variable "nodelocaldns_image_tag" {
+  description = "Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag "
+  type        = string
+  default     = "1.25.0"
+}
+
+variable "nodelocaldns_localdns_ip" {
+  description = "Node Local DNS Cache IP"
+  type        = string
+  default     = "169.254.20.10"
+}
+
+variable "nodelocaldns_affinity" {
+  description = "Node Local DNS Cache affinity"
+  type        = map(string)
+  default = {
+    "nodeAffinity" = {
+      "requiredDuringSchedulingIgnoredDuringExecution" = {
+        "nodeSelectorTerms" = [
+          {
+            "matchExpressions" = [
+              {
+                "key"      = "kubernetes.io/os"
+                "operator" = "In"
+                "values"   = ["linux"]
+              },
+              {
+                "key"      = "kubernetes.io/arch"
+                "operator" = "In"
+                "values" = [
+                  "amd64",
+                  "arm64"
+                ]
+              },
+              {
+                "key"      = "eks.amazonaws.com/compute-type"
+                "operator" = "NotIn"
+                "values" = [
+                  "fargate",
+                  "auto"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

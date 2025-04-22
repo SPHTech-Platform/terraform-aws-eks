@@ -1,0 +1,44 @@
+image:
+  tag: ${tag}
+config:
+  localDnsIp: ${local_dns_ip}
+  zones:
+    cluster.local:53:
+      plugins:
+        errors: true
+        reload: true
+        log:
+          format: combined
+          classes: all
+        cache:
+          success:
+            size: 9984
+            ttl: 30
+          denial:
+            size: 9984
+            ttl: 5
+        forward:
+          parameters: __PILLAR__CLUSTER__DNS__
+          force_tcp: true
+        prometheus: true
+        health:
+          port: 8080
+affinity: ${affinity}
+#   nodeAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#       nodeSelectorTerms:
+#       - matchExpressions:
+#         - key: kubernetes.io/os
+#           operator: In
+#           values:
+#           - linux
+#         - key: kubernetes.io/arch
+#           operator: In
+#           values:
+#           - amd64
+#           - arm64
+#         - key: eks.amazonaws.com/compute-type
+#           operator: NotIn
+#           values:
+#           - fargate
+#           - auto
