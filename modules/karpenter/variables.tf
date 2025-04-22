@@ -164,7 +164,7 @@ variable "karpenter_nodeclasses" {
     karpenter_subnet_selector_maps         = []
     karpenter_security_group_selector_maps = []
     karpenter_node_tags_map                = {}
-    karpenter_node_kubelet_yaml            = {}
+    karpenter_node_kubelet                 = {}
     karpenter_node_metadata_options = {
       httpEndpoint            = "enabled"
       httpProtocolIPv6        = "disabled"
