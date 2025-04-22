@@ -6,13 +6,6 @@ locals {
   }
 }
 
-data "kubernetes_service" "kube_dns" {
-  metadata {
-    name      = "kube-dns"
-    namespace = "kube-system"
-  }
-}
-
 resource "helm_release" "nodelocaldns" {
   count = var.nodelocaldns_enabled ? 1 : 0
 
