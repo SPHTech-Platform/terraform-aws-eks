@@ -66,6 +66,7 @@ module "eks_essentials" {
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.70 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.16 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.33 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.5 |
 
 ## Providers
 
@@ -74,12 +75,14 @@ module "eks_essentials" {
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.70 |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.16 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.33 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 3.5 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.47 |
+| <a name="module_fluentbit_s3_bucket"></a> [fluentbit\_s3\_bucket](#module\_fluentbit\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 4.6.1 |
 | <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 0.1.4 |
 | <a name="module_helm_kube_state_metrics"></a> [helm\_kube\_state\_metrics](#module\_helm\_kube\_state\_metrics) | SPHTech-Platform/release/helm | ~> 0.1.4 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.1.4 |
@@ -104,10 +107,12 @@ module "eks_essentials" {
 | [helm_release.cert_manager](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.node_termination_handler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.nodelocaldns](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_annotations.gp2_storage_class](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/annotations) | resource |
 | [kubernetes_namespace_v1.namespaces](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace_v1) | resource |
 | [kubernetes_pod_disruption_budget_v1.coredns](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/pod_disruption_budget_v1) | resource |
 | [kubernetes_storage_class_v1.default](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class_v1) | resource |
+| [random_string.s3_suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [aws_arn.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_eks_addon_version.latest_adot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_addon_version) | data source |
@@ -117,6 +122,7 @@ module "eks_essentials" {
 | [aws_iam_policy_document.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_sqs_queue.node_termination_handler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/sqs_queue) | data source |
+| [kubernetes_service.kube_dns](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/data-sources/service) | data source |
 
 ## Inputs
 
@@ -211,14 +217,21 @@ module "eks_essentials" {
 | <a name="input_fargate_cluster"></a> [fargate\_cluster](#input\_fargate\_cluster) | Deploying workloads on Fargate, set this to TRUE | `bool` | `false` | no |
 | <a name="input_fargate_mix_node_groups"></a> [fargate\_mix\_node\_groups](#input\_fargate\_mix\_node\_groups) | Deploying mix workloads as in EKS Manage Node Groups and Fragate Node Groups, set this to TRUE | `bool` | `false` | no |
 | <a name="input_feature_gates"></a> [feature\_gates](#input\_feature\_gates) | Feature gates to enable on the pod | `list(any)` | `[]` | no |
+| <a name="input_fluent_bit_enable_cw_output"></a> [fluent\_bit\_enable\_cw\_output](#input\_fluent\_bit\_enable\_cw\_output) | Enable cloudwatch logging | `bool` | `true` | no |
+| <a name="input_fluent_bit_enable_s3_output"></a> [fluent\_bit\_enable\_s3\_output](#input\_fluent\_bit\_enable\_s3\_output) | Enable S3 output logging | `bool` | `false` | no |
 | <a name="input_fluent_bit_enabled"></a> [fluent\_bit\_enabled](#input\_fluent\_bit\_enabled) | Enable fluent-bit helm charts installation. | `bool` | `true` | no |
+| <a name="input_fluent_bit_excluded_namespaces"></a> [fluent\_bit\_excluded\_namespaces](#input\_fluent\_bit\_excluded\_namespaces) | Namespaces to exclude from fluent-bit | `list(string)` | `[]` | no |
 | <a name="input_fluent_bit_helm_config"></a> [fluent\_bit\_helm\_config](#input\_fluent\_bit\_helm\_config) | Helm provider config for AWS for Fluent Bit. | `any` | `{}` | no |
 | <a name="input_fluent_bit_helm_config_defaults"></a> [fluent\_bit\_helm\_config\_defaults](#input\_fluent\_bit\_helm\_config\_defaults) | Helm provider default config for Fluent Bit. | `any` | <pre>{<br/>  "chart": "fluent-bit",<br/>  "description": "Fluent Bit helm Chart deployment configuration",<br/>  "name": "fluent-bit",<br/>  "namespace": "logging",<br/>  "repository": "https://fluent.github.io/helm-charts",<br/>  "version": "0.47.9"<br/>}</pre> | no |
 | <a name="input_fluent_bit_image_repository"></a> [fluent\_bit\_image\_repository](#input\_fluent\_bit\_image\_repository) | Fluent Bit Image repo | `string` | `"public.ecr.aws/aws-observability/aws-for-fluent-bit"` | no |
 | <a name="input_fluent_bit_image_tag"></a> [fluent\_bit\_image\_tag](#input\_fluent\_bit\_image\_tag) | Fluent Bit Image tag | `string` | `"2.32.0"` | no |
+| <a name="input_fluent_bit_liveness_probe"></a> [fluent\_bit\_liveness\_probe](#input\_fluent\_bit\_liveness\_probe) | Liveness probe for fluent-bit | `map(any)` | <pre>{<br/>  "httpGet": {<br/>    "path": "/",<br/>    "port": 2020<br/>  }<br/>}</pre> | no |
 | <a name="input_fluent_bit_log_group_retention"></a> [fluent\_bit\_log\_group\_retention](#input\_fluent\_bit\_log\_group\_retention) | Number of days to retain the cloudwatch logs | `number` | `30` | no |
 | <a name="input_fluent_bit_overwrite_helm_values"></a> [fluent\_bit\_overwrite\_helm\_values](#input\_fluent\_bit\_overwrite\_helm\_values) | helm values for overwrite configuration | `string` | `""` | no |
+| <a name="input_fluent_bit_readiness_probe"></a> [fluent\_bit\_readiness\_probe](#input\_fluent\_bit\_readiness\_probe) | Readiness probe for fluent-bit | `map(any)` | <pre>{<br/>  "httpGet": {<br/>    "path": "/api/v1/health",<br/>    "port": 2020<br/>  }<br/>}</pre> | no |
+| <a name="input_fluent_bit_resources"></a> [fluent\_bit\_resources](#input\_fluent\_bit\_resources) | Resources for fluent-bit | `map(any)` | <pre>{<br/>  "limits": {<br/>    "cpu": "100m",<br/>    "memory": "128Mi"<br/>  },<br/>  "requests": {<br/>    "cpu": "100m",<br/>    "memory": "128Mi"<br/>  }<br/>}</pre> | no |
 | <a name="input_fluent_bit_role_policy_arns"></a> [fluent\_bit\_role\_policy\_arns](#input\_fluent\_bit\_role\_policy\_arns) | ARNs of any policies to attach to the IAM role | `map(string)` | `{}` | no |
+| <a name="input_fluent_bit_tolerations"></a> [fluent\_bit\_tolerations](#input\_fluent\_bit\_tolerations) | Tolerations for fluent-bit | `list(any)` | <pre>[<br/>  {<br/>    "effect": "NoSchedule",<br/>    "operator": "Exists"<br/>  }<br/>]</pre> | no |
 | <a name="input_helm_release_max_history"></a> [helm\_release\_max\_history](#input\_helm\_release\_max\_history) | The maximum number of history releases to keep track in each Helm release | `number` | `20` | no |
 | <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | Secrets for image pulling | `list(any)` | `[]` | no |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | Image repository | `string` | `"quay.io/jetstack/cert-manager-controller"` | no |
@@ -270,6 +283,15 @@ module "eks_essentials" {
 | <a name="input_node_termination_handler_taint_node"></a> [node\_termination\_handler\_taint\_node](#input\_node\_termination\_handler\_taint\_node) | Taint node upon spot interruption termination notice | `bool` | `true` | no |
 | <a name="input_node_termination_namespace"></a> [node\_termination\_namespace](#input\_node\_termination\_namespace) | Namespace to deploy Node Termination Handler | `string` | `"kube-system"` | no |
 | <a name="input_node_termination_service_account"></a> [node\_termination\_service\_account](#input\_node\_termination\_service\_account) | Service account for Node Termination Handler pods | `string` | `"node-termination-handler"` | no |
+| <a name="input_nodelocaldns_affinity"></a> [nodelocaldns\_affinity](#input\_nodelocaldns\_affinity) | Node Local DNS Cache affinity | `map(string)` | <pre>{<br/>  "nodeAffinity": {<br/>    "requiredDuringSchedulingIgnoredDuringExecution": {<br/>      "nodeSelectorTerms": [<br/>        {<br/>          "matchExpressions": [<br/>            {<br/>              "key": "kubernetes.io/os",<br/>              "operator": "In",<br/>              "values": [<br/>                "linux"<br/>              ]<br/>            },<br/>            {<br/>              "key": "kubernetes.io/arch",<br/>              "operator": "In",<br/>              "values": [<br/>                "amd64",<br/>                "arm64"<br/>              ]<br/>            },<br/>            {<br/>              "key": "eks.amazonaws.com/compute-type",<br/>              "operator": "NotIn",<br/>              "values": [<br/>                "fargate",<br/>                "auto"<br/>              ]<br/>            }<br/>          ]<br/>        }<br/>      ]<br/>    }<br/>  }<br/>}</pre> | no |
+| <a name="input_nodelocaldns_chart_name"></a> [nodelocaldns\_chart\_name](#input\_nodelocaldns\_chart\_name) | Chart name for Node Local DNS Cache | `string` | `"node-local-dns"` | no |
+| <a name="input_nodelocaldns_chart_repository"></a> [nodelocaldns\_chart\_repository](#input\_nodelocaldns\_chart\_repository) | Chart Repository URL for Node Local DNS Cache | `string` | `"https://lablabs.github.io/k8s-nodelocaldns-helm"` | no |
+| <a name="input_nodelocaldns_chart_version"></a> [nodelocaldns\_chart\_version](#input\_nodelocaldns\_chart\_version) | Chart version for Node Local DNS Cache | `string` | `"2.1.0"` | no |
+| <a name="input_nodelocaldns_enabled"></a> [nodelocaldns\_enabled](#input\_nodelocaldns\_enabled) | Enable Node Local DNS Cache | `bool` | `false` | no |
+| <a name="input_nodelocaldns_image_tag"></a> [nodelocaldns\_image\_tag](#input\_nodelocaldns\_image\_tag) | Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag | `string` | `"1.25.0"` | no |
+| <a name="input_nodelocaldns_localdns_ip"></a> [nodelocaldns\_localdns\_ip](#input\_nodelocaldns\_localdns\_ip) | Node Local DNS Cache IP | `string` | `"169.254.20.10"` | no |
+| <a name="input_nodelocaldns_namespace"></a> [nodelocaldns\_namespace](#input\_nodelocaldns\_namespace) | Namespace to deploy Node Local DNS Cache | `string` | `"kube-system"` | no |
+| <a name="input_nodelocaldns_release_name"></a> [nodelocaldns\_release\_name](#input\_nodelocaldns\_release\_name) | Release name for Node Local DNS Cache | `string` | `"node-local-dns"` | no |
 | <a name="input_oidc_provider_arn"></a> [oidc\_provider\_arn](#input\_oidc\_provider\_arn) | ARN of the OIDC Provider for IRSA | `string` | n/a | yes |
 | <a name="input_pod_annotations"></a> [pod\_annotations](#input\_pod\_annotations) | Extra annotations for pods | `map(string)` | `{}` | no |
 | <a name="input_pod_labels"></a> [pod\_labels](#input\_pod\_labels) | Extra labels for pods | `map(string)` | `{}` | no |

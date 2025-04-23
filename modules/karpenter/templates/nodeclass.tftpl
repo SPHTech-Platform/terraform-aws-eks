@@ -38,6 +38,11 @@ spec:
     ${indent(4,karpenter_node_metadata_options_yaml)}
   %{ endif }
 
+  %{ if karpenter_node_kubelet_yaml != ""}
+  kubelet:
+    ${indent(4,karpenter_node_kubelet_yaml)}
+  %{ endif }
+
   # optional, configures storage devices for the instance
 %{ if karpenter_block_device_mapping_yaml != ""}
   blockDeviceMappings:

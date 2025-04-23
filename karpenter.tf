@@ -48,6 +48,9 @@ locals {
           }
         }
       ]
+      karpenter_node_kubelet = {
+        clusterDNS = var.karpenter_nodeclass_kubelet_clusterdns_ips
+      }
     },
   ])
 
