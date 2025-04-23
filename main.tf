@@ -169,9 +169,9 @@ module "eks" {
             # request/limit to ensure we can fit within that task
             memory = "256M"
           }
-          autoScaling = {
-            enabled = true
-          }
+        }
+        autoScaling = {
+          enabled = true
         }
       })
       } : {
