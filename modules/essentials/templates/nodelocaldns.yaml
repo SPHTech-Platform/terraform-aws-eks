@@ -1,4 +1,5 @@
 image:
+  repository: ${image_repository}
   tag: ${tag}
 config:
   localDnsIp: ${local_dns_ip}

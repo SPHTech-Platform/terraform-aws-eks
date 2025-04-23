@@ -1616,6 +1616,12 @@ variable "nodelocaldns_namespace" {
   default     = "kube-system"
 }
 
+variable "nodelocaldns_image_repository" {
+  description = "Node Local DNS Cache image repository"
+  type        = string
+  default     = "k8s.gcr.io/dns/k8s-dns-node-cache"
+}
+
 variable "nodelocaldns_image_tag" {
   description = "Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag "
   type        = string

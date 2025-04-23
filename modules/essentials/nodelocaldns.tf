@@ -1,8 +1,9 @@
 locals {
   nodelocaldns_values = {
-    tag          = var.nodelocaldns_image_tag
-    local_dns_ip = var.nodelocaldns_localdns_ip
-    affinity     = jsonencode(var.nodelocaldns_affinity)
+    image_repository = var.nodelocaldns_image_repository
+    tag              = var.nodelocaldns_image_tag
+    local_dns_ip     = var.nodelocaldns_localdns_ip
+    affinity         = jsonencode(var.nodelocaldns_affinity)
   }
 }
 
