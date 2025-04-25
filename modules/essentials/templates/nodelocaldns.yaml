@@ -1,27 +1,69 @@
 image:
   repository: ${image_repository}
+  # -- Overrides the image tag whose default is the chart appVersion.
   tag: ${tag}
+
 config:
-  localDnsIp: ${local_dns_ip}
-  zones:
-    cluster.local:53:
-      plugins:
-        errors: true
-        reload: true
-        log:
-          format: combined
-          classes: all
-        cache:
-          success:
-            size: 9984
-            ttl: 30
-          denial:
-            size: 9984
-            ttl: 5
-        forward:
-          parameters: __PILLAR__CLUSTER__DNS__
-          force_tcp: true
-        prometheus: true
-        health:
-          port: 8080
+  # -- Internal k8s DNS domain
+  dnsDomain: ${internel_domain_name} # "cluster.local"
+
+  # -- Main coredns service (kube-dns) ip, used on iptables-mode. "172.20.0.10" or "fd74:1124:c4cd::a"
+  dnsServer: ${kube_dns_svc_ip}
+
+  # -- Virtual IP to be used by ipvs mode, to be used as --cluster-dns, must not collide.
+  # -- It's recommended to use an address with a local scope, range '169.254.0.0/16' for IPv4 or range in IPv6 'fd00::/8'.
+  localDns: ${local_dns_ip}
+
+  # -- Use a custom upstreamsvc for -upstreamsvc
+  customUpstreamsvc: ${custom_upstream_svc_name}
+
+  # -- If false, it will bind 0.0.0.0, otherwise dnsServer and localDns will be used. https://github.com/bottlerocket-os/bottlerocket/issues/3711#issuecomment-1907087528
+  bindIp: true
+
+  # -- Set communication protocol. Options are `prefer_udp` or `force_tcp`
+  commProtocol: "force_tcp"
+
+  # -- Set boolean to log DNS requests
+  enableLogging: ${enable_logging}
+
+  # -- If true, return NOERROR when attempting to resolve an IPv6 address
+  noIPv6Lookups: ${no_ipv6_lookups}
+
+  # -- If enabled, coredns will prefetch popular items when they are about to be expunged from the cache. https://coredns.io/plugins/cache/
+  prefetch:
+    enabled: ${prefetch_enabled}
+    amount: 3
+    duration: 30s
+    percentage: 20%
+
+  # -- Port used for the health endpoint
+  healthPort: 8080
+
+  setupInterface: ${setup_interface}
+
+  setupIptables: ${setup_iptables}
+
+  skipTeardown: ${skip_teardown}
+
+securityContext:
+  capabilities:
+    add:
+      - NET_ADMIN
+
+resources: ${pod_resources}
+
 affinity: ${affinity}
+
+imagePullSecrets: ${image_pull_secrets}
+# - name: "image-pull-secret"
+
+prometheusScraping:
+  enabled: true
+
+tolerations:
+  - key: "CriticalAddonsOnly"
+    operator: "Exists"
+  - effect: "NoExecute"
+    operator: "Exists"
+  - effect: "NoSchedule"
+    operator: "Exists"
