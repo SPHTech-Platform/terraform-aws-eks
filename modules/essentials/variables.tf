@@ -1601,13 +1601,13 @@ variable "nodelocaldns_chart_name" {
 variable "nodelocaldns_chart_repository" {
   description = "Chart Repository URL for Node Local DNS Cache"
   type        = string
-  default     = "https://lablabs.github.io/k8s-nodelocaldns-helm"
+  default     = "oci://ghcr.io/deliveryhero/helm-charts"
 }
 
 variable "nodelocaldns_chart_version" {
   description = "Chart version for Node Local DNS Cache"
   type        = string
-  default     = "2.1.0"
+  default     = "2.1.5"
 }
 
 variable "nodelocaldns_namespace" {
@@ -1628,10 +1628,78 @@ variable "nodelocaldns_image_tag" {
   default     = "1.25.0"
 }
 
+variable "nodelocaldns_internal_domain_name" {
+  description = "Node Local DNS Cache internal domain name"
+  type        = string
+  default     = "cluster.local"
+}
+
+variable "nodelocaldns_kube_dns_svc_ip" {
+  description = "Kube DNS service IP, This required Only kube-proxy mode is `iptables` mostprobably values would be '172.20.0.10' or 'fd74:1124:c4cd::a'"
+  type        = string
+  default     = "172.20.0.10"
+}
+
 variable "nodelocaldns_localdns_ip" {
-  description = "Node Local DNS Cache IP"
+  description = "Node Local DNS Cache IP, Range '169.254.0.0/16' for IPv4 and 'fd00::/8' for IPv6"
   type        = string
   default     = "169.254.20.10"
+}
+
+variable "nodelocaldns_custom_upstream_svc_name" {
+  description = "Custom upstream service name"
+  type        = string
+  default     = ""
+}
+
+variable "nodelocaldns_enable_logging" {
+  description = "Enable logging for Node Local DNS Cache"
+  type        = bool
+  default     = false
+}
+
+variable "nodelocaldns_no_ipv6_lookups" {
+  description = "Disable IPv6 lookups, If true, return NOERROR when attempting to resolve an IPv6 address"
+  type        = bool
+  default     = true
+}
+
+variable "nodelocaldns_cache_prefetch_enabled" {
+  description = "Enable cache prefetching"
+  type        = bool
+  default     = false
+}
+
+variable "nodelocaldns_setup_interface" {
+  description = "Setup interface for Node Local DNS Cache"
+  type        = bool
+  default     = true
+}
+
+variable "nodelocaldns_setup_iptables" {
+  description = "Setup iptables for Node Local DNS Cache"
+  type        = bool
+  default     = true
+}
+
+variable "nodelocaldns_skip_teardown" {
+  description = "Skip teardown for Node Local DNS Cache"
+  type        = bool
+  default     = false
+}
+
+variable "nodelocaldns_pod_resources" {
+  description = "Node Local DNS Cache pod resources"
+  type        = map(any)
+  default = {
+    requests = {
+      cpu    = "25m"
+      memory = "128Mi"
+    }
+    limits = {
+      memory = "128Mi"
+    }
+  }
 }
 
 variable "nodelocaldns_affinity" {
@@ -1670,4 +1738,10 @@ variable "nodelocaldns_affinity" {
       }
     }
   }
+}
+
+variable "nodelocaldns_image_pull_secrets" {
+  description = "Image pull secrets for Node Local DNS Cache"
+  type        = list(any)
+  default     = []
 }

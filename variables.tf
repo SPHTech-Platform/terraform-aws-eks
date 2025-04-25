@@ -612,7 +612,7 @@ variable "karpenter_ephemeral_volume_size" {
 }
 
 variable "karpenter_nodeclass_kubelet_clusterdns_ips" {
-  description = "Cluster DNS IPs for Karpenter node classes"
+  description = "Cluster DNS IPs for Karpenter node classes, assign values if `kube-proxy` mode is `IPVS` and should match with Essentials module `nodelocaldns_localdns_ip` variable value"
   type        = list(string)
   default     = []
 }
