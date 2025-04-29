@@ -1661,7 +1661,7 @@ variable "nodelocaldns_enable_logging" {
 variable "nodelocaldns_no_ipv6_lookups" {
   description = "Disable IPv6 lookups, If true, return NOERROR when attempting to resolve an IPv6 address"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "nodelocaldns_cache_prefetch_enabled" {

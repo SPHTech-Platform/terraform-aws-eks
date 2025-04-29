@@ -7,7 +7,7 @@ locals {
     local_dns_ip             = var.nodelocaldns_localdns_ip
     custom_upstream_svc_name = var.nodelocaldns_custom_upstream_svc_name
     enable_logging           = var.nodelocaldns_enable_logging
-    no_ipv6_lookups          = var.ip_dual_stack_enabled ? var.nodelocaldns_no_ipv6_lookups : false
+    no_ipv6_lookups          = var.nodelocaldns_no_ipv6_lookups
     prefetch_enabled         = var.nodelocaldns_cache_prefetch_enabled
     setup_interface          = var.nodelocaldns_setup_interface
     setup_iptables           = var.nodelocaldns_setup_iptables
