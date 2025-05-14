@@ -1489,22 +1489,20 @@ variable "fluent_bit_log_group_retention" {
 
 variable "fluent_bit_custom_parser" {
   description = "Custom parser for Fluent Bit"
-  type = map(object({
+  type = map(object(
     name        = string
     format      = string
     regex       = optional(string)
     time_key    = string
     time_format = string
-  }))
+  ))
   default = {
-    apache_parser = {
       name        = "custom_apache"
       format      = "regex"
       regex       = "^(?<client_ip>[^ ]*) \\<(?<x_forwarded_for>[^\"]*)\\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] \\\"(?<latency>[^\"]*)\\\" \\\"(?<method>\\S+)(?: +(?<path>[^ ]*) +\\S*)?\\\" (?<code>[^ ]*) (?<size>[^ ]*)(?: \\\"(?<referer>[^\"]*)\\\" \\\"(?<agent>[^\"]*)\\\")?$"
       time_key    = "time"
       time_format = "%d/%b/%Y:%H:%M:%S %z"
     }
-  }
 }
 
 variable "resolve_conflicts_on_update" {
