@@ -155,6 +155,7 @@ config:
         compression gzip
         storage_class REDUCED_REDUNDANCY
         retry_limit 2
+        s3_key_format /fluent-bit-logs/%Y/%m/%d/%H/%M/$TAG
 %{ endif }
 
 #  extraFiles: {}
