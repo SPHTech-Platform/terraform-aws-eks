@@ -1497,12 +1497,14 @@ variable "fluent_bit_custom_parser" {
     time_format = string
   }))
   default = {
+    apache_parser = {
       name        = "custom_apache"
       format      = "regex"
       regex       = "^(?<client_ip>[^ ]*) \\<(?<x_forwarded_for>[^\"]*)\\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] \\\"(?<latency>[^\"]*)\\\" \\\"(?<method>\\S+)(?: +(?<path>[^ ]*) +\\S*)?\\\" (?<code>[^ ]*) (?<size>[^ ]*)(?: \\\"(?<referer>[^\"]*)\\\" \\\"(?<agent>[^\"]*)\\\")?$"
       time_key    = "time"
       time_format = "%d/%b/%Y:%H:%M:%S %z"
     }
+  }
 }
 
 variable "resolve_conflicts_on_update" {
