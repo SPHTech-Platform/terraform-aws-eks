@@ -56,12 +56,12 @@ config:
   ## Default parsers are from : https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf
   customParsers: |
     [PARSER]
-        Name custom_apache
+        Name ${custom_parser.name}
         Format regex
-        Regex ^(?<client_ip>[^ ]*) \<(?<x_forwarded_for>[^\"]*)\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<latency>[^\"]*)" "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Regex ${custom_parser.regex}
         Time_Keep Off
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
+        Time_Key ${custom_parser.time_key}
+        Time_Format ${custom_parser.time_format}
 
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |
@@ -103,7 +103,7 @@ config:
         Name parser
         Match kube.*
         Key_Name log
-        Parser custom_apache
+        Parser ${custom_parser.name}
         Reserve_Data true
 
 %{if length(excluded_namespaces) > 0}
@@ -129,7 +129,7 @@ config:
         Name parser
         Match kube_s3.*
         Key_Name log
-        Parser custom_apache
+        Parser ${custom_parser.name}
         Reserve_Data true
 %{ endif }
 

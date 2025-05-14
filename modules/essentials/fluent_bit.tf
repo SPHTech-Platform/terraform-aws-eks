@@ -32,6 +32,7 @@ locals {
     service_account_name = local.service_account_name,
     image_repository     = var.fluent_bit_image_repository,
     image_tag            = var.fluent_bit_image_tag,
+    custom_parser        = var.fluent_bit_custom_parser,
     liveness_probe       = jsonencode(var.fluent_bit_liveness_probe),
     readiness_probe      = jsonencode(var.fluent_bit_readiness_probe),
     resources            = jsonencode(var.fluent_bit_resources),

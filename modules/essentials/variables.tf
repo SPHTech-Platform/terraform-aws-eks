@@ -1487,6 +1487,24 @@ variable "fluent_bit_log_group_retention" {
   default     = 30
 }
 
+variable "fluent_bit_custom_parser" {
+  description = "Custom parser for Fluent Bit"
+  type = map(object({
+    name        = string
+    format      = string
+    regex       = string(Optional)
+    time_key    = string
+    time_format = string
+  }))
+  default = {
+      name        = "custom_apache"
+      format      = "regex"
+      regex       = "^(?<client_ip>[^ ]*) \\<(?<x_forwarded_for>[^\"]*)\\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \\[(?<time>[^\]]*)\\] \"(?<latency>[^\"]*)\" \"(?<method>\\S+)(?: +(?<path>[^ ]*) +\\S*)?\" (?<code>[^ ]*) (?<size>[^ ]*)(?: \"(?<referer>[^\"]*)\" \"(?<agent>[^\"]*)\")?$"
+      time_key    = "time"
+      time_format = "%d/%b/%Y:%H:%M:%S %z"
+    }
+}
+
 variable "resolve_conflicts_on_update" {
   description = "value for resolve_conflicts_on_update for aws_eks_addon resource"
   type        = string
