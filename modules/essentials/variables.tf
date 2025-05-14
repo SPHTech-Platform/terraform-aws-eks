@@ -1499,7 +1499,7 @@ variable "fluent_bit_custom_parser" {
   default = {
     name        = "custom_apache"
     format      = "regex"
-    regex       = "^(?<client_ip>[^ ]*) \\<(?<x_forwarded_for>[^\"]*)\\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] \\\"(?<latency>[^\"]*)\\\" \\\"(?<method>\\S+)(?: +(?<path>[^ ]*) +\\S*)?\\\" (?<code>[^ ]*) (?<size>[^ ]*)(?: \\\"(?<referer>[^\"]*)\\\" \\\"(?<agent>[^\"]*)\\\")?$"
+    regex       = "^(?<client_ip>[^ ]*) \\<(?<x_forwarded_for>[^\"]*)\\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] \"(?<latency>[^\"]*)\" \"(?<method>\\S+)(?: +(?<path>[^ ]*) +\\S*)?\" (?<code>[^ ]*) (?<size>[^ ]*)(?: \"(?<referer>[^\"]*)\" \"(?<agent>[^\"]*)\")?$"
     time_key    = "time"
     time_format = "%d/%b/%Y:%H:%M:%S %z"
   }
