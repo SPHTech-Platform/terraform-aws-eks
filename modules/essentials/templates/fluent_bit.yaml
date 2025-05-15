@@ -131,6 +131,18 @@ config:
         Key_Name log
         Parser ${custom_parser.name}
         Reserve_Data true
+
+    [FILTER]
+        Name record_modifier
+        Match kube_s3.*
+        Record cluster_name ${cluster_name}
+        Record region ${region}
+        Record namespace $kubernetes['namespace_name']
+        Record pod_name $kubernetes['pod_name']
+        Record container_name $kubernetes['container_name']
+        Record container_id $kubernetes['container_id']
+        Record host $kubernetes['host']
+        Record time $kubernetes['time']
 %{ endif }
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
