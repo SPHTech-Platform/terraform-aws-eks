@@ -135,8 +135,6 @@ config:
     [FILTER]
         Name record_modifier
         Match kube_s3.*
-        Record cluster_name ${cluster_name}
-        Record region ${region}
         Record namespace $kubernetes['namespace_name']
         Record pod_name $kubernetes['pod_name']
         Record container_name $kubernetes['container_name']
