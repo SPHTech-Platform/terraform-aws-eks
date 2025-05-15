@@ -135,12 +135,10 @@ config:
     [FILTER]
         Name record_modifier
         Match kube_s3.*
-        Record log_filename ${FLB_FILE}
-        Record hostname ${HOSTNAME}
-        Record namespace ${kubernetes['namespace_name']}
-        Record pod_name ${kubernetes['pod_name']}
-        Record container_name ${kubernetes['container_name']}
-        Record container_id ${kubernetes['container_id']}
+        Record namespace $kubernetes['namespace_name']
+        Record pod_name $kubernetes['pod_name']
+        Record container_name $kubernetes['container_name']
+        Record container_id $kubernetes['container_id']
 %{ endif }
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
