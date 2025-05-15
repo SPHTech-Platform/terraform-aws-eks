@@ -152,7 +152,6 @@ config:
         Match kube_s3.*
         region ap-southeast-1
         bucket ${s3_bucket_name}
-        compression gzip
         storage_class REDUCED_REDUNDANCY
         retry_limit 2
         s3_key_format /fluent-bit-logs/%Y/%m/%d/%H/%M/$TAG
