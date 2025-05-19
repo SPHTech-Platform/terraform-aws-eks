@@ -135,7 +135,7 @@ config:
     [FILTER]
         Name modify
         Match kube_s3.*
-        Record pod_name $kubernetes['pod_name']
+        Add pod_name $kubernetes['pod_name']
 
 %{ endif }
 
