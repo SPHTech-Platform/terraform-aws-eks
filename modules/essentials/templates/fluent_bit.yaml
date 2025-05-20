@@ -119,7 +119,7 @@ config:
     [FILTER]
         Name kubernetes
         Match kube_s3.*
-        Kube_URL https://kubernetes.default.svc.cluster.local:443
+        Kube_URL ${kube_api_endpoint}
         Merge_Log On
         Keep_Log Off
         K8S-Logging.Parser On
