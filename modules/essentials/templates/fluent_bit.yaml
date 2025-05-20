@@ -56,12 +56,12 @@ config:
   ## Default parsers are from : https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf
   customParsers: |
     [PARSER]
-        Name custom_apache
+        Name ${custom_parser.name}
         Format regex
-        Regex ^(?<client_ip>[^ ]*) \<(?<x_forwarded_for>[^\"]*)\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<latency>[^\"]*)" "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Regex ${custom_parser.regex}
         Time_Keep Off
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
+        Time_Key ${custom_parser.time_key}
+        Time_Format ${custom_parser.time_format}
 
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |
@@ -92,18 +92,19 @@ config:
     [FILTER]
         Name kubernetes
         Match kube.*
-        Kube_URL https://kubernetes.default.svc.cluster.local:443
+        Kube_URL ${kube_api_endpoint}
         Merge_Log On
         Keep_Log Off
         K8S-Logging.Parser On
         K8S-Logging.Exclude On
         Buffer_Size 31k
+        Kube_Tag_Prefix kube.var.log.containers.
 
     [FILTER]
         Name parser
         Match kube.*
         Key_Name log
-        Parser custom_apache
+        Parser ${custom_parser.name}
         Reserve_Data true
 
 %{if length(excluded_namespaces) > 0}
@@ -119,18 +120,20 @@ config:
     [FILTER]
         Name kubernetes
         Match kube_s3.*
-        Kube_URL https://kubernetes.default.svc.cluster.local:443
+        Kube_URL ${kube_api_endpoint}
         Merge_Log On
         Keep_Log Off
         K8S-Logging.Parser On
         Buffer_Size 31k
+        Kube_Tag_Prefix kube_s3.var.log.containers.
 
     [FILTER]
         Name parser
         Match kube_s3.*
         Key_Name log
-        Parser custom_apache
+        Parser ${custom_parser.name}
         Reserve_Data true
+
 %{ endif }
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
@@ -152,9 +155,9 @@ config:
         Match kube_s3.*
         region ap-southeast-1
         bucket ${s3_bucket_name}
-        compression gzip
         storage_class REDUCED_REDUNDANCY
         retry_limit 2
+        s3_key_format /fluent-bit-logs/%Y/%m/%d/%H/%M/$TAG
 %{ endif }
 
 #  extraFiles: {}

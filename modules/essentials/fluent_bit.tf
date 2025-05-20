@@ -32,6 +32,7 @@ locals {
     service_account_name = local.service_account_name,
     image_repository     = var.fluent_bit_image_repository,
     image_tag            = var.fluent_bit_image_tag,
+    custom_parser        = var.fluent_bit_custom_parser,
     liveness_probe       = jsonencode(var.fluent_bit_liveness_probe),
     readiness_probe      = jsonencode(var.fluent_bit_readiness_probe),
     resources            = jsonencode(var.fluent_bit_resources),
@@ -40,6 +41,7 @@ locals {
     excluded_namespaces  = var.fluent_bit_excluded_namespaces,
     s3_bucket_name       = var.fluent_bit_enable_s3_output ? module.fluentbit_s3_bucket[0].s3_bucket_id : null,
     cw_enable            = var.fluent_bit_enable_cw_output
+    kube_api_endpoint    = var.fluent_bit_kube_api_endpoint
   })
 
   fluent_bit_helm_config = merge(
