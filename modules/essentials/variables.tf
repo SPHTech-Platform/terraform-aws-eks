@@ -1571,6 +1571,12 @@ variable "fluent_bit_tolerations" {
   ]
 }
 
+variable "fluent_bit_kube_api_endpoint" {
+  description = "Kube API endpoint for fluent-bit"
+  type        = string
+  default     = "https://kubernetes.default.svc.cluster.local:443"
+}
+
 variable "ip_dual_stack_enabled" {
   description = "Enable essentials to support EKS dual stack cluster"
   type        = bool
