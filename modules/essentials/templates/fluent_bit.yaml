@@ -98,6 +98,7 @@ config:
         K8S-Logging.Parser On
         K8S-Logging.Exclude On
         Buffer_Size 31k
+        Kube_Tag_Prefix kube.var.log.containers.
 
     [FILTER]
         Name parser
@@ -124,6 +125,7 @@ config:
         Keep_Log Off
         K8S-Logging.Parser On
         Buffer_Size 31k
+        Kube_Tag_Prefix kube_s3.var.log.containers.
 
     [FILTER]
         Name parser
