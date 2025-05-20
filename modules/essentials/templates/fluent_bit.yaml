@@ -132,11 +132,6 @@ config:
         Parser ${custom_parser.name}
         Reserve_Data true
 
-    [FILTER]
-        Name modify
-        Match kube_s3.*
-        Add pod_id kubernetes.pod_id
-
 %{ endif }
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
