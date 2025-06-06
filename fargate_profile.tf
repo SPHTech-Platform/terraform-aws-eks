@@ -4,6 +4,11 @@ locals {
 
   fargate_namespaces = concat(local.essentials_namespaces, local.kube_system_namespaces)
 
+  subnets_by_az = {
+    for subnet_id in var.subnet_ids :
+    data.aws_subnet.subnets[subnet_id].availability_zone => subnet_id...
+  }
+
   default_fargate_profiles = merge(
     {
       essentials = {
@@ -16,14 +21,14 @@ locals {
         ]
       }
     },
-    { for subnet in var.subnet_ids :
-      "kube-system-${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}" => {
-        iam_role_name = "fargate_profile_${substr(data.aws_subnet.subnets[subnet].availability_zone, -2, -1)}"
+    { for az, az_subnets in local.subnets_by_az :
+      "kube-system-${substr(az, -2, 2)}" => {
+        iam_role_name = "fargate_profile_${substr(az, -2, 2)}"
         selectors = [
           { namespace = "kube-system" }
         ]
         # Create one profile per AZ for even spread
-        subnet_ids = [subnet]
+        subnet_ids = az_subnets
       }
     },
   )
