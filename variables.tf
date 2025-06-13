@@ -448,9 +448,10 @@ variable "karpenter_nodepools" {
       })
     )
     karpenter_nodepool_disruption = object({
-      consolidation_policy = string
-      consolidate_after    = string
-      expire_after         = string
+      consolidation_policy     = string
+      consolidate_after        = string
+      expire_after             = string
+      termination_grace_period = string
     })
     karpenter_nodepool_disruption_budgets = list(map(any))
     karpenter_nodepool_weight             = number
@@ -495,9 +496,10 @@ variable "karpenter_nodepools" {
       }
     ]
     karpenter_nodepool_disruption = {
-      consolidation_policy = "WhenEmptyOrUnderutilized" # WhenEmptyOrUnderutilized or WhenEmpty
-      consolidate_after    = "10m"
-      expire_after         = "168h" # 7d | 168h | 1w
+      consolidation_policy     = "WhenEmptyOrUnderutilized" # WhenEmptyOrUnderutilized or WhenEmpty
+      consolidate_after        = "10m"
+      expire_after             = "168h" # 7d | 168h | 1w
+      termination_grace_period = "5h"
     }
     karpenter_nodepool_disruption_budgets = [{
       nodes = "10%"
