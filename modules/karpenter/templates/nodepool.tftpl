@@ -25,6 +25,9 @@ spec:
       # You can choose to disable expiration entirely by setting the string value 'Never' here. Defaults to 720h (30 days)
       expireAfter: ${karpenter_nodepool_disruption.expire_after}
 
+      # Note: changing this value in the nodepool will drift the nodeclaims.
+      terminationGracePeriod: ${karpenter_nodepool_disruption.termination_grace_period}
+
       # References the Cloud Provider's NodeClass resource, see your cloud provider specific documentation
       nodeClassRef:
         group: karpenter.k8s.aws
