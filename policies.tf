@@ -1,3 +1,10 @@
+locals {
+  source_policy_documents = length(var.workers_additional_assume_policy) > 0 ? [
+    data.aws_iam_policy_document.ec2_assume_role_policy.json,
+    data.aws_iam_policy_document.workers_additional_assume_policy.json
+  ] : [data.aws_iam_policy_document.ec2_assume_role_policy.json]
+}
+
 data "aws_iam_policy_document" "eks_assume_role_policy" {
   statement {
     sid     = "EKSClusterAssumeRole"
@@ -20,6 +27,15 @@ data "aws_iam_policy_document" "ec2_assume_role_policy" {
       identifiers = ["ec2.${data.aws_partition.current.dns_suffix}"]
     }
   }
+}
+
+data "aws_iam_policy_document" "workers_additional_assume_policy" {
+  # Decode the JSON policy
+  source_policy_documents = [var.workers_additional_assume_policy]
+}
+
+data "aws_iam_policy_document" "combined_assume_policy" {
+  source_policy_documents = local.source_policy_documents
 }
 
 # This policy is required for the KMS key used for EKS root volumes, so the cluster is allowed to enc/dec/attach encrypted EBS volumes
