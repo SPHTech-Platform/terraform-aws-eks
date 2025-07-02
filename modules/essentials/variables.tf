@@ -1610,46 +1610,16 @@ variable "nodelocaldns_enabled" {
   default     = false
 }
 
-variable "nodelocaldns_release_name" {
-  description = "Release name for Node Local DNS Cache"
-  type        = string
-  default     = "node-local-dns"
-}
-
-variable "nodelocaldns_chart_name" {
-  description = "Chart name for Node Local DNS Cache"
-  type        = string
-  default     = "node-local-dns"
-}
-
-variable "nodelocaldns_chart_repository" {
-  description = "Chart Repository URL for Node Local DNS Cache"
-  type        = string
-  default     = "oci://ghcr.io/deliveryhero/helm-charts"
-}
-
-variable "nodelocaldns_chart_version" {
-  description = "Chart version for Node Local DNS Cache"
-  type        = string
-  default     = "2.1.5"
-}
-
-variable "nodelocaldns_namespace" {
-  description = "Namespace to deploy Node Local DNS Cache"
-  type        = string
-  default     = "kube-system"
-}
-
 variable "nodelocaldns_image_repository" {
   description = "Node Local DNS Cache image repository"
   type        = string
-  default     = "k8s.gcr.io/dns/k8s-dns-node-cache"
+  default     = "registry.k8s.io/dns/k8s-dns-node-cache"
 }
 
 variable "nodelocaldns_image_tag" {
   description = "Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag "
   type        = string
-  default     = "1.25.0"
+  default     = "1.26.4"
 }
 
 variable "nodelocaldns_internal_domain_name" {
@@ -1668,104 +1638,4 @@ variable "nodelocaldns_localdns_ip" {
   description = "Node Local DNS Cache IP, Range '169.254.0.0/16' for IPv4 and 'fd00::/8' for IPv6"
   type        = string
   default     = "169.254.20.10"
-}
-
-variable "nodelocaldns_custom_upstream_svc_name" {
-  description = "Custom upstream service name"
-  type        = string
-  default     = ""
-}
-
-variable "nodelocaldns_enable_logging" {
-  description = "Enable logging for Node Local DNS Cache"
-  type        = bool
-  default     = false
-}
-
-variable "nodelocaldns_no_ipv6_lookups" {
-  description = "Disable IPv6 lookups, If true, return NOERROR when attempting to resolve an IPv6 address"
-  type        = bool
-  default     = false
-}
-
-variable "nodelocaldns_cache_prefetch_enabled" {
-  description = "Enable cache prefetching"
-  type        = bool
-  default     = false
-}
-
-variable "nodelocaldns_setup_interface" {
-  description = "Setup interface for Node Local DNS Cache"
-  type        = bool
-  default     = true
-}
-
-variable "nodelocaldns_setup_iptables" {
-  description = "Setup iptables for Node Local DNS Cache"
-  type        = bool
-  default     = true
-}
-
-variable "nodelocaldns_skip_teardown" {
-  description = "Skip teardown for Node Local DNS Cache"
-  type        = bool
-  default     = false
-}
-
-variable "nodelocaldns_pod_resources" {
-  description = "Node Local DNS Cache pod resources"
-  type        = map(any)
-  default = {
-    requests = {
-      cpu    = "25m"
-      memory = "128Mi"
-    }
-    limits = {
-      memory = "128Mi"
-    }
-  }
-}
-
-variable "nodelocaldns_affinity" {
-  description = "Node Local DNS Cache affinity"
-  type        = map(any)
-  default = {
-    "nodeAffinity" = {
-      "requiredDuringSchedulingIgnoredDuringExecution" = {
-        "nodeSelectorTerms" = [
-          {
-            "matchExpressions" = [
-              {
-                "key"      = "kubernetes.io/os"
-                "operator" = "In"
-                "values"   = ["linux"]
-              },
-              {
-                "key"      = "kubernetes.io/arch"
-                "operator" = "In"
-                "values" = [
-                  "amd64",
-                  "arm64"
-                ]
-              },
-              {
-                "key"      = "eks.amazonaws.com/compute-type"
-                "operator" = "NotIn"
-                "values" = [
-                  "fargate",
-                  "auto"
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    }
-  }
-}
-
-variable "nodelocaldns_image_pull_secrets" {
-  description = "Image pull secrets for Node Local DNS Cache"
-  type        = list(any)
-  default     = []
 }
