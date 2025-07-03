@@ -1,0 +1,10 @@
+misconfigurations:
+  - id: KSV037
+  - id: KSV104
+  - id: KSV117
+  - id: KSV009
+  - id: KSV023
+  - id: KSV021
+  - id: KSV022
+  - id: KSV030
+  - id: KSV106

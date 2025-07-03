@@ -5,7 +5,7 @@ terraform {
     # tflint-ignore: terraform_unused_required_providers
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 5.70"
+      version = ">= 5.70, < 6.0"
     }
     helm = {
       source  = "hashicorp/helm"
