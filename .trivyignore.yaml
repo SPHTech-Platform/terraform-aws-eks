@@ -1,10 +1,19 @@
 misconfigurations:
   - id: KSV037
+    path: modules/essentials/templates/nodelocaldns.yaml
   - id: KSV104
+    path: modules/essentials/templates/nodelocaldns.yaml
   - id: KSV117
+    path: modules/essentials/templates/nodelocaldns.yaml
   - id: KSV009
+    path: modules/essentials/templates/nodelocaldns.yaml
   - id: KSV023
+    path: modules/essentials/templates/nodelocaldns.yaml
   - id: KSV021
+    path: modules/essentials/templates/nodelocaldns.yaml
   - id: KSV022
+    path: modules/essentials/templates/nodelocaldns.yaml
   - id: KSV030
+    path: modules/essentials/templates/nodelocaldns.yaml
   - id: KSV106
+    path: modules/essentials/templates/nodelocaldns.yaml
