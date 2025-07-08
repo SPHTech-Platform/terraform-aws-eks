@@ -54,7 +54,7 @@ module "fargate_profiles" {
 }
 
 resource "kubernetes_manifest" "fargate_node_security_group_policy" {
-  for_each = var.fargate_cluster && var.create_node_security_group ? toset(local.fargate_namespaces) : []
+  for_each = var.fargate_cluster && var.create_node_security_group && var.create_fargate_node_security_group_policy ? toset(local.fargate_namespaces) : []
 
   manifest = {
     apiVersion = "vpcresources.k8s.aws/v1beta1"

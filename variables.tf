@@ -689,3 +689,15 @@ variable "enable_cluster_creator_admin_permissions" {
   type        = bool
   default     = true
 }
+
+variable "create_fargate_node_security_group_policy" {
+  description = "Create Fargate Node Security Group Policy"
+  type        = bool
+  default     = true
+}
+
+variable "create_fargate_node_security_group_policy_for_karpenter" {
+  description = "Create Fargate Node Security Group Policy"
+  type        = bool
+  default     = true
+}
