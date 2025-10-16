@@ -8,7 +8,7 @@ locals {
     priority_class = var.node_termination_handler_priority_class
     resources      = jsonencode(var.node_termination_handler_resources)
 
-    region                     = data.aws_region.current.name
+    region                     = data.aws_region.current.region
     spot_interruption_draining = var.node_termination_handler_spot_interruption_draining_enabled
     scheduled_event_draining   = var.node_termination_handler_scheduled_event_draining_enabled
     metadata_tries             = var.node_termination_handler_metadata_tries
@@ -86,7 +86,7 @@ module "node_termination_handler_sqs" {
 data "aws_iam_policy_document" "node_termination_handler_sqs" {
   statement {
     actions   = ["sqs:SendMessage"]
-    resources = ["arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.nth_sqs_name}"]
+    resources = ["arn:aws:sqs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:${local.nth_sqs_name}"]
 
     principals {
       type = "Service"

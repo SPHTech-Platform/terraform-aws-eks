@@ -8,7 +8,7 @@ locals {
     [OUTPUT]
         Name cloudwatch_logs
         Match   kube.*
-        region ${data.aws_region.current.name}
+        region ${data.aws_region.current.region}
         log_group_name ${local.cwlog_group}
         log_stream_prefix fluentbit-
         auto_create_group false
