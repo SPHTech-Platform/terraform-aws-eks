@@ -19,7 +19,7 @@ locals {
     fullname_override = var.cluster_autoscaler_release_name
 
     cluster_name = var.cluster_name
-    aws_region   = data.aws_region.current.name
+    aws_region   = data.aws_region.current.region
 
     service_account_name = var.cluster_autoscaler_service_account_name
     role_arn             = try(module.cluster_autoscaler_irsa_role[0].iam_role_arn, "")

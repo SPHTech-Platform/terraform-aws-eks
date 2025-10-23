@@ -1,7 +1,7 @@
 locals {
   cluster_brupop_values = {
     cluster_name = var.cluster_name
-    aws_region   = data.aws_region.current.name
+    aws_region   = data.aws_region.current.region
 
     brupop_namespace = var.brupop_namespace
     brupop_image     = var.brupop_image

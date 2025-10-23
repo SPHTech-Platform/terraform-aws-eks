@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "fluent_bit" {
     content {
       sid       = "PutLogEvents"
       effect    = "Allow"
-      resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
+      resources = ["arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
       actions   = ["logs:PutLogEvents"]
     }
   }
@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "fluent_bit" {
     content {
       sid       = "CreateCWLogs"
       effect    = "Allow"
-      resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"]
+      resources = ["arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:*"]
       actions = [
         "logs:CreateLogGroup",
         "logs:CreateLogStream",

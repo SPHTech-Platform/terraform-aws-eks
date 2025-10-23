@@ -116,13 +116,9 @@ module "karpenter" {
   # Required for Fargate profile
   subnet_ids = var.subnet_ids
 
-  # Enable for v1 Upgrade
-  enable_v1_permissions = var.enable_v1_permissions_for_karpenter
-
   # Enable Pod Identity
   ## AWS Fargate aren’t supported EKS Pod Identities ##
-  enable_pod_identity             = !var.fargate_cluster ? var.enable_pod_identity_for_karpenter : false
-  create_pod_identity_association = !var.fargate_cluster && var.enable_pod_identity_for_karpenter ? true : false
+  enable_irsa = var.fargate_cluster ? true : false
 
   # Metrics scraping
   enable_service_monitoring = var.enable_karpenter_service_monitoring

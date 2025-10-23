@@ -1769,3 +1769,112 @@ variable "nodelocaldns_image_pull_secrets" {
   type        = list(any)
   default     = []
 }
+
+## Keda ##
+variable "keda_enabled" {
+  description = "Enable KEDA"
+  type        = bool
+  default     = false
+}
+
+variable "keda_release_name" {
+  description = "Release name for KEDA"
+  type        = string
+  default     = "keda"
+}
+
+variable "keda_chart_name" {
+  description = "Chart name for KEDA"
+  type        = string
+  default     = "keda"
+}
+
+variable "keda_chart_repository" {
+  description = "Chart repository for KEDA"
+  type        = string
+  default     = "https://kedacore.github.io/charts"
+}
+
+variable "keda_chart_version" {
+  description = "Chart version for KEDA"
+  type        = string
+  default     = "2.17.2"
+}
+
+variable "keda_namespace" {
+  description = "Namespace to deploy KEDA"
+  type        = string
+  default     = "keda"
+}
+
+variable "keda_operator_requests_cpu" {
+  description = "CPU request for KEDA operator pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_operator_requests_memory" {
+  description = "Memory request for KEDA operator pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_operator_limits_cpu" {
+  description = "CPU limit for KEDA operator pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_operator_limits_memory" {
+  description = "Memory limit for KEDA operator pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_metric_server_requests_cpu" {
+  description = "CPU request for KEDA metric server pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_metric_server_requests_memory" {
+  description = "Memory request for KEDA metric server pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_metric_server_limits_cpu" {
+  description = "CPU limit for KEDA metric server pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_metric_server_limits_memory" {
+  description = "Memory limit for KEDA metric server pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_webhooks_requests_cpu" {
+  description = "CPU request for KEDA webhooks pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_webhooks_requests_memory" {
+  description = "Memory request for KEDA webhooks pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_webhooks_limits_cpu" {
+  description = "CPU limit for KEDA webhooks pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_webhooks_limits_memory" {
+  description = "Memory limit for KEDA webhooks pods"
+  type        = string
+  default     = "512Mi"
+}

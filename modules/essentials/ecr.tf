@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "ecr_cache" {
     ]
 
     resources = [for rule in aws_ecr_pull_through_cache_rule.cache : (
-      "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/${rule.ecr_repository_prefix}/*"
+      "arn:aws:ecr:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:repository/${rule.ecr_repository_prefix}/*"
     )]
   }
 }

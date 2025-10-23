@@ -28,7 +28,7 @@ variable "karpenter_crd_chart_repository" {
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.3.3"
+  default     = "1.8.1"
 }
 
 ###############
@@ -61,7 +61,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.3.3"
+  default     = "1.8.1"
 }
 
 variable "karpenter_nodepools" {
@@ -176,13 +176,6 @@ variable "karpenter_nodeclasses" {
   }]
 }
 
-# TODO - make v1 permssions the default policy at next breaking change
-variable "enable_v1_permissions" {
-  description = "Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`)"
-  type        = bool
-  default     = true
-}
-
 ############################
 # K8S Cluster Information
 ############################
@@ -290,20 +283,117 @@ variable "oidc_provider_arn" {
   type        = string
 }
 
+variable "irsa_assume_role_condition_test" {
+  description = "Name of the [IAM condition operator](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition_operators.html) to evaluate when assuming the role"
+  type        = string
+  default     = "StringEquals"
+}
+
 ###############################################################################
 # Pod Identity Association
 ################################################################################
-# TODO - Change default to `true` at next breaking change
-variable "create_pod_identity_association" {
-  description = "Determines whether to create pod identity association"
+variable "enable_spot_termination" {
+  description = "Determines whether to enable native spot termination handling"
   type        = bool
-  default     = false
+  default     = true
 }
 
-variable "enable_pod_identity" {
-  description = "Determines whether to enable support for EKS pod identity, DON'T `enable` if you are using FARGATE profile for Karpenter"
+variable "ami_id_ssm_parameter_arns" {
+  description = "List of SSM Parameter ARNs that Karpenter controller is allowed read access (for retrieving AMI IDs)"
+  type        = list(string)
+  default     = []
+}
+
+variable "iam_policy_statements" {
+  description = "A list of IAM policy [statements](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document#statement) - used for adding specific IAM permissions as needed"
+  type = list(object({
+    sid           = optional(string)
+    actions       = optional(list(string))
+    not_actions   = optional(list(string))
+    effect        = optional(string)
+    resources     = optional(list(string))
+    not_resources = optional(list(string))
+    principals = optional(list(object({
+      type        = string
+      identifiers = list(string)
+    })))
+    not_principals = optional(list(object({
+      type        = string
+      identifiers = list(string)
+    })))
+    condition = optional(list(object({
+      test     = string
+      values   = list(string)
+      variable = string
+    })))
+  }))
+  default = null
+}
+
+variable "iam_role_use_name_prefix" {
+  description = "Determines whether the name of the IAM role (`iam_role_name`) is used as a prefix"
   type        = bool
-  default     = false
+  default     = true
+}
+
+variable "iam_role_name" {
+  description = "Name of the IAM role"
+  type        = string
+  default     = "KarpenterController"
+}
+
+variable "iam_role_path" {
+  description = "Path of the IAM role"
+  type        = string
+  default     = "/"
+}
+
+variable "iam_role_description" {
+  description = "IAM role description"
+  type        = string
+  default     = "Karpenter controller IAM role"
+}
+
+variable "iam_role_max_session_duration" {
+  description = "Maximum API session duration in seconds between 3600 and 43200"
+  type        = number
+  default     = null
+}
+
+variable "iam_role_permissions_boundary_arn" {
+  description = "Permissions boundary ARN to use for the IAM role"
+  type        = string
+  default     = null
+}
+
+variable "iam_role_tags" {
+  description = "A map of additional tags to add the the IAM role"
+  type        = map(string)
+  default     = {}
+}
+
+variable "iam_policy_name" {
+  description = "Name of the IAM policy"
+  type        = string
+  default     = "KarpenterController"
+}
+
+variable "iam_policy_use_name_prefix" {
+  description = "Determines whether the name of the IAM policy (`iam_policy_name`) is used as a prefix"
+  type        = bool
+  default     = true
+}
+
+variable "iam_policy_path" {
+  description = "Path of the IAM policy"
+  type        = string
+  default     = "/"
+}
+
+variable "iam_policy_description" {
+  description = "IAM policy description"
+  type        = string
+  default     = "Karpenter controller IAM policy"
 }
 
 ################################################################################
@@ -320,4 +410,10 @@ variable "access_entry_type" {
   description = "Type of the access entry. `EC2_LINUX`, `FARGATE_LINUX`, or `EC2_WINDOWS`; defaults to `EC2_LINUX`"
   type        = string
   default     = "EC2_LINUX"
+}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
 }
