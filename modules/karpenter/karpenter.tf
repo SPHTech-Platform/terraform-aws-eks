@@ -45,7 +45,9 @@ locals {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 21.0.9"
+  version = "~> 21.8.0"
+
+  region = var.region
 
   cluster_name = var.cluster_name
 
@@ -57,6 +59,7 @@ module "karpenter" {
   cluster_ip_family    = var.cluster_ip_family
 
   create_iam_role                 = !var.enable_irsa ? true : false # can't `enable` when karpenter use fargate profile
+  enable_inline_policy            = var.enable_inline_policy && !var.enable_irsa ? true : false
   create_pod_identity_association = !var.enable_irsa ? true : false
 
   enable_spot_termination = var.enable_spot_termination

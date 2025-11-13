@@ -1,6 +1,24 @@
 ############################
 # K8S Cluster Information
 ############################
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
+variable "partition" {
+  description = "The AWS partition - pass through value to reduce number of GET requests from data sources"
+  type        = string
+  default     = ""
+}
+
+variable "account_id" {
+  description = "The AWS account ID - pass through value to reduce number of GET requests from data sources"
+  type        = string
+  default     = ""
+}
+
 variable "cluster_name" {
   description = "EKS Cluster name"
   type        = string

@@ -1,3 +1,9 @@
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
 ##################
 # Karpenter CRDs #
 ##################
@@ -276,6 +282,12 @@ variable "enable_irsa" {
   description = "Determines whether to enable support for IAM role for service accounts"
   type        = bool
   default     = true
+}
+
+variable "enable_inline_policy" {
+  description = "Determines whether the controller policy is created as a standard IAM policy or inline IAM policy. This can be enabled when the error `LimitExceeded: Cannot exceed quota for PolicySize: 6144` is received since standard IAM policies have a limit of 6,144 characters versus an inline role policy's limit of 10,240 ([Reference](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html))"
+  type        = bool
+  default     = false
 }
 
 variable "oidc_provider_arn" {

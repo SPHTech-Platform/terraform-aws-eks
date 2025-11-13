@@ -1,12 +1,30 @@
 ############################
 # K8S Cluster Information
 ############################
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
+variable "partition" {
+  description = "The AWS partition - pass through value to reduce number of GET requests from data sources"
+  type        = string
+  default     = ""
+}
+
+variable "account_id" {
+  description = "The AWS account ID - pass through value to reduce number of GET requests from data sources"
+  type        = string
+  default     = ""
+}
+
 variable "cluster_name" {
   description = "EKS Cluster name"
   type        = string
 }
 
-variable "cluster_version" {
+variable "kubernetes_version" {
   description = "EKS Cluster Version"
   type        = string
   default     = "1.27"
@@ -22,8 +40,8 @@ variable "worker_security_group_id" {
   type        = string
 }
 
-variable "cluster_service_ipv4_cidr" {
-  description = "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks"
+variable "cluster_service_cidr" {
+  description = "The CIDR block (IPv4 or IPv6) used by the cluster to assign Kubernetes service IP addresses. This is derived from the cluster itself"
   type        = string
   default     = null
 }
