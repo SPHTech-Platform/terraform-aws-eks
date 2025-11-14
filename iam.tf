@@ -114,7 +114,7 @@ resource "aws_iam_role_policy" "ebs_csi_kms" {
   count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   name_prefix = "kms"
-  role        = module.ebs_csi_irsa_role[0].iam_role_name
+  role        = module.ebs_csi_irsa_role[0].name
 
   policy = data.aws_iam_policy_document.kms_csi_ebs.json
 }
