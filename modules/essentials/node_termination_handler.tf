@@ -46,12 +46,12 @@ resource "helm_release" "node_termination_handler" {
 module "node_termination_handler_irsa" {
   count = var.node_termination_handler_enable ? 1 : 0
 
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.47"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "~> 6.0"
 
-  role_name_prefix              = coalesce(var.node_termination_handler_iam_role, "${var.cluster_name}-nth-")
-  role_description              = "EKS Cluster ${var.cluster_name} Node Termination Handler"
-  role_permissions_boundary_arn = var.node_termination_handler_permissions_boundary
+  name                 = coalesce(var.node_termination_handler_iam_role, "${var.cluster_name}-nth")
+  description          = "EKS Cluster ${var.cluster_name} Node Termination Handler"
+  permissions_boundary = var.node_termination_handler_permissions_boundary
 
   attach_node_termination_handler_policy  = true
   node_termination_handler_sqs_queue_arns = [var.node_termination_handler_sqs_arn]
@@ -76,9 +76,11 @@ module "node_termination_handler_sqs" {
   count = var.create_node_termination_handler_sqs ? 1 : 0
 
   source  = "terraform-aws-modules/sqs/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
-  name                          = local.nth_sqs_name
+  name   = local.nth_sqs_name
+  region = var.region
+
   message_retention_seconds     = 300
   source_queue_policy_documents = data.aws_iam_policy_document.node_termination_handler_sqs.json
 }

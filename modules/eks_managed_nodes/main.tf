@@ -77,7 +77,7 @@ module "eks_managed_node_group" {
   desired_size = try(each.value.desired_size, local.eks_managed_node_group_defaults.desired_size, 1)
 
   ami_id              = try(each.value.ami_id, local.eks_managed_node_group_defaults.ami_id, "")
-  ami_type            = try(each.value.ami_type, local.eks_managed_node_group_defaults.ami_type, null)
+  ami_type            = try(each.value.ami_type, local.eks_managed_node_group_defaults.ami_type, "BOTTLEROCKET_x86_64")
   ami_release_version = try(each.value.ami_release_version, local.eks_managed_node_group_defaults.ami_release_version, null)
 
   capacity_type        = try(each.value.capacity_type, local.eks_managed_node_group_defaults.capacity_type, null)
@@ -92,7 +92,6 @@ module "eks_managed_node_group" {
   timeouts      = try(each.value.timeouts, local.eks_managed_node_group_defaults.timeouts, {})
 
   # User data
-  ami_type                   = try(each.value.ami_type, local.eks_managed_node_group_defaults.ami_type, "BOTTLEROCKET_x86_64")
   cluster_endpoint           = try(data.aws_eks_cluster.this.endpoint, "")
   cluster_auth_base64        = try(data.aws_eks_cluster.this.certificate_authority[0].data, "")
   cluster_service_cidr       = var.cluster_service_cidr

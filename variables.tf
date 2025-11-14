@@ -1,23 +1,29 @@
 #######################
 # EKS Cluster Settings
 #######################
-variable "cluster_name" {
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
+variable "name" {
   description = "EKS Cluster Name"
   type        = string
 }
 
-variable "cluster_version" {
+variable "kubernetes_version" {
   description = "EKS Cluster Version"
   type        = string
   default     = "1.33"
 
   validation {
-    condition     = try(tonumber(var.cluster_version) < 1.34, false)
+    condition     = try(tonumber(var.kubernetes_version) < 1.34, false)
     error_message = "EKS Cluster Version 1.33 is not supported by this module. Please use a version less than 1.33"
   }
 }
 
-variable "cluster_enabled_log_types" {
+variable "enabled_log_types" {
   description = "A list of the desired control plane logs to enable. For more information, see Amazon EKS Control Plane Logging documentation (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)"
   type        = list(string)
   default     = ["audit", "api", "authenticator"]
@@ -34,7 +40,7 @@ variable "authentication_mode" {
   }
 }
 
-variable "cluster_compute_config" {
+variable "compute_config" {
   description = "Configuration block for the cluster compute configuration"
   type        = any
   default     = {}
@@ -127,13 +133,13 @@ variable "aws_auth_fargate_profile_pod_execution_role_arns" {
 #############
 # EKS Addons
 #############
-variable "cluster_addons" {
+variable "addons" {
   description = "Map of cluster addon configurations to enable for the cluster. Addon name can be the map keys or set with `name`"
   type        = any
   default     = {}
 }
 
-variable "cluster_addons_timeouts" {
+variable "addons_timeouts" {
   description = "Create, update, and delete timeout configurations for the cluster addons"
   type        = map(string)
   default     = {}
@@ -177,19 +183,19 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "cluster_service_ipv4_cidr" {
+variable "service_ipv4_cidr" {
   description = "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks"
   type        = string
   default     = null
 }
 
-variable "create_cluster_security_group" {
+variable "create_security_group" {
   description = "Determines if a security group is created for the cluster. Note: the EKS service creates a primary security group for the cluster by default"
   type        = bool
   default     = true
 }
 
-variable "cluster_security_group_name" {
+variable "security_group_name" {
   description = "Cluster security group name"
   type        = string
   default     = null
@@ -213,7 +219,7 @@ variable "worker_security_group_name" {
   default     = null
 }
 
-variable "cluster_security_group_additional_rules" {
+variable "security_group_additional_rules" {
   description = "List of additional security group rules to add to the cluster security group created. Set `source_node_security_group = true` inside rules to set the `node_security_group` as source"
   type        = any
   default     = {}
@@ -404,19 +410,19 @@ variable "create_cni_ipv6_iam_policy" {
   default     = false
 }
 
-variable "cluster_service_ipv6_cidr" {
+variable "service_ipv6_cidr" {
   description = "The CIDR block to assign Kubernetes pod and service IP addresses from if `ipv6` was specified when the cluster was created. Kubernetes assigns service addresses from the unique local address range (fc00::/7) because you can't specify a custom IPv6 CIDR block when you create the cluster"
   type        = string
   default     = null
 }
 
-variable "cluster_ip_family" {
+variable "ip_family" {
   description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created"
   type        = string
   default     = "ipv4"
 
   validation {
-    condition     = contains(["ipv4", "ipv6"], var.cluster_ip_family)
+    condition     = contains(["ipv4", "ipv6"], var.ip_family)
     error_message = "Invalid IP family. Valid values are `ipv4` and `ipv6`"
   }
 }

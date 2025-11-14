@@ -54,15 +54,15 @@ locals {
 module "cluster_autoscaler_irsa_role" {
   count = var.autoscaling_mode == "cluster_autoscaler" ? 1 : 0
 
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.47"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "~> 6.0"
 
-  role_name_prefix              = coalesce(var.cluster_autoscaler_iam_role, "${var.cluster_name}-autoscaler-")
-  role_description              = "EKS Cluster ${var.cluster_name} Autoscaler"
-  role_permissions_boundary_arn = var.cluster_autoscaler_permissions_boundary
+  name                 = coalesce(var.cluster_autoscaler_iam_role, "${var.cluster_name}-autoscaler")
+  description          = "EKS Cluster ${var.cluster_name} Autoscaler"
+  permissions_boundary = var.cluster_autoscaler_permissions_boundary
 
   attach_cluster_autoscaler_policy = true
-  cluster_autoscaler_cluster_ids   = [var.cluster_name]
+  cluster_autoscaler_cluster_names = [var.cluster_name]
 
   oidc_providers = {
     ex = {

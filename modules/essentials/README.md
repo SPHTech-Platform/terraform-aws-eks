@@ -81,13 +81,13 @@ module "eks_essentials" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.47 |
+| <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 5.47 |
 | <a name="module_fluentbit_s3_bucket"></a> [fluentbit\_s3\_bucket](#module\_fluentbit\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 4.6.1 |
 | <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 0.1.4 |
 | <a name="module_helm_kube_state_metrics"></a> [helm\_kube\_state\_metrics](#module\_helm\_kube\_state\_metrics) | SPHTech-Platform/release/helm | ~> 0.1.4 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.1.4 |
 | <a name="module_helm_node_exporter"></a> [helm\_node\_exporter](#module\_helm\_node\_exporter) | SPHTech-Platform/release/helm | ~> 0.1.4 |
-| <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.47 |
+| <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 5.47 |
 | <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 4.0 |
 
 ## Resources

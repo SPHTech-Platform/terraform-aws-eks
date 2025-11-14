@@ -69,11 +69,11 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 module "vpc_cni_irsa_role" {
   count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
 
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.47"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "~> 6.0"
 
-  role_name_prefix = "${var.cluster_name}-cni-"
-  role_description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
+  name        = "${var.cluster_name}-cni"
+  description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
 
   attach_vpc_cni_policy = true
   vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
@@ -92,11 +92,11 @@ module "vpc_cni_irsa_role" {
 module "ebs_csi_irsa_role" {
   count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
 
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.47"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "~> 6.0"
 
-  role_name_prefix = "${var.cluster_name}-ebs-csi-"
-  role_description = "EKS Cluster ${var.cluster_name} EBS CSI Addon"
+  name        = "${var.cluster_name}-ebs-csi"
+  description = "EKS Cluster ${var.cluster_name} EBS CSI Addon"
 
   attach_ebs_csi_policy = true
 
@@ -126,9 +126,10 @@ module "aws_vpc_cni_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 1.10"
+  version = "~> 2.4"
 
-  name = "aws-vpc-cni-${var.cluster_ip_family}"
+  name   = "aws-vpc-cni-${var.cluster_ip_family}"
+  region = var.region
 
   attach_aws_vpc_cni_policy = true
   aws_vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
@@ -141,9 +142,10 @@ module "aws_ebs_csi_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 1.10"
+  version = "~> 2.4"
 
-  name = "aws-ebs-csi"
+  name   = "aws-ebs-csi"
+  region = var.region
 
   attach_aws_ebs_csi_policy = true
   aws_ebs_csi_kms_arns = [

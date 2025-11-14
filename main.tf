@@ -75,7 +75,7 @@ locals {
   addon_aws_ebs_csi_driver_lookup = var.enable_pod_identity_for_eks_addons ? "pod_identity" : "irsa"
 
   node_security_group_tags = merge({
-    "karpenter.sh/discovery" = var.cluster_name
+    "karpenter.sh/discovery" = var.name
   }, var.node_security_group_tags)
 }
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
@@ -84,30 +84,32 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.33.1"
+  version = "~> 21.8.0"
 
-  cluster_name              = var.cluster_name
-  cluster_version           = var.cluster_version
-  authentication_mode       = var.authentication_mode
-  cluster_enabled_log_types = var.cluster_enabled_log_types
+  name   = var.name
+  region = var.region
 
-  cluster_endpoint_private_access      = var.cluster_endpoint_private_access
-  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
-  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
+  kubernetes_version  = var.kubernetes_version
+  authentication_mode = var.authentication_mode
+  enabled_log_types   = var.enabled_log_types
 
-  vpc_id                                = var.vpc_id
-  subnet_ids                            = var.subnet_ids
-  cluster_additional_security_group_ids = var.cluster_additional_security_group_ids
-  cluster_ip_family                     = var.cluster_ip_family
-  cluster_service_ipv4_cidr             = var.cluster_service_ipv4_cidr
-  cluster_service_ipv6_cidr             = var.cluster_service_ipv6_cidr
-  create_cni_ipv6_iam_policy            = var.create_cni_ipv6_iam_policy
+  endpoint_private_access      = var.endpoint_private_access
+  endpoint_public_access       = var.endpoint_public_access
+  endpoint_public_access_cidrs = var.endpoint_public_access_cidrs
 
-  create_cluster_security_group      = var.create_cluster_security_group
-  cluster_security_group_name        = coalesce(var.cluster_security_group_name, var.cluster_name)
-  cluster_security_group_description = "EKS Cluster ${var.cluster_name} Master"
-  cluster_security_group_additional_rules = merge(
-    var.create_cluster_security_group && var.create_node_security_group ?
+  vpc_id                        = var.vpc_id
+  subnet_ids                    = var.subnet_ids
+  additional_security_group_ids = var.additional_security_group_ids
+  ip_family                     = var.ip_family
+  service_ipv4_cidr             = var.service_ipv4_cidr
+  service_ipv6_cidr             = var.service_ipv6_cidr
+  create_cni_ipv6_iam_policy    = var.create_cni_ipv6_iam_policy
+
+  create_security_group      = var.create_security_group
+  security_group_name        = coalesce(var.security_group_name, var.name)
+  security_group_description = "EKS Cluster ${var.name} Master"
+  security_group_additional_rules = merge(
+    var.create_security_group && var.create_node_security_group ?
     {
       egress_nodes_ephemeral_ports_tcp = {
         description                = "To node 1025-65535"
@@ -118,11 +120,11 @@ module "eks" {
         source_node_security_group = var.create_node_security_group
       }
     } : {}
-  , var.cluster_security_group_additional_rules)
-  cluster_compute_config = var.cluster_compute_config
+  , var.security_group_additional_rules)
+  compute_config = var.compute_config
 
-  node_security_group_name        = coalesce(var.worker_security_group_name, join("_", [var.cluster_name, "worker"]))
-  node_security_group_description = "EKS Cluster ${var.cluster_name} Nodes"
+  node_security_group_name        = coalesce(var.worker_security_group_name, join("_", [var.name, "worker"]))
+  node_security_group_description = "EKS Cluster ${var.name} Nodes"
   node_security_group_additional_rules = merge({
     # cert-manager
     ingress_cluster_10260_webhook = {
@@ -138,12 +140,12 @@ module "eks" {
   node_security_group_tags                     = local.node_security_group_tags
 
   create_kms_key = false # Created in kms.tf
-  cluster_encryption_config = {
+  encryption_config = {
     provider_key_arn = module.kms_secret.key_arn
     resources        = ["secrets"]
   }
 
-  cluster_addons = merge({
+  addons = merge({
     kube-proxy = {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
@@ -183,7 +185,7 @@ module "eks" {
         }
       })
     }
-    eks-pod-identity-agent = var.cluster_ip_family == "ipv4" ? {
+    eks-pod-identity-agent = var.ip_family == "ipv4" ? {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       configuration_values = jsonencode({
@@ -198,10 +200,10 @@ module "eks" {
       resolve_conflicts_on_update = "OVERWRITE"
     }
     },
-    var.cluster_addons,
+    var.addons,
   )
 
-  cluster_addons_timeouts = var.cluster_addons_timeouts
+  addons_timeouts = var.addons_timeouts
 
   # We decouple the creation so that we don't create a circular dependency
   create_iam_role = false

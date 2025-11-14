@@ -6,7 +6,7 @@ locals {
     launch_template_use_name_prefix = true
     launch_template_name            = var.default_group_launch_template_name
 
-    platform       = "bottlerocket"
+    ami_type       = "BOTTLEROCKET_x86_64"
     ami_id         = coalesce(var.default_group_ami_id, data.aws_ami.eks_default_bottlerocket.id)
     instance_types = var.default_group_instance_types
 
@@ -95,8 +95,8 @@ module "node_groups" {
 
   count = !var.fargate_cluster ? 1 : 0
 
-  cluster_name    = split("/", data.aws_arn.cluster.resource)[1]
-  cluster_version = module.eks.cluster_version
+  cluster_name       = split("/", data.aws_arn.cluster.resource)[1]
+  kubernetes_version = module.eks.cluster_version
 
   worker_iam_role_arn = aws_iam_role.workers.arn
 
