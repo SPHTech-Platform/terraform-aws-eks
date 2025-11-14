@@ -149,25 +149,25 @@ variable "addons_timeouts" {
 # Cluster Networking
 #######################
 
-variable "cluster_endpoint_private_access" {
+variable "endpoint_private_access" {
   description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled"
   type        = bool
   default     = true
 }
 
-variable "cluster_endpoint_public_access" {
+variable "endpoint_public_access" {
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled"
   type        = bool
   default     = true
 }
 
-variable "cluster_endpoint_public_access_cidrs" {
+variable "endpoint_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
 
-variable "cluster_additional_security_group_ids" {
+variable "additional_security_group_ids" {
   description = "List of additional, externally created security group IDs to attach to the cluster control plane"
   type        = list(string)
   default     = []
