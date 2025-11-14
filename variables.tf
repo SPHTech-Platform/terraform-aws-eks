@@ -81,55 +81,6 @@ variable "iam_role_additional_policies" {
   default     = []
 }
 
-#######################
-# Cluster RBAC (AWS Auth)
-#######################
-
-# For Self managed nodes groups set the create_aws_auth to true
-variable "create_aws_auth_configmap" {
-  description = "Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap`"
-  type        = bool
-  default     = false
-}
-
-variable "manage_aws_auth_configmap" {
-  description = "Determines whether to manage the contents of the aws-auth configmap. NOTE - make it `true` when `authentication_mode = CONFIG_MAP`"
-  type        = bool
-  default     = false
-}
-
-variable "enable_cluster_windows_support" {
-  description = "Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth."
-  type        = bool
-  default     = false
-}
-
-variable "role_mapping" {
-  description = "List of IAM roles to give access to the EKS cluster"
-  type = list(object({
-    rolearn  = string
-    username = string
-    groups   = list(string)
-  }))
-  default = []
-}
-
-variable "user_mapping" {
-  description = "List of IAM Users to give access to the EKS Cluster"
-  type = list(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-  default = []
-}
-
-variable "aws_auth_fargate_profile_pod_execution_role_arns" {
-  description = "List of Fargate profile pod execution role ARNs to add to the aws-auth configmap"
-  type        = list(string)
-  default     = []
-}
-
 #############
 # EKS Addons
 #############
