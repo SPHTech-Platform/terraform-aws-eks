@@ -78,8 +78,7 @@ module "node_termination_handler_sqs" {
   source  = "terraform-aws-modules/sqs/aws"
   version = "~> 5.0"
 
-  name   = local.nth_sqs_name
-  region = var.region
+  name = local.nth_sqs_name
 
   message_retention_seconds     = 300
   source_queue_policy_documents = data.aws_iam_policy_document.node_termination_handler_sqs.json

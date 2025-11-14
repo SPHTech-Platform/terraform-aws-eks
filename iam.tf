@@ -12,8 +12,8 @@ locals {
 
 # Cluster IAM Role
 resource "aws_iam_role" "cluster" {
-  name        = coalesce(var.cluster_iam_role, var.cluster_name)
-  description = "IAM Role for the EKS Cluster named ${var.cluster_name}"
+  name        = coalesce(var.cluster_iam_role, var.name)
+  description = "IAM Role for the EKS Cluster named ${var.name}"
 
   assume_role_policy    = data.aws_iam_policy_document.eks_assume_role_policy.json
   permissions_boundary  = var.cluster_iam_boundary
@@ -34,8 +34,8 @@ resource "aws_iam_role_policy_attachment" "cluster" {
 
 # Workers IAM Role
 resource "aws_iam_role" "workers" {
-  name        = coalesce(var.workers_iam_role, "${var.cluster_name}-workers")
-  description = "IAM Role for the workers in EKS Cluster named ${var.cluster_name}"
+  name        = coalesce(var.workers_iam_role, "${var.name}-workers")
+  description = "IAM Role for the workers in EKS Cluster named ${var.name}"
 
   assume_role_policy    = data.aws_iam_policy_document.ec2_assume_role_policy.json
   permissions_boundary  = var.workers_iam_boundary
@@ -72,12 +72,12 @@ module "vpc_cni_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   version = "~> 6.0"
 
-  name        = "${var.cluster_name}-cni"
-  description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
+  name        = "${var.name}-cni"
+  description = "EKS Cluster ${var.name} VPC CNI Addon"
 
   attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
-  vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
+  vpc_cni_enable_ipv4   = var.ip_family == "ipv4" ? "true" : "false"
+  vpc_cni_enable_ipv6   = var.ip_family == "ipv6" ? "true" : "false"
 
   oidc_providers = {
     main = {
@@ -95,8 +95,8 @@ module "ebs_csi_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   version = "~> 6.0"
 
-  name        = "${var.cluster_name}-ebs-csi"
-  description = "EKS Cluster ${var.cluster_name} EBS CSI Addon"
+  name        = "${var.name}-ebs-csi"
+  description = "EKS Cluster ${var.name} EBS CSI Addon"
 
   attach_ebs_csi_policy = true
 
@@ -128,12 +128,12 @@ module "aws_vpc_cni_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 2.4"
 
-  name   = "aws-vpc-cni-${var.cluster_ip_family}"
+  name   = "aws-vpc-cni-${var.ip_family}"
   region = var.region
 
   attach_aws_vpc_cni_policy = true
-  aws_vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
-  aws_vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
+  aws_vpc_cni_enable_ipv4   = var.ip_family == "ipv4" ? "true" : "false"
+  aws_vpc_cni_enable_ipv6   = var.ip_family == "ipv6" ? "true" : "false"
 
   tags = var.tags
 }
