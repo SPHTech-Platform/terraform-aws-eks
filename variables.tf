@@ -649,21 +649,8 @@ variable "karpenter_pod_resources" {
   }
 }
 
-# TODO - make v1 permssions the default policy at next breaking change
-variable "enable_v1_permissions_for_karpenter" {
-  description = "Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`)"
-  type        = bool
-  default     = true
-}
-
 variable "karpenter_upgrade" {
   description = "Karpenter Upgrade"
-  type        = bool
-  default     = false
-}
-
-variable "enable_pod_identity_for_karpenter" {
-  description = "Enable pod identity for karpenter"
   type        = bool
   default     = false
 }
