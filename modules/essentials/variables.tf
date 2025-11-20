@@ -1361,7 +1361,7 @@ variable "metrics_server_helm_config_defaults" {
     name        = "metrics-server"
     chart       = "metrics-server"
     repository  = "https://kubernetes-sigs.github.io/metrics-server/"
-    version     = "3.12.1"
+    version     = "3.13.0"
     description = "Metric server helm Chart deployment configuration"
   }
 }
@@ -1394,7 +1394,7 @@ variable "kube_state_metrics_helm_config_defaults" {
     name        = "kube-state-metrics"
     chart       = "kube-state-metrics"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "5.25.1"
+    version     = "6.4.1"
     namespace   = "kube-system"
     description = "kube-state-metrics helm Chart deployment configuration"
   }
@@ -1422,7 +1422,7 @@ variable "node_exporter_helm_config_defaults" {
     name        = "prometheus-node-exporter"
     chart       = "prometheus-node-exporter"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "4.39.0"
+    version     = "4.49.0"
     namespace   = "kube-system"
     description = "prometheus-node-exporter helm Chart deployment configuration"
   }
@@ -1450,7 +1450,7 @@ variable "fluent_bit_helm_config_defaults" {
     name        = "fluent-bit"
     chart       = "fluent-bit"
     repository  = "https://fluent.github.io/helm-charts"
-    version     = "0.47.9"
+    version     = "0.54.0"
     namespace   = "logging"
     description = "Fluent Bit helm Chart deployment configuration"
   }
@@ -1466,7 +1466,7 @@ variable "fluent_bit_image_repository" {
 variable "fluent_bit_image_tag" {
   description = "Fluent Bit Image tag"
   type        = string
-  default     = "2.32.0"
+  default     = "2.34.1"
 }
 
 variable "fluent_bit_helm_config" {
@@ -1631,7 +1631,7 @@ variable "nodelocaldns_chart_repository" {
 variable "nodelocaldns_chart_version" {
   description = "Chart version for Node Local DNS Cache"
   type        = string
-  default     = "2.1.5"
+  default     = "2.3.0"
 }
 
 variable "nodelocaldns_namespace" {
@@ -1643,13 +1643,13 @@ variable "nodelocaldns_namespace" {
 variable "nodelocaldns_image_repository" {
   description = "Node Local DNS Cache image repository"
   type        = string
-  default     = "k8s.gcr.io/dns/k8s-dns-node-cache"
+  default     = "registry.k8s.io/dns/k8s-dns-node-cache"
 }
 
 variable "nodelocaldns_image_tag" {
   description = "Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag "
   type        = string
-  default     = "1.25.0"
+  default     = "1.26.0"
 }
 
 variable "nodelocaldns_internal_domain_name" {
@@ -1798,7 +1798,7 @@ variable "keda_chart_repository" {
 variable "keda_chart_version" {
   description = "Chart version for KEDA"
   type        = string
-  default     = "2.17.2"
+  default     = "2.18.1"
 }
 
 variable "keda_namespace" {
