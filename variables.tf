@@ -19,7 +19,7 @@ variable "kubernetes_version" {
 
   validation {
     condition     = try(tonumber(var.kubernetes_version) < 1.34, false)
-    error_message = "EKS Cluster Version 1.33 is not supported by this module. Please use a version less than 1.33"
+    error_message = "EKS Cluster Version 1.34 is not supported by this module. Please use a version less than 1.33"
   }
 }
 
@@ -531,13 +531,13 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.8.1"
+  default     = "1.7.3"
 }
 
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "1.8.1"
+  default     = "1.7.3"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
