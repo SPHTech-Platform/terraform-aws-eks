@@ -304,12 +304,6 @@ variable "irsa_assume_role_condition_test" {
 ###############################################################################
 # Pod Identity Association
 ################################################################################
-variable "enable_spot_termination" {
-  description = "Determines whether to enable native spot termination handling"
-  type        = bool
-  default     = true
-}
-
 variable "ami_id_ssm_parameter_arns" {
   description = "List of SSM Parameter ARNs that Karpenter controller is allowed read access (for retrieving AMI IDs)"
   type        = list(string)
@@ -428,4 +422,72 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default     = {}
+}
+
+################################################################################
+# Node Termination Queue
+################################################################################
+variable "enable_spot_termination" {
+  description = "Determines whether to enable native spot termination handling"
+  type        = bool
+  default     = true
+}
+
+variable "queue_name" {
+  description = "Name of the SQS queue"
+  type        = string
+  default     = null
+}
+
+variable "queue_managed_sse_enabled" {
+  description = "Boolean to enable server-side encryption (SSE) of message content with SQS-owned encryption keys"
+  type        = bool
+  default     = true
+}
+
+variable "queue_kms_master_key_id" {
+  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
+  type        = string
+  default     = null
+}
+
+variable "queue_kms_data_key_reuse_period_seconds" {
+  description = "The length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again"
+  type        = number
+  default     = null
+}
+
+variable "queue_policy_statements" {
+  description = "A list of IAM policy [statements](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document#statement) - used for adding specific SQS queue policy permissions as needed"
+  type = map(object({
+    sid           = optional(string)
+    actions       = optional(list(string))
+    not_actions   = optional(list(string))
+    effect        = optional(string)
+    resources     = optional(list(string))
+    not_resources = optional(list(string))
+    principals = optional(list(object({
+      type        = string
+      identifiers = list(string)
+    })))
+    not_principals = optional(list(object({
+      type        = string
+      identifiers = list(string)
+    })))
+    condition = optional(list(object({
+      test     = string
+      values   = list(string)
+      variable = string
+    })))
+  }))
+  default = null
+}
+
+################################################################################
+# Event Bridge Rules
+################################################################################
+variable "rule_name_prefix" {
+  description = "Prefix used for all event bridge rules"
+  type        = string
+  default     = "Karpenter"
 }

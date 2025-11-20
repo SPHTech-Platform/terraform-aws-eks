@@ -82,7 +82,7 @@ module "eks_essentials" {
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 6.0 |
-| <a name="module_fluentbit_s3_bucket"></a> [fluentbit\_s3\_bucket](#module\_fluentbit\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 4.6.1 |
+| <a name="module_fluentbit_s3_bucket"></a> [fluentbit\_s3\_bucket](#module\_fluentbit\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 5.8.2 |
 | <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 0.3.0 |
 | <a name="module_helm_kube_state_metrics"></a> [helm\_kube\_state\_metrics](#module\_helm\_kube\_state\_metrics) | SPHTech-Platform/release/helm | ~> 0.3.0 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.3.0 |

@@ -62,7 +62,7 @@ module "karpenter" {
   enable_inline_policy            = var.enable_inline_policy && !var.enable_irsa ? true : false
   create_pod_identity_association = !var.enable_irsa ? true : false
 
-  enable_spot_termination = var.enable_spot_termination
+  enable_spot_termination = !var.enable_irsa ? true : false
 
   tags = var.tags
 }

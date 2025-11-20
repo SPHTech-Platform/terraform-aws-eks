@@ -156,16 +156,21 @@ module "aws_ebs_csi_pod_identity" {
 }
 
 moved {
-  from = module.vpc_cni_irsa_role
-  to   = module.vpc_cni_irsa_role[0]
+  from = module.vpc_cni_irsa_role[0].aws_iam_policy.vpc_cni[0]
+  to   = module.vpc_cni_irsa_role[0].aws_iam_policy.this[0]
 }
 
 moved {
-  from = module.ebs_csi_irsa_role
-  to   = module.ebs_csi_irsa_role[0]
+  from = module.vpc_cni_irsa_role[0].aws_iam_role_policy_attachment.vpc_cni[0]
+  to   = module.vpc_cni_irsa_role[0].aws_iam_role_policy_attachment.this[0]
 }
 
 moved {
-  from = aws_iam_role_policy.ebs_csi_kms
-  to   = aws_iam_role_policy.ebs_csi_kms[0]
+  from = module.ebs_csi_irsa_role[0].aws_iam_policy.ebs_csi[0]
+  to   = module.ebs_csi_irsa_role[0].aws_iam_policy.this[0]
+}
+
+moved {
+  from = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.ebs_csi[0]
+  to   = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.this[0]
 }

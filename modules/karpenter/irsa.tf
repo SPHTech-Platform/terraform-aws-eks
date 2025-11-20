@@ -10,6 +10,7 @@ locals {
   irsa_oidc_provider_url          = replace(local.irsa_oidc_provider_arn, "/^(.*provider/)/", "")
   irsa_namespace_service_accounts = ["${var.karpenter_namespace}:karpenter"]
   irsa_oidc_provider_arn          = var.oidc_provider_arn
+  queue_name                      = coalesce(var.queue_name, "Karpenter-${var.cluster_name}")
 }
 
 data "aws_iam_policy_document" "controller" {
@@ -240,7 +241,7 @@ data "aws_iam_policy_document" "controller" {
 
   statement {
     sid       = "AllowPassingInstanceRole"
-    resources = var.worker_iam_role_arn
+    resources = [var.worker_iam_role_arn]
     actions   = ["iam:PassRole"]
 
     condition {
@@ -478,4 +479,252 @@ resource "aws_iam_role_policy_attachment" "controller" {
 
   role       = aws_iam_role.controller[0].name
   policy_arn = aws_iam_policy.controller[0].arn
+}
+
+################################################################################
+# Node Termination Queue
+################################################################################
+resource "aws_sqs_queue" "this" {
+  count = var.enable_irsa && var.enable_spot_termination ? 1 : 0
+
+  region = var.region
+
+  name                              = local.queue_name
+  message_retention_seconds         = 300
+  sqs_managed_sse_enabled           = var.queue_managed_sse_enabled ? var.queue_managed_sse_enabled : null
+  kms_master_key_id                 = var.queue_kms_master_key_id
+  kms_data_key_reuse_period_seconds = var.queue_kms_data_key_reuse_period_seconds
+
+  tags = var.tags
+}
+
+data "aws_iam_policy_document" "queue" {
+  count = var.enable_irsa && var.enable_spot_termination ? 1 : 0
+
+  statement {
+    sid       = "SqsWrite"
+    actions   = ["sqs:SendMessage"]
+    resources = [aws_sqs_queue.this[0].arn]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com",
+        "sqs.amazonaws.com",
+      ]
+    }
+  }
+
+  statement {
+    sid    = "DenyHTTP"
+    effect = "Deny"
+    actions = [
+      "sqs:*"
+    ]
+    resources = [aws_sqs_queue.this[0].arn]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values = [
+        "false"
+      ]
+    }
+    principals {
+      type = "*"
+      identifiers = [
+        "*"
+      ]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.queue_policy_statements != null ? var.queue_policy_statements : {}
+
+    content {
+      sid           = try(coalesce(statement.value.sid, statement.key))
+      actions       = statement.value.actions
+      not_actions   = statement.value.not_actions
+      effect        = statement.value.effect
+      resources     = statement.value.resources
+      not_resources = statement.value.not_resources
+
+      dynamic "principals" {
+        for_each = statement.value.principals != null ? statement.value.principals : []
+
+        content {
+          type        = principals.value.type
+          identifiers = principals.value.identifiers
+        }
+      }
+
+      dynamic "not_principals" {
+        for_each = statement.value.not_principals != null ? statement.value.not_principals : []
+
+        content {
+          type        = not_principals.value.type
+          identifiers = not_principals.value.identifiers
+        }
+      }
+
+      dynamic "condition" {
+        for_each = statement.value.condition != null ? statement.value.condition : []
+
+        content {
+          test     = condition.value.test
+          values   = condition.value.values
+          variable = condition.value.variable
+        }
+      }
+    }
+  }
+}
+
+resource "aws_sqs_queue_policy" "this" {
+  count = var.enable_irsa && var.enable_spot_termination ? 1 : 0
+
+  region = var.region
+
+  queue_url = aws_sqs_queue.this[0].url
+  policy    = data.aws_iam_policy_document.queue[0].json
+}
+
+################################################################################
+# Node Termination Event Rules
+################################################################################
+
+locals {
+  events = {
+    health_event = {
+      name        = "HealthEvent"
+      description = "Karpenter interrupt - AWS health event"
+      event_pattern = {
+        source      = ["aws.health"]
+        detail-type = ["AWS Health Event"]
+      }
+    }
+    spot_interrupt = {
+      name        = "SpotInterrupt"
+      description = "Karpenter interrupt - EC2 spot instance interruption warning"
+      event_pattern = {
+        source      = ["aws.ec2"]
+        detail-type = ["EC2 Spot Instance Interruption Warning"]
+      }
+    }
+    instance_rebalance = {
+      name        = "InstanceRebalance"
+      description = "Karpenter interrupt - EC2 instance rebalance recommendation"
+      event_pattern = {
+        source      = ["aws.ec2"]
+        detail-type = ["EC2 Instance Rebalance Recommendation"]
+      }
+    }
+    instance_state_change = {
+      name        = "InstanceStateChange"
+      description = "Karpenter interrupt - EC2 instance state-change notification"
+      event_pattern = {
+        source      = ["aws.ec2"]
+        detail-type = ["EC2 Instance State-change Notification"]
+      }
+    }
+  }
+}
+
+resource "aws_cloudwatch_event_rule" "this" {
+  for_each = { for k, v in local.events : k => v if var.enable_irsa && var.enable_spot_termination }
+
+  region = var.region
+
+  name_prefix   = "${var.rule_name_prefix}${each.value.name}-"
+  description   = each.value.description
+  event_pattern = jsonencode(each.value.event_pattern)
+
+  tags = merge(
+    { "ClusterName" : var.cluster_name },
+    var.tags,
+  )
+}
+
+resource "aws_cloudwatch_event_target" "this" {
+  for_each = { for k, v in local.events : k => v if var.enable_irsa && var.enable_spot_termination }
+
+  region = var.region
+
+  rule      = aws_cloudwatch_event_rule.this[each.key].name
+  target_id = "KarpenterInterruptionQueueTarget"
+  arn       = aws_sqs_queue.this[0].arn
+}
+
+moved {
+  from = module.karpenter.aws_iam_role_policy_attachment.controller[0]
+  to   = aws_iam_role_policy_attachment.controller[0]
+}
+
+moved {
+  from = module.karpenter.aws_iam_role.controller[0]
+  to   = aws_iam_role.controller[0]
+}
+
+moved {
+  from = module.karpenter.aws_iam_policy.controller[0]
+  to   = aws_iam_policy.controller[0]
+}
+
+moved {
+  from = module.karpenter.aws_sqs_queue.this[0]
+  to   = aws_sqs_queue.this[0]
+}
+
+moved {
+  from = module.karpenter.aws_sqs_queue_policy.this[0]
+  to   = aws_sqs_queue_policy.this[0]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_rule.this[0]
+  to   = aws_cloudwatch_event_rule.this[0]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_target.this[0]
+  to   = aws_cloudwatch_event_target.this[0]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_rule.this["health_event"]
+  to   = aws_cloudwatch_event_rule.this["health_event"]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_rule.this["spot_interrupt"]
+  to   = aws_cloudwatch_event_rule.this["spot_interrupt"]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_rule.this["instance_rebalance"]
+  to   = aws_cloudwatch_event_rule.this["instance_rebalance"]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_rule.this["instance_state_change"]
+  to   = aws_cloudwatch_event_rule.this["instance_state_change"]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_target.this["health_event"]
+  to   = aws_cloudwatch_event_target.this["health_event"]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_target.this["spot_interrupt"]
+  to   = aws_cloudwatch_event_target.this["spot_interrupt"]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_target.this["instance_rebalance"]
+  to   = aws_cloudwatch_event_target.this["instance_rebalance"]
+}
+
+moved {
+  from = module.karpenter.aws_cloudwatch_event_target.this["instance_state_change"]
+  to   = aws_cloudwatch_event_target.this["instance_state_change"]
 }

@@ -214,7 +214,6 @@ module "karpenter" {
 | <a name="module_aws_vpc_cni_pod_identity"></a> [aws\_vpc\_cni\_pod\_identity](#module\_aws\_vpc\_cni\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 2.4 |
 | <a name="module_ebs_csi_irsa_role"></a> [ebs\_csi\_irsa\_role](#module\_ebs\_csi\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 6.0 |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 21.8.0 |
-| <a name="module_eks_aws_auth"></a> [eks\_aws\_auth](#module\_eks\_aws\_auth) | terraform-aws-modules/eks/aws//modules/aws-auth | ~> 20.33 |
 | <a name="module_fargate_profiles"></a> [fargate\_profiles](#module\_fargate\_profiles) | ./modules/fargate_profile | n/a |
 | <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | ./modules/karpenter | n/a |
 | <a name="module_kms_ebs"></a> [kms\_ebs](#module\_kms\_ebs) | SPHTech-Platform/kms/aws | ~> 1.0 |
@@ -257,12 +256,10 @@ module "karpenter" {
 | <a name="input_addons_timeouts"></a> [addons\_timeouts](#input\_addons\_timeouts) | Create, update, and delete timeout configurations for the cluster addons | `map(string)` | `{}` | no |
 | <a name="input_authentication_mode"></a> [authentication\_mode](#input\_authentication\_mode) | The authentication mode for the cluster. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP` | `string` | `"API"` | no |
 | <a name="input_autoscaling_mode"></a> [autoscaling\_mode](#input\_autoscaling\_mode) | Autoscaling mode: cluster\_autoscaler or karpenter | `string` | `"karpenter"` | no |
-| <a name="input_aws_auth_fargate_profile_pod_execution_role_arns"></a> [aws\_auth\_fargate\_profile\_pod\_execution\_role\_arns](#input\_aws\_auth\_fargate\_profile\_pod\_execution\_role\_arns) | List of Fargate profile pod execution role ARNs to add to the aws-auth configmap | `list(string)` | `[]` | no |
 | <a name="input_cloudwatch_log_group_tags"></a> [cloudwatch\_log\_group\_tags](#input\_cloudwatch\_log\_group\_tags) | A map of additional tags to add to the cloudwatch log group created | `map(string)` | `{}` | no |
 | <a name="input_cluster_iam_boundary"></a> [cluster\_iam\_boundary](#input\_cluster\_iam\_boundary) | IAM boundary for the cluster IAM role, if any | `string` | `null` | no |
 | <a name="input_cluster_iam_role"></a> [cluster\_iam\_role](#input\_cluster\_iam\_role) | Cluster IAM Role name. If undefined, is the same as the cluster name | `string` | `""` | no |
 | <a name="input_compute_config"></a> [compute\_config](#input\_compute\_config) | Configuration block for the cluster compute configuration | `any` | `{}` | no |
-| <a name="input_create_aws_auth_configmap"></a> [create\_aws\_auth\_configmap](#input\_create\_aws\_auth\_configmap) | Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap` | `bool` | `false` | no |
 | <a name="input_create_aws_observability_ns"></a> [create\_aws\_observability\_ns](#input\_create\_aws\_observability\_ns) | Whether to create AWS Observability Namespace. | `bool` | `true` | no |
 | <a name="input_create_aws_observability_ns_for_karpenter"></a> [create\_aws\_observability\_ns\_for\_karpenter](#input\_create\_aws\_observability\_ns\_for\_karpenter) | Create aws-observability namespace flag | `bool` | `false` | no |
 | <a name="input_create_cni_ipv6_iam_policy"></a> [create\_cni\_ipv6\_iam\_policy](#input\_create\_cni\_ipv6\_iam\_policy) | Whether to create CNI IPv6 IAM policy. | `bool` | `false` | no |
@@ -310,14 +307,12 @@ module "karpenter" {
 | <a name="input_karpenter_security_group_selector_terms_type"></a> [karpenter\_security\_group\_selector\_terms\_type](#input\_karpenter\_security\_group\_selector\_terms\_type) | Type of terms to use in the security group selector | `string` | `"tags"` | no |
 | <a name="input_karpenter_upgrade"></a> [karpenter\_upgrade](#input\_karpenter\_upgrade) | Karpenter Upgrade | `bool` | `false` | no |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | EKS Cluster Version | `string` | `"1.33"` | no |
-| <a name="input_manage_aws_auth_configmap"></a> [manage\_aws\_auth\_configmap](#input\_manage\_aws\_auth\_configmap) | Determines whether to manage the contents of the aws-auth configmap. NOTE - make it `true` when `authentication_mode = CONFIG_MAP` | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | EKS Cluster Name | `string` | n/a | yes |
 | <a name="input_node_security_group_additional_rules"></a> [node\_security\_group\_additional\_rules](#input\_node\_security\_group\_additional\_rules) | List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source | `any` | `{}` | no |
 | <a name="input_node_security_group_enable_recommended_rules"></a> [node\_security\_group\_enable\_recommended\_rules](#input\_node\_security\_group\_enable\_recommended\_rules) | Determines whether to enable recommended security group rules for the node security group created. This includes node-to-node TCP ingress on ephemeral ports and allows all egress traffic | `bool` | `true` | no |
 | <a name="input_node_security_group_tags"></a> [node\_security\_group\_tags](#input\_node\_security\_group\_tags) | A map of additional tags to add to the node security group created | `map(string)` | `{}` | no |
 | <a name="input_only_critical_addons_enabled"></a> [only\_critical\_addons\_enabled](#input\_only\_critical\_addons\_enabled) | Enabling this option will taint default node group with CriticalAddonsOnly=true:NoSchedule taint. Changing this forces a new resource to be created. | `bool` | `false` | no |
 | <a name="input_region"></a> [region](#input\_region) | Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration | `string` | `null` | no |
-| <a name="input_role_mapping"></a> [role\_mapping](#input\_role\_mapping) | List of IAM roles to give access to the EKS cluster | <pre>list(object({<br/>    rolearn  = string<br/>    username = string<br/>    groups   = list(string)<br/>  }))</pre> | `[]` | no |
 | <a name="input_security_group_additional_rules"></a> [security\_group\_additional\_rules](#input\_security\_group\_additional\_rules) | List of additional security group rules to add to the cluster security group created. Set `source_node_security_group = true` inside rules to set the `node_security_group` as source | `any` | `{}` | no |
 | <a name="input_security_group_name"></a> [security\_group\_name](#input\_security\_group\_name) | Cluster security group name | `string` | `null` | no |
 | <a name="input_service_ipv4_cidr"></a> [service\_ipv4\_cidr](#input\_service\_ipv4\_cidr) | The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks | `string` | `null` | no |
@@ -325,7 +320,6 @@ module "karpenter" {
 | <a name="input_skip_asg_role"></a> [skip\_asg\_role](#input\_skip\_asg\_role) | Skip creating ASG Service Linked Role if it's already created | `bool` | `false` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | A list of subnet IDs where the EKS cluster (ENIs) will be provisioned along with the nodes/node groups. Node groups can be deployed within a different set of subnet IDs from within the node group configuration | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
-| <a name="input_user_mapping"></a> [user\_mapping](#input\_user\_mapping) | List of IAM Users to give access to the EKS Cluster | <pre>list(object({<br/>    userarn  = string<br/>    username = string<br/>    groups   = list(string)<br/>  }))</pre> | `[]` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID to deploy the cluster into | `string` | n/a | yes |
 | <a name="input_worker_security_group_name"></a> [worker\_security\_group\_name](#input\_worker\_security\_group\_name) | Worker security group name | `string` | `null` | no |
 | <a name="input_workers_iam_boundary"></a> [workers\_iam\_boundary](#input\_workers\_iam\_boundary) | IAM boundary for the workers IAM role, if any | `string` | `null` | no |
