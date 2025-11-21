@@ -84,7 +84,7 @@ locals {
 #tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 21.8.0"
+  version = "~> 21.9.0"
 
   name   = var.name
   region = var.region
@@ -121,7 +121,6 @@ module "eks" {
       }
     } : {}
   , var.security_group_additional_rules)
-  compute_config = var.compute_config
 
   node_security_group_name        = coalesce(var.worker_security_group_name, join("_", [var.name, "worker"]))
   node_security_group_description = "EKS Cluster ${var.name} Nodes"
