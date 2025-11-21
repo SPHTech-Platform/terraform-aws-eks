@@ -43,7 +43,9 @@ variable "authentication_mode" {
 variable "compute_config" {
   description = "Configuration block for the cluster compute configuration"
   type        = any
-  default     = {}
+  default = {
+    enabled = false
+  }
 }
 
 variable "enable_cluster_windows_support" {
