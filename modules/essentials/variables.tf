@@ -670,7 +670,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "1.19.1"
+  default     = "v1.19.1"
 }
 
 variable "certmanager_namespace" {
