@@ -65,7 +65,7 @@ image:
 
   # Override the image tag to deploy by setting this variable.
   # If no value is set, the chart's appVersion will be used.
-  tag: ${image_tag}
+  # tag: ${image_tag}
 
   # Setting a digest will override any tag
   # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
@@ -276,7 +276,7 @@ webhook:
 
     # Override the image tag to deploy by setting this variable.
     # If no value is set, the chart's appVersion will be used.
-    tag: ${webhook_image_tag}
+    # tag: ${webhook_image_tag}
 
     # Setting a digest will override any tag
     # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
@@ -373,7 +373,7 @@ cainjector:
 
     # Override the image tag to deploy by setting this variable.
     # If no value is set, the chart's appVersion will be used.
-    tag: ${ca_injector_image_tag}
+    # tag: ${ca_injector_image_tag}
 
     # Setting a digest will override any tag
     # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
@@ -432,7 +432,7 @@ startupapicheck:
 
     # Override the image tag to deploy by setting this variable.
     # If no value is set, the chart's appVersion will be used.
-    tag: ${startupapicheck_image_tag}
+    # tag: ${startupapicheck_image_tag}
 
     pullPolicy: IfNotPresent
 

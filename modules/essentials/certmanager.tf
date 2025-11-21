@@ -47,7 +47,6 @@ locals {
 
     image_pull_secrets = jsonencode(var.image_pull_secrets)
     image_repository   = var.image_repository
-    image_tag          = var.image_tag != null ? var.image_tag : ""
 
     extra_args = jsonencode(var.extra_args)
     extra_env  = jsonencode(var.extra_env)
@@ -101,7 +100,6 @@ locals {
     webhook_tolerations   = jsonencode(var.webhook_tolerations)
 
     webhook_image_repository = var.webhook_image_repository
-    webhook_image_tag        = var.webhook_image_tag != null ? var.webhook_image_tag : "null"
 
     webhook_service_account_create      = var.webhook_service_account_create
     webhook_service_account_name        = var.webhook_service_account_name
@@ -133,7 +131,6 @@ locals {
     ca_injector_tolerations   = jsonencode(var.ca_injector_tolerations)
 
     ca_injector_image_repository = var.ca_injector_image_repository
-    ca_injector_image_tag        = var.ca_injector_image_tag != null ? var.ca_injector_image_tag : "null"
 
     ca_injector_service_account_create      = var.ca_injector_service_account_create
     ca_injector_service_account_name        = var.ca_injector_service_account_name
@@ -155,7 +152,6 @@ locals {
 
     startupapicheck_pod_labels = jsonencode(var.startupapicheck_pod_labels)
 
-    startupapicheck_image     = var.startupapicheck_image_repository
-    startupapicheck_image_tag = var.startupapicheck_image_tag != null ? var.startupapicheck_image_tag : "null"
+    startupapicheck_image = var.startupapicheck_image_repository
   }
 }

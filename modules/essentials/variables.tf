@@ -826,12 +826,6 @@ variable "image_repository" {
   default     = "quay.io/jetstack/cert-manager-controller"
 }
 
-variable "image_tag" {
-  description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
-  type        = string
-  default     = null
-}
-
 variable "extra_args" {
   description = "Extra arguments"
   type        = list(any)
@@ -1004,7 +998,7 @@ variable "validating_webhook_configuration" {
   description = "Validating webhook configuration"
   type        = any
   default = {
-    namespcaceSelector = {
+    namespaceSelector = {
       matchExpressions = [
         {
           key      = "cert-manager.io/disable-validation"
@@ -1020,7 +1014,7 @@ variable "mutating_webhook_configuration" {
   description = "Mutating webhook configuration"
   type        = any
   default = {
-    namespcaceSelector = {}
+    namespaceSelector = {}
   }
 }
 
@@ -1092,12 +1086,6 @@ variable "webhook_image_repository" {
   description = "Image repository for webhook"
   type        = string
   default     = "quay.io/jetstack/cert-manager-webhook"
-}
-
-variable "webhook_image_tag" {
-  description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
-  type        = any
-  default     = null
 }
 
 variable "webhook_service_account_create" {
@@ -1234,12 +1222,6 @@ variable "ca_injector_image_repository" {
   default     = "quay.io/jetstack/cert-manager-cainjector"
 }
 
-variable "ca_injector_image_tag" {
-  description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
-  type        = any
-  default     = null
-}
-
 variable "ca_injector_service_account_create" {
   description = "Create ca_injector service account"
   type        = bool
@@ -1337,12 +1319,6 @@ variable "startupapicheck_image_repository" {
   description = "Image repository for startupapicheck"
   type        = string
   default     = "quay.io/jetstack/cert-manager-startupapicheck"
-}
-
-variable "startupapicheck_image_tag" {
-  description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
-  type        = any
-  default     = null
 }
 
 #################
