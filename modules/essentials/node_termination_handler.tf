@@ -18,7 +18,7 @@ locals {
     dry_run                    = var.node_termination_handler_dry_run
 
     service_account = var.node_termination_service_account
-    iam_role_arn    = var.node_termination_handler_enable ? module.node_termination_handler_irsa[0].iam_role_arn : ""
+    iam_role_arn    = var.node_termination_handler_enable ? module.node_termination_handler_irsa[0].arn : ""
 
     sqs_queue_url = var.node_termination_handler_enable ? data.aws_sqs_queue.node_termination_handler[0].url : ""
 

@@ -22,7 +22,7 @@ locals {
     aws_region   = data.aws_region.current.region
 
     service_account_name = var.cluster_autoscaler_service_account_name
-    role_arn             = try(module.cluster_autoscaler_irsa_role[0].iam_role_arn, "")
+    role_arn             = try(module.cluster_autoscaler_irsa_role[0].arn, "")
 
     image          = var.cluster_autoscaler_image
     tag            = var.cluster_autoscaler_tag
