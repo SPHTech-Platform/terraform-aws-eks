@@ -646,9 +646,9 @@ variable "brupop_tag" {
   default     = "v1.8.0"
 }
 
-##############
-# Cert Manager
-##############
+################
+# Cert Manager #
+################
 variable "cert_manager_release_name" {
   description = "Helm release name"
   type        = string
