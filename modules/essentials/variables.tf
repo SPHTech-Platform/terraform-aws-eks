@@ -122,7 +122,7 @@ variable "cluster_autoscaler_chart_repository" {
 variable "cluster_autoscaler_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "9.40.0"
+  default     = "9.52.1"
 }
 
 variable "cluster_autoscaler_namespace" {
@@ -140,7 +140,7 @@ variable "cluster_autoscaler_image" {
 variable "cluster_autoscaler_tag" {
   description = "Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.31.0"
+  default     = "v1.34.1"
 }
 
 variable "cluster_autoscaler_replica" {
@@ -631,7 +631,7 @@ variable "brupop_chart_repository" {
 variable "brupop_chart_version" {
   description = "Chart version for brupop"
   type        = string
-  default     = "1.4.0"
+  default     = "1.8.0"
 }
 
 variable "brupop_image" {
@@ -643,7 +643,7 @@ variable "brupop_image" {
 variable "brupop_tag" {
   description = "Docker image tag for brupop. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.4.0"
+  default     = "v1.8.0"
 }
 
 ##############
@@ -670,7 +670,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "1.15.3"
+  default     = "1.19.1"
 }
 
 variable "certmanager_namespace" {
