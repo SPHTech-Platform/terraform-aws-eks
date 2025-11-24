@@ -3,7 +3,7 @@ locals {
     {
       create_iam_role      = false
       iam_role_arn         = var.worker_iam_role_arn
-      platform             = "bottlerocket"
+      ami_type             = "BOTTLEROCKET_x86_64"
       ami_id               = data.aws_ami.eks_default_bottlerocket.id
       bootstrap_extra_args = <<-EOT
       # The admin host container provides SSH access and runs with "superpowers".
@@ -54,13 +54,17 @@ locals {
 ################################################################################
 module "eks_managed_node_group" {
   source  = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
-  version = "~> 20.33.1"
+  version = "~> 21.9.0"
 
   for_each = local.eks_managed_node_groups
 
-  cluster_name      = var.cluster_name
-  cluster_version   = try(each.value.cluster_version, local.eks_managed_node_group_defaults.cluster_version, data.aws_eks_cluster.this.version)
-  cluster_ip_family = var.cluster_ip_family
+  region     = var.region
+  partition  = var.partition
+  account_id = var.account_id
+
+  cluster_name       = var.cluster_name
+  kubernetes_version = try(each.value.kubernetes_version, local.eks_managed_node_group_defaults.kubernetes_version, data.aws_eks_cluster.this.version)
+  cluster_ip_family  = var.cluster_ip_family
 
   # EKS Managed Node Group
   name            = try(each.value.name, each.key)
@@ -73,7 +77,7 @@ module "eks_managed_node_group" {
   desired_size = try(each.value.desired_size, local.eks_managed_node_group_defaults.desired_size, 1)
 
   ami_id              = try(each.value.ami_id, local.eks_managed_node_group_defaults.ami_id, "")
-  ami_type            = try(each.value.ami_type, local.eks_managed_node_group_defaults.ami_type, null)
+  ami_type            = try(each.value.ami_type, local.eks_managed_node_group_defaults.ami_type, "BOTTLEROCKET_x86_64")
   ami_release_version = try(each.value.ami_release_version, local.eks_managed_node_group_defaults.ami_release_version, null)
 
   capacity_type        = try(each.value.capacity_type, local.eks_managed_node_group_defaults.capacity_type, null)
@@ -88,10 +92,9 @@ module "eks_managed_node_group" {
   timeouts      = try(each.value.timeouts, local.eks_managed_node_group_defaults.timeouts, {})
 
   # User data
-  platform                   = try(each.value.platform, local.eks_managed_node_group_defaults.platform, "linux")
   cluster_endpoint           = try(data.aws_eks_cluster.this.endpoint, "")
   cluster_auth_base64        = try(data.aws_eks_cluster.this.certificate_authority[0].data, "")
-  cluster_service_ipv4_cidr  = var.cluster_service_ipv4_cidr
+  cluster_service_cidr       = var.cluster_service_cidr
   enable_bootstrap_user_data = try(each.value.enable_bootstrap_user_data, local.eks_managed_node_group_defaults.enable_bootstrap_user_data, false)
   pre_bootstrap_user_data    = try(each.value.pre_bootstrap_user_data, local.eks_managed_node_group_defaults.pre_bootstrap_user_data, "")
   post_bootstrap_user_data   = try(each.value.post_bootstrap_user_data, local.eks_managed_node_group_defaults.post_bootstrap_user_data, "")
@@ -118,8 +121,6 @@ module "eks_managed_node_group" {
   capacity_reservation_specification = try(each.value.capacity_reservation_specification, local.eks_managed_node_group_defaults.capacity_reservation_specification, {})
   cpu_options                        = try(each.value.cpu_options, local.eks_managed_node_group_defaults.cpu_options, {})
   credit_specification               = try(each.value.credit_specification, local.eks_managed_node_group_defaults.credit_specification, {})
-  elastic_gpu_specifications         = try(each.value.elastic_gpu_specifications, local.eks_managed_node_group_defaults.elastic_gpu_specifications, {})
-  elastic_inference_accelerator      = try(each.value.elastic_inference_accelerator, local.eks_managed_node_group_defaults.elastic_inference_accelerator, {})
   enclave_options                    = try(each.value.enclave_options, local.eks_managed_node_group_defaults.enclave_options, {})
   instance_market_options            = try(each.value.instance_market_options, local.eks_managed_node_group_defaults.instance_market_options, {})
   license_specifications             = try(each.value.license_specifications, local.eks_managed_node_group_defaults.license_specifications, {})
@@ -143,6 +144,13 @@ module "eks_managed_node_group" {
   # Security group
   vpc_security_group_ids            = compact(concat([var.worker_security_group_id], try(each.value.vpc_security_group_ids, local.eks_managed_node_group_defaults.vpc_security_group_ids, [])))
   cluster_primary_security_group_id = try(each.value.attach_cluster_primary_security_group, local.eks_managed_node_group_defaults.attach_cluster_primary_security_group, false) ? data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id : null
+  create_security_group             = try(each.value.create_security_group, local.eks_managed_node_group_defaults.create_security_group, false)
+  security_group_name               = try(each.value.security_group_name, local.eks_managed_node_group_defaults.security_group_name, null)
+  security_group_use_name_prefix    = try(each.value.security_group_use_name_prefix, local.eks_managed_node_group_defaults.security_group_use_name_prefix, true)
+  security_group_description        = try(each.value.security_group_description, local.eks_managed_node_group_defaults.security_group_description, null)
+  security_group_ingress_rules      = try(each.value.security_group_ingress_rules, local.eks_managed_node_group_defaults.security_group_ingress_rules, {})
+  security_group_egress_rules       = try(each.value.security_group_egress_rules, local.eks_managed_node_group_defaults.security_group_egress_rules, {})
+  security_group_tags               = try(each.value.security_group_tags, local.eks_managed_node_group_defaults.security_group_tags, {})
 
   tags = merge(var.tags, try(each.value.tags, local.eks_managed_node_group_defaults.tags, {}))
 }

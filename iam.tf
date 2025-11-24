@@ -12,8 +12,8 @@ locals {
 
 # Cluster IAM Role
 resource "aws_iam_role" "cluster" {
-  name        = coalesce(var.cluster_iam_role, var.cluster_name)
-  description = "IAM Role for the EKS Cluster named ${var.cluster_name}"
+  name        = coalesce(var.cluster_iam_role, var.name)
+  description = "IAM Role for the EKS Cluster named ${var.name}"
 
   assume_role_policy    = data.aws_iam_policy_document.eks_assume_role_policy.json
   permissions_boundary  = var.cluster_iam_boundary
@@ -34,8 +34,8 @@ resource "aws_iam_role_policy_attachment" "cluster" {
 
 # Workers IAM Role
 resource "aws_iam_role" "workers" {
-  name        = coalesce(var.workers_iam_role, "${var.cluster_name}-workers")
-  description = "IAM Role for the workers in EKS Cluster named ${var.cluster_name}"
+  name        = coalesce(var.workers_iam_role, "${var.name}-workers")
+  description = "IAM Role for the workers in EKS Cluster named ${var.name}"
 
   assume_role_policy    = data.aws_iam_policy_document.ec2_assume_role_policy.json
   permissions_boundary  = var.workers_iam_boundary
@@ -69,15 +69,15 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 module "vpc_cni_irsa_role" {
   count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
 
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.47"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "~> 6.0"
 
-  role_name_prefix = "${var.cluster_name}-cni-"
-  role_description = "EKS Cluster ${var.cluster_name} VPC CNI Addon"
+  name        = "${var.name}-cni"
+  description = "EKS Cluster ${var.name} VPC CNI Addon"
 
   attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
-  vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
+  vpc_cni_enable_ipv4   = var.ip_family == "ipv4" ? "true" : "false"
+  vpc_cni_enable_ipv6   = var.ip_family == "ipv6" ? "true" : "false"
 
   oidc_providers = {
     main = {
@@ -92,11 +92,11 @@ module "vpc_cni_irsa_role" {
 module "ebs_csi_irsa_role" {
   count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
 
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.47"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "~> 6.0"
 
-  role_name_prefix = "${var.cluster_name}-ebs-csi-"
-  role_description = "EKS Cluster ${var.cluster_name} EBS CSI Addon"
+  name        = "${var.name}-ebs-csi"
+  description = "EKS Cluster ${var.name} EBS CSI Addon"
 
   attach_ebs_csi_policy = true
 
@@ -114,7 +114,7 @@ resource "aws_iam_role_policy" "ebs_csi_kms" {
   count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   name_prefix = "kms"
-  role        = module.ebs_csi_irsa_role[0].iam_role_name
+  role        = module.ebs_csi_irsa_role[0].name
 
   policy = data.aws_iam_policy_document.kms_csi_ebs.json
 }
@@ -126,13 +126,14 @@ module "aws_vpc_cni_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 1.10"
+  version = "~> 2.4"
 
-  name = "aws-vpc-cni-${var.cluster_ip_family}"
+  name   = "aws-vpc-cni-${var.ip_family}"
+  region = var.region
 
   attach_aws_vpc_cni_policy = true
-  aws_vpc_cni_enable_ipv4   = var.cluster_ip_family == "ipv4" ? "true" : "false"
-  aws_vpc_cni_enable_ipv6   = var.cluster_ip_family == "ipv6" ? "true" : "false"
+  aws_vpc_cni_enable_ipv4   = var.ip_family == "ipv4" ? "true" : "false"
+  aws_vpc_cni_enable_ipv6   = var.ip_family == "ipv6" ? "true" : "false"
 
   tags = var.tags
 }
@@ -141,9 +142,10 @@ module "aws_ebs_csi_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 1.10"
+  version = "~> 2.4"
 
-  name = "aws-ebs-csi"
+  name   = "aws-ebs-csi"
+  region = var.region
 
   attach_aws_ebs_csi_policy = true
   aws_ebs_csi_kms_arns = [
@@ -154,16 +156,21 @@ module "aws_ebs_csi_pod_identity" {
 }
 
 moved {
-  from = module.vpc_cni_irsa_role
-  to   = module.vpc_cni_irsa_role[0]
+  from = module.vpc_cni_irsa_role[0].aws_iam_policy.vpc_cni[0]
+  to   = module.vpc_cni_irsa_role[0].aws_iam_policy.this[0]
 }
 
 moved {
-  from = module.ebs_csi_irsa_role
-  to   = module.ebs_csi_irsa_role[0]
+  from = module.vpc_cni_irsa_role[0].aws_iam_role_policy_attachment.vpc_cni[0]
+  to   = module.vpc_cni_irsa_role[0].aws_iam_role_policy_attachment.this[0]
 }
 
 moved {
-  from = aws_iam_role_policy.ebs_csi_kms
-  to   = aws_iam_role_policy.ebs_csi_kms[0]
+  from = module.ebs_csi_irsa_role[0].aws_iam_policy.ebs_csi[0]
+  to   = module.ebs_csi_irsa_role[0].aws_iam_policy.this[0]
+}
+
+moved {
+  from = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.ebs_csi[0]
+  to   = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.this[0]
 }

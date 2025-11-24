@@ -1,23 +1,70 @@
+locals {
+  base_karpenter_values = {
+    settings = {
+      clusterName       = var.cluster_name
+      clusterEndpoint   = var.cluster_endpoint
+      interruptionQueue = module.karpenter.queue_name
+    }
+    controller = {
+      resources = {
+        requests = {
+          cpu    = var.karpenter_pod_resources.requests.cpu
+          memory = var.karpenter_pod_resources.requests.memory
+        }
+        limits = {
+          cpu    = var.karpenter_pod_resources.limits.cpu
+          memory = var.karpenter_pod_resources.limits.memory
+        }
+      }
+    }
+    serviceMonitor = {
+      enabled = var.enable_service_monitoring
+    }
+  }
+
+  irsa_values = var.enable_irsa ? {
+    serviceAccount = {
+      annotations = {
+        "eks.amazonaws.com/role-arn" = aws_iam_role.controller[0].arn
+      }
+    }
+  } : {}
+
+  non_irsa_values = !var.enable_irsa ? {
+    nodeSelector = {
+      "karpenter.sh/controller" = "true"
+    }
+  } : {}
+
+  karpenter_helm_values = merge(
+    local.base_karpenter_values,
+    local.irsa_values,
+    local.non_irsa_values
+  )
+}
+
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 20.33.1"
+  version = "~> 21.9.0"
+
+  region = var.region
 
   cluster_name = var.cluster_name
-
-  enable_irsa                     = var.enable_irsa
-  irsa_oidc_provider_arn          = var.oidc_provider_arn
-  irsa_namespace_service_accounts = ["${var.karpenter_namespace}:karpenter"]
 
   create_access_entry = var.create_access_entry # use an existing Node IAM role from the EKS managed node group
   access_entry_type   = var.access_entry_type
 
-  create_node_iam_role  = false
-  node_iam_role_arn     = var.worker_iam_role_arn
-  cluster_ip_family     = var.cluster_ip_family
-  enable_v1_permissions = var.enable_v1_permissions
+  create_node_iam_role = false
+  node_iam_role_arn    = var.worker_iam_role_arn
+  cluster_ip_family    = var.cluster_ip_family
 
-  enable_pod_identity             = var.enable_pod_identity # can't `enable` when karpenter use fargate profile
-  create_pod_identity_association = var.create_pod_identity_association
+  create_iam_role                 = !var.enable_irsa ? true : false # can't `enable` when karpenter use fargate profile
+  enable_inline_policy            = var.enable_inline_policy && !var.enable_irsa ? true : false
+  create_pod_identity_association = !var.enable_irsa ? true : false
+
+  enable_spot_termination = !var.enable_irsa ? true : false
+
+  tags = var.tags
 }
 
 ###############################
@@ -48,25 +95,7 @@ resource "helm_release" "karpenter" {
 
   skip_crds = true # CRDs are managed by the karpenter_crd HelmRelease
   values = [
-    <<-EOT
-    settings:
-      clusterName: ${var.cluster_name}
-      clusterEndpoint: ${var.cluster_endpoint}
-      interruptionQueue: ${module.karpenter.queue_name}
-    serviceAccount:
-      annotations:
-        eks.amazonaws.com/role-arn: ${module.karpenter.iam_role_arn}
-    controller:
-      resources:
-        requests:
-          cpu: ${var.karpenter_pod_resources.requests.cpu}
-          memory: ${var.karpenter_pod_resources.requests.memory}
-        limits:
-          cpu: ${var.karpenter_pod_resources.limits.cpu}
-          memory: ${var.karpenter_pod_resources.limits.memory}
-    serviceMonitor:
-      enabled: ${var.enable_service_monitoring}
-    EOT
+    yamlencode(local.karpenter_helm_values)
   ]
 
   depends_on = [

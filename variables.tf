@@ -1,23 +1,29 @@
 #######################
 # EKS Cluster Settings
 #######################
-variable "cluster_name" {
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
+variable "name" {
   description = "EKS Cluster Name"
   type        = string
 }
 
-variable "cluster_version" {
+variable "kubernetes_version" {
   description = "EKS Cluster Version"
   type        = string
   default     = "1.33"
 
   validation {
-    condition     = try(tonumber(var.cluster_version) < 1.34, false)
-    error_message = "EKS Cluster Version 1.33 is not supported by this module. Please use a version less than 1.33"
+    condition     = try(tonumber(var.kubernetes_version) < 1.34, false)
+    error_message = "EKS Cluster Version 1.34 is not supported by this module. Please use a version less than 1.33"
   }
 }
 
-variable "cluster_enabled_log_types" {
+variable "enabled_log_types" {
   description = "A list of the desired control plane logs to enable. For more information, see Amazon EKS Control Plane Logging documentation (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)"
   type        = list(string)
   default     = ["audit", "api", "authenticator"]
@@ -34,11 +40,12 @@ variable "authentication_mode" {
   }
 }
 
-variable "cluster_compute_config" {
-  description = "Configuration block for the cluster compute configuration"
-  type        = any
-  default     = {}
+variable "enable_cluster_windows_support" {
+  description = "Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth."
+  type        = bool
+  default     = false
 }
+
 #######################
 # Cluster IAM Role
 #######################
@@ -75,65 +82,16 @@ variable "iam_role_additional_policies" {
   default     = []
 }
 
-#######################
-# Cluster RBAC (AWS Auth)
-#######################
-
-# For Self managed nodes groups set the create_aws_auth to true
-variable "create_aws_auth_configmap" {
-  description = "Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap`"
-  type        = bool
-  default     = false
-}
-
-variable "manage_aws_auth_configmap" {
-  description = "Determines whether to manage the contents of the aws-auth configmap. NOTE - make it `true` when `authentication_mode = CONFIG_MAP`"
-  type        = bool
-  default     = false
-}
-
-variable "enable_cluster_windows_support" {
-  description = "Determines whether to create the amazon-vpc-cni configmap and windows worker roles into aws-auth."
-  type        = bool
-  default     = false
-}
-
-variable "role_mapping" {
-  description = "List of IAM roles to give access to the EKS cluster"
-  type = list(object({
-    rolearn  = string
-    username = string
-    groups   = list(string)
-  }))
-  default = []
-}
-
-variable "user_mapping" {
-  description = "List of IAM Users to give access to the EKS Cluster"
-  type = list(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-  default = []
-}
-
-variable "aws_auth_fargate_profile_pod_execution_role_arns" {
-  description = "List of Fargate profile pod execution role ARNs to add to the aws-auth configmap"
-  type        = list(string)
-  default     = []
-}
-
 #############
 # EKS Addons
 #############
-variable "cluster_addons" {
+variable "addons" {
   description = "Map of cluster addon configurations to enable for the cluster. Addon name can be the map keys or set with `name`"
   type        = any
   default     = {}
 }
 
-variable "cluster_addons_timeouts" {
+variable "addons_timeouts" {
   description = "Create, update, and delete timeout configurations for the cluster addons"
   type        = map(string)
   default     = {}
@@ -143,25 +101,25 @@ variable "cluster_addons_timeouts" {
 # Cluster Networking
 #######################
 
-variable "cluster_endpoint_private_access" {
+variable "endpoint_private_access" {
   description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled"
   type        = bool
   default     = true
 }
 
-variable "cluster_endpoint_public_access" {
+variable "endpoint_public_access" {
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled"
   type        = bool
   default     = true
 }
 
-variable "cluster_endpoint_public_access_cidrs" {
+variable "endpoint_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
 
-variable "cluster_additional_security_group_ids" {
+variable "additional_security_group_ids" {
   description = "List of additional, externally created security group IDs to attach to the cluster control plane"
   type        = list(string)
   default     = []
@@ -177,19 +135,19 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "cluster_service_ipv4_cidr" {
+variable "service_ipv4_cidr" {
   description = "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks"
   type        = string
   default     = null
 }
 
-variable "create_cluster_security_group" {
+variable "create_security_group" {
   description = "Determines if a security group is created for the cluster. Note: the EKS service creates a primary security group for the cluster by default"
   type        = bool
   default     = true
 }
 
-variable "cluster_security_group_name" {
+variable "security_group_name" {
   description = "Cluster security group name"
   type        = string
   default     = null
@@ -213,7 +171,7 @@ variable "worker_security_group_name" {
   default     = null
 }
 
-variable "cluster_security_group_additional_rules" {
+variable "security_group_additional_rules" {
   description = "List of additional security group rules to add to the cluster security group created. Set `source_node_security_group = true` inside rules to set the `node_security_group` as source"
   type        = any
   default     = {}
@@ -404,19 +362,19 @@ variable "create_cni_ipv6_iam_policy" {
   default     = false
 }
 
-variable "cluster_service_ipv6_cidr" {
+variable "service_ipv6_cidr" {
   description = "The CIDR block to assign Kubernetes pod and service IP addresses from if `ipv6` was specified when the cluster was created. Kubernetes assigns service addresses from the unique local address range (fc00::/7) because you can't specify a custom IPv6 CIDR block when you create the cluster"
   type        = string
   default     = null
 }
 
-variable "cluster_ip_family" {
+variable "ip_family" {
   description = "The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created"
   type        = string
   default     = "ipv4"
 
   validation {
-    condition     = contains(["ipv4", "ipv6"], var.cluster_ip_family)
+    condition     = contains(["ipv4", "ipv6"], var.ip_family)
     error_message = "Invalid IP family. Valid values are `ipv4` and `ipv6`"
   }
 }
@@ -567,13 +525,13 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.4.0"
+  default     = "1.7.3"
 }
 
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "1.4.0"
+  default     = "1.7.3"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
@@ -643,21 +601,8 @@ variable "karpenter_pod_resources" {
   }
 }
 
-# TODO - make v1 permssions the default policy at next breaking change
-variable "enable_v1_permissions_for_karpenter" {
-  description = "Determines whether to enable permissions suitable for v1+ (`true`) or for v0.33.x-v0.37.x (`false`)"
-  type        = bool
-  default     = true
-}
-
 variable "karpenter_upgrade" {
   description = "Karpenter Upgrade"
-  type        = bool
-  default     = false
-}
-
-variable "enable_pod_identity_for_karpenter" {
-  description = "Enable pod identity for karpenter"
   type        = bool
   default     = false
 }

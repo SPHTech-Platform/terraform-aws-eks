@@ -1,19 +1,23 @@
 module "kms_secret" {
   source  = "SPHTech-Platform/kms/aws"
-  version = "~> 0.2.0"
+  version = "~> 1.0"
 
-  key_description = "Encrypt Kubernetes secret for EKS Cluster ${var.cluster_name}"
-  alias           = "alias/${join("-", [var.cluster_name, "secrets"])}"
+  region = var.region
+
+  key_description = "Encrypt Kubernetes secret for EKS Cluster ${var.name}"
+  alias           = "alias/${join("-", [var.name, "secrets"])}"
 
   tags = var.tags
 }
 
 module "kms_ebs" {
   source  = "SPHTech-Platform/kms/aws"
-  version = "~> 0.2.0"
+  version = "~> 1.0"
 
-  key_description = "EBS Key for EKS Cluster ${var.cluster_name}"
-  alias           = "alias/${join("-", [var.cluster_name, "ebs"])}"
+  region = var.region
+
+  key_description = "EBS Key for EKS Cluster ${var.name}"
+  alias           = "alias/${join("-", [var.name, "ebs"])}"
   key_policy_statements = [
     data.aws_iam_policy_document.kms_ebs.json,
   ]

@@ -62,9 +62,9 @@ module "eks_essentials" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.70 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.16 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 3.0 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.33 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.5 |
 
@@ -72,8 +72,8 @@ module "eks_essentials" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.70 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.16 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 3.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.33 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.5 |
 
@@ -81,14 +81,14 @@ module "eks_essentials" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.47 |
-| <a name="module_fluentbit_s3_bucket"></a> [fluentbit\_s3\_bucket](#module\_fluentbit\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 4.6.1 |
-| <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 0.1.4 |
-| <a name="module_helm_kube_state_metrics"></a> [helm\_kube\_state\_metrics](#module\_helm\_kube\_state\_metrics) | SPHTech-Platform/release/helm | ~> 0.1.4 |
-| <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.1.4 |
-| <a name="module_helm_node_exporter"></a> [helm\_node\_exporter](#module\_helm\_node\_exporter) | SPHTech-Platform/release/helm | ~> 0.1.4 |
-| <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.47 |
-| <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 4.0 |
+| <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 6.0 |
+| <a name="module_fluentbit_s3_bucket"></a> [fluentbit\_s3\_bucket](#module\_fluentbit\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 5.8.2 |
+| <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 0.3.0 |
+| <a name="module_helm_kube_state_metrics"></a> [helm\_kube\_state\_metrics](#module\_helm\_kube\_state\_metrics) | SPHTech-Platform/release/helm | ~> 0.3.0 |
+| <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.3.0 |
+| <a name="module_helm_node_exporter"></a> [helm\_node\_exporter](#module\_helm\_node\_exporter) | SPHTech-Platform/release/helm | ~> 0.3.0 |
+| <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 6.0 |
+| <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 5.0 |
 
 ## Resources
 
@@ -106,6 +106,7 @@ module "eks_essentials" {
 | [helm_release.brupop_crd](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.cert_manager](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.keda](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.node_termination_handler](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.nodelocaldns](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_annotations.gp2_storage_class](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/annotations) | resource |
@@ -132,7 +133,7 @@ module "eks_essentials" {
 | <a name="input_autoscaling_mode"></a> [autoscaling\_mode](#input\_autoscaling\_mode) | Autoscaling mode: cluster\_autoscaler or karpenter | `string` | `"cluster_autoscaler"` | no |
 | <a name="input_brupop_chart_name"></a> [brupop\_chart\_name](#input\_brupop\_chart\_name) | Chart name for brupop | `string` | `"bottlerocket-update-operator"` | no |
 | <a name="input_brupop_chart_repository"></a> [brupop\_chart\_repository](#input\_brupop\_chart\_repository) | Chart repository for brupop | `string` | `"https://bottlerocket-os.github.io/bottlerocket-update-operator"` | no |
-| <a name="input_brupop_chart_version"></a> [brupop\_chart\_version](#input\_brupop\_chart\_version) | Chart version for brupop | `string` | `"1.4.0"` | no |
+| <a name="input_brupop_chart_version"></a> [brupop\_chart\_version](#input\_brupop\_chart\_version) | Chart version for brupop | `string` | `"1.8.0"` | no |
 | <a name="input_brupop_crd_apiserver_service_port"></a> [brupop\_crd\_apiserver\_service\_port](#input\_brupop\_crd\_apiserver\_service\_port) | API server service port for brupop CRD | `number` | `443` | no |
 | <a name="input_brupop_crd_chart_name"></a> [brupop\_crd\_chart\_name](#input\_brupop\_crd\_chart\_name) | Chart name for brupop CRD | `string` | `"bottlerocket-shadow"` | no |
 | <a name="input_brupop_crd_chart_repository"></a> [brupop\_crd\_chart\_repository](#input\_brupop\_crd\_chart\_repository) | Chart repository for brupop | `string` | `"https://bottlerocket-os.github.io/bottlerocket-update-operator"` | no |
@@ -142,7 +143,7 @@ module "eks_essentials" {
 | <a name="input_brupop_image"></a> [brupop\_image](#input\_brupop\_image) | Docker image for brupop | `string` | `"public.ecr.aws/bottlerocket/bottlerocket-update-operator"` | no |
 | <a name="input_brupop_namespace"></a> [brupop\_namespace](#input\_brupop\_namespace) | Namespace for all resources under bottlerocket update operator | `string` | `"brupop-bottlerocket-aws"` | no |
 | <a name="input_brupop_release_name"></a> [brupop\_release\_name](#input\_brupop\_release\_name) | Release name for brupop | `string` | `"brupop-operator"` | no |
-| <a name="input_brupop_tag"></a> [brupop\_tag](#input\_brupop\_tag) | Docker image tag for brupop. This should correspond to the Kubernetes version | `string` | `"v1.4.0"` | no |
+| <a name="input_brupop_tag"></a> [brupop\_tag](#input\_brupop\_tag) | Docker image tag for brupop. This should correspond to the Kubernetes version | `string` | `"v1.8.0"` | no |
 | <a name="input_ca_injector_affinity"></a> [ca\_injector\_affinity](#input\_ca\_injector\_affinity) | Affinity for ca\_injector | `map(string)` | `{}` | no |
 | <a name="input_ca_injector_container_security_context"></a> [ca\_injector\_container\_security\_context](#input\_ca\_injector\_container\_security\_context) | CA Injector Container Security Context | `map(any)` | `{}` | no |
 | <a name="input_ca_injector_deployment_annotations"></a> [ca\_injector\_deployment\_annotations](#input\_ca\_injector\_deployment\_annotations) | Extra annotations for ca\_injector deployment | `map(string)` | `{}` | no |
@@ -164,14 +165,14 @@ module "eks_essentials" {
 | <a name="input_cert_manager_chart_name"></a> [cert\_manager\_chart\_name](#input\_cert\_manager\_chart\_name) | Helm chart name to provision | `string` | `"cert-manager"` | no |
 | <a name="input_cert_manager_chart_repository"></a> [cert\_manager\_chart\_repository](#input\_cert\_manager\_chart\_repository) | Helm repository for the chart | `string` | `"https://charts.jetstack.io"` | no |
 | <a name="input_cert_manager_chart_timeout"></a> [cert\_manager\_chart\_timeout](#input\_cert\_manager\_chart\_timeout) | Timeout to wait for the Chart to be deployed. | `number` | `300` | no |
-| <a name="input_cert_manager_chart_version"></a> [cert\_manager\_chart\_version](#input\_cert\_manager\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"1.15.3"` | no |
+| <a name="input_cert_manager_chart_version"></a> [cert\_manager\_chart\_version](#input\_cert\_manager\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"1.19.1"` | no |
 | <a name="input_cert_manager_max_history"></a> [cert\_manager\_max\_history](#input\_cert\_manager\_max\_history) | Max History for Helm | `number` | `20` | no |
 | <a name="input_cert_manager_release_name"></a> [cert\_manager\_release\_name](#input\_cert\_manager\_release\_name) | Helm release name | `string` | `"cert-manager"` | no |
 | <a name="input_certmanager_namespace"></a> [certmanager\_namespace](#input\_certmanager\_namespace) | Namespace to install the chart into | `string` | `"cert-manager"` | no |
 | <a name="input_cluster_autoscaler_affinity"></a> [cluster\_autoscaler\_affinity](#input\_cluster\_autoscaler\_affinity) | Affinity for Cluster Autoscaler | `any` | <pre>{<br/>  "nodeAffinity": {<br/>    "requiredDuringSchedulingIgnoredDuringExecution": {<br/>      "nodeSelectorTerms": [<br/>        {<br/>          "matchExpressions": [<br/>            {<br/>              "key": "node.kubernetes.io/lifecycle",<br/>              "operator": "NotIn",<br/>              "values": [<br/>                "spot"<br/>              ]<br/>            }<br/>          ]<br/>        }<br/>      ]<br/>    }<br/>  },<br/>  "podAntiAffinity": {<br/>    "preferredDuringSchedulingIgnoredDuringExecution": [<br/>      {<br/>        "podAffinityTerm": {<br/>          "labelSelector": {<br/>            "matchExpressions": [<br/>              {<br/>                "key": "app.kubernetes.io/instance",<br/>                "operator": "In",<br/>                "values": [<br/>                  "cluster-autoscaler"<br/>                ]<br/>              }<br/>            ]<br/>          },<br/>          "topologyKey": "kubernetes.io/hostname"<br/>        },<br/>        "weight": 100<br/>      }<br/>    ]<br/>  }<br/>}</pre> | no |
 | <a name="input_cluster_autoscaler_chart_name"></a> [cluster\_autoscaler\_chart\_name](#input\_cluster\_autoscaler\_chart\_name) | Chart name for Cluster Autoscaler | `string` | `"cluster-autoscaler"` | no |
 | <a name="input_cluster_autoscaler_chart_repository"></a> [cluster\_autoscaler\_chart\_repository](#input\_cluster\_autoscaler\_chart\_repository) | Chart repository for Cluster Autoscaler | `string` | `"https://kubernetes.github.io/autoscaler"` | no |
-| <a name="input_cluster_autoscaler_chart_version"></a> [cluster\_autoscaler\_chart\_version](#input\_cluster\_autoscaler\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"9.40.0"` | no |
+| <a name="input_cluster_autoscaler_chart_version"></a> [cluster\_autoscaler\_chart\_version](#input\_cluster\_autoscaler\_chart\_version) | Chart version for Cluster Autoscaler | `string` | `"9.52.1"` | no |
 | <a name="input_cluster_autoscaler_expander"></a> [cluster\_autoscaler\_expander](#input\_cluster\_autoscaler\_expander) | Expander to use for Cluster Autoscaler. See https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders | `string` | `"least-waste"` | no |
 | <a name="input_cluster_autoscaler_iam_role"></a> [cluster\_autoscaler\_iam\_role](#input\_cluster\_autoscaler\_iam\_role) | Override name of the IAM role for autoscaler | `string` | `""` | no |
 | <a name="input_cluster_autoscaler_image"></a> [cluster\_autoscaler\_image](#input\_cluster\_autoscaler\_image) | Docker image for Cluster Autoscaler | `string` | `"registry.k8s.io/autoscaling/cluster-autoscaler"` | no |
@@ -187,7 +188,7 @@ module "eks_essentials" {
 | <a name="input_cluster_autoscaler_secret_key_ref_name_override"></a> [cluster\_autoscaler\_secret\_key\_ref\_name\_override](#input\_cluster\_autoscaler\_secret\_key\_ref\_name\_override) | Override the name of the secret key ref for Cluster Autoscaler | `string` | `""` | no |
 | <a name="input_cluster_autoscaler_service_account_name"></a> [cluster\_autoscaler\_service\_account\_name](#input\_cluster\_autoscaler\_service\_account\_name) | K8S sevice account name for Cluster Autoscaler | `string` | `"cluster-autoscaler"` | no |
 | <a name="input_cluster_autoscaler_service_annotations"></a> [cluster\_autoscaler\_service\_annotations](#input\_cluster\_autoscaler\_service\_annotations) | Service annotations for Cluster Autoscaler | `map(string)` | <pre>{<br/>  "prometheus.io/scrape": "true"<br/>}</pre> | no |
-| <a name="input_cluster_autoscaler_tag"></a> [cluster\_autoscaler\_tag](#input\_cluster\_autoscaler\_tag) | Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version | `string` | `"v1.31.0"` | no |
+| <a name="input_cluster_autoscaler_tag"></a> [cluster\_autoscaler\_tag](#input\_cluster\_autoscaler\_tag) | Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version | `string` | `"v1.34.1"` | no |
 | <a name="input_cluster_autoscaler_tolerations"></a> [cluster\_autoscaler\_tolerations](#input\_cluster\_autoscaler\_tolerations) | Tolerations for Cluster Autoscaler | `any` | `[]` | no |
 | <a name="input_cluster_autoscaler_topology_spread_constraints"></a> [cluster\_autoscaler\_topology\_spread\_constraints](#input\_cluster\_autoscaler\_topology\_spread\_constraints) | Topology spread constraints for Cluster Autoscaler | `any` | <pre>[<br/>  {<br/>    "labelSelector": {<br/>      "matchLabels": {<br/>        "app.kubernetes.io/instance": "cluster-autoscaler"<br/>      }<br/>    },<br/>    "maxSkew": 1,<br/>    "topologyKey": "topology.kubernetes.io/zone",<br/>    "whenUnsatisfiable": "DoNotSchedule"<br/>  }<br/>]</pre> | no |
 | <a name="input_cluster_autoscaler_vpa"></a> [cluster\_autoscaler\_vpa](#input\_cluster\_autoscaler\_vpa) | VPA for Cluster AutoScaler | `any` | <pre>{<br/>  "containerPolicy": {},<br/>  "enabled": false,<br/>  "updateMode": "Auto"<br/>}</pre> | no |
@@ -216,14 +217,16 @@ module "eks_essentials" {
 | <a name="input_fargate_cluster"></a> [fargate\_cluster](#input\_fargate\_cluster) | Deploying workloads on Fargate, set this to TRUE | `bool` | `false` | no |
 | <a name="input_fargate_mix_node_groups"></a> [fargate\_mix\_node\_groups](#input\_fargate\_mix\_node\_groups) | Deploying mix workloads as in EKS Manage Node Groups and Fragate Node Groups, set this to TRUE | `bool` | `false` | no |
 | <a name="input_feature_gates"></a> [feature\_gates](#input\_feature\_gates) | Feature gates to enable on the pod | `list(any)` | `[]` | no |
+| <a name="input_fluent_bit_custom_parser"></a> [fluent\_bit\_custom\_parser](#input\_fluent\_bit\_custom\_parser) | Custom parser for Fluent Bit | <pre>object({<br/>    name        = string<br/>    format      = string<br/>    regex       = optional(string)<br/>    time_key    = string<br/>    time_format = string<br/>  })</pre> | <pre>{<br/>  "format": "regex",<br/>  "name": "custom_apache",<br/>  "regex": "^(?<client_ip>[^ ]*) \\<(?<x_forwarded_for>[^\\\"]*)\\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] \"(?<latency>[^\\\"]*)\" \"(?<method>\\S+)(?: +(?<path>[^ ]*) +\\S*)?\" (?<code>[^ ]*) (?<size>[^ ]*)(?: \"(?<referer>[^\\\"]*)\" \"(?<agent>[^\\\"]*)\")?$",<br/>  "time_format": "%d/%b/%Y:%H:%M:%S %z",<br/>  "time_key": "time"<br/>}</pre> | no |
 | <a name="input_fluent_bit_enable_cw_output"></a> [fluent\_bit\_enable\_cw\_output](#input\_fluent\_bit\_enable\_cw\_output) | Enable cloudwatch logging | `bool` | `true` | no |
 | <a name="input_fluent_bit_enable_s3_output"></a> [fluent\_bit\_enable\_s3\_output](#input\_fluent\_bit\_enable\_s3\_output) | Enable S3 output logging | `bool` | `false` | no |
 | <a name="input_fluent_bit_enabled"></a> [fluent\_bit\_enabled](#input\_fluent\_bit\_enabled) | Enable fluent-bit helm charts installation. | `bool` | `true` | no |
 | <a name="input_fluent_bit_excluded_namespaces"></a> [fluent\_bit\_excluded\_namespaces](#input\_fluent\_bit\_excluded\_namespaces) | Namespaces to exclude from fluent-bit | `list(string)` | `[]` | no |
 | <a name="input_fluent_bit_helm_config"></a> [fluent\_bit\_helm\_config](#input\_fluent\_bit\_helm\_config) | Helm provider config for AWS for Fluent Bit. | `any` | `{}` | no |
-| <a name="input_fluent_bit_helm_config_defaults"></a> [fluent\_bit\_helm\_config\_defaults](#input\_fluent\_bit\_helm\_config\_defaults) | Helm provider default config for Fluent Bit. | `any` | <pre>{<br/>  "chart": "fluent-bit",<br/>  "description": "Fluent Bit helm Chart deployment configuration",<br/>  "name": "fluent-bit",<br/>  "namespace": "logging",<br/>  "repository": "https://fluent.github.io/helm-charts",<br/>  "version": "0.47.9"<br/>}</pre> | no |
+| <a name="input_fluent_bit_helm_config_defaults"></a> [fluent\_bit\_helm\_config\_defaults](#input\_fluent\_bit\_helm\_config\_defaults) | Helm provider default config for Fluent Bit. | `any` | <pre>{<br/>  "chart": "fluent-bit",<br/>  "description": "Fluent Bit helm Chart deployment configuration",<br/>  "name": "fluent-bit",<br/>  "namespace": "logging",<br/>  "repository": "https://fluent.github.io/helm-charts",<br/>  "version": "0.54.0"<br/>}</pre> | no |
 | <a name="input_fluent_bit_image_repository"></a> [fluent\_bit\_image\_repository](#input\_fluent\_bit\_image\_repository) | Fluent Bit Image repo | `string` | `"public.ecr.aws/aws-observability/aws-for-fluent-bit"` | no |
-| <a name="input_fluent_bit_image_tag"></a> [fluent\_bit\_image\_tag](#input\_fluent\_bit\_image\_tag) | Fluent Bit Image tag | `string` | `"2.32.0"` | no |
+| <a name="input_fluent_bit_image_tag"></a> [fluent\_bit\_image\_tag](#input\_fluent\_bit\_image\_tag) | Fluent Bit Image tag | `string` | `"2.34.1"` | no |
+| <a name="input_fluent_bit_kube_api_endpoint"></a> [fluent\_bit\_kube\_api\_endpoint](#input\_fluent\_bit\_kube\_api\_endpoint) | Kube API endpoint for fluent-bit | `string` | `"https://kubernetes.default.svc.cluster.local:443"` | no |
 | <a name="input_fluent_bit_liveness_probe"></a> [fluent\_bit\_liveness\_probe](#input\_fluent\_bit\_liveness\_probe) | Liveness probe for fluent-bit | `map(any)` | <pre>{<br/>  "httpGet": {<br/>    "path": "/",<br/>    "port": 2020<br/>  }<br/>}</pre> | no |
 | <a name="input_fluent_bit_log_group_retention"></a> [fluent\_bit\_log\_group\_retention](#input\_fluent\_bit\_log\_group\_retention) | Number of days to retain the cloudwatch logs | `number` | `30` | no |
 | <a name="input_fluent_bit_overwrite_helm_values"></a> [fluent\_bit\_overwrite\_helm\_values](#input\_fluent\_bit\_overwrite\_helm\_values) | helm values for overwrite configuration | `string` | `""` | no |
@@ -237,9 +240,27 @@ module "eks_essentials" {
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `string` | `null` | no |
 | <a name="input_ingress_shim"></a> [ingress\_shim](#input\_ingress\_shim) | Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/ | `map(any)` | `{}` | no |
 | <a name="input_ip_dual_stack_enabled"></a> [ip\_dual\_stack\_enabled](#input\_ip\_dual\_stack\_enabled) | Enable essentials to support EKS dual stack cluster | `bool` | `false` | no |
+| <a name="input_keda_chart_name"></a> [keda\_chart\_name](#input\_keda\_chart\_name) | Chart name for KEDA | `string` | `"keda"` | no |
+| <a name="input_keda_chart_repository"></a> [keda\_chart\_repository](#input\_keda\_chart\_repository) | Chart repository for KEDA | `string` | `"https://kedacore.github.io/charts"` | no |
+| <a name="input_keda_chart_version"></a> [keda\_chart\_version](#input\_keda\_chart\_version) | Chart version for KEDA | `string` | `"2.18.1"` | no |
+| <a name="input_keda_enabled"></a> [keda\_enabled](#input\_keda\_enabled) | Enable KEDA | `bool` | `false` | no |
+| <a name="input_keda_metric_server_limits_cpu"></a> [keda\_metric\_server\_limits\_cpu](#input\_keda\_metric\_server\_limits\_cpu) | CPU limit for KEDA metric server pods | `string` | `"250m"` | no |
+| <a name="input_keda_metric_server_limits_memory"></a> [keda\_metric\_server\_limits\_memory](#input\_keda\_metric\_server\_limits\_memory) | Memory limit for KEDA metric server pods | `string` | `"512Mi"` | no |
+| <a name="input_keda_metric_server_requests_cpu"></a> [keda\_metric\_server\_requests\_cpu](#input\_keda\_metric\_server\_requests\_cpu) | CPU request for KEDA metric server pods | `string` | `"250m"` | no |
+| <a name="input_keda_metric_server_requests_memory"></a> [keda\_metric\_server\_requests\_memory](#input\_keda\_metric\_server\_requests\_memory) | Memory request for KEDA metric server pods | `string` | `"512Mi"` | no |
+| <a name="input_keda_namespace"></a> [keda\_namespace](#input\_keda\_namespace) | Namespace to deploy KEDA | `string` | `"keda"` | no |
+| <a name="input_keda_operator_limits_cpu"></a> [keda\_operator\_limits\_cpu](#input\_keda\_operator\_limits\_cpu) | CPU limit for KEDA operator pods | `string` | `"250m"` | no |
+| <a name="input_keda_operator_limits_memory"></a> [keda\_operator\_limits\_memory](#input\_keda\_operator\_limits\_memory) | Memory limit for KEDA operator pods | `string` | `"512Mi"` | no |
+| <a name="input_keda_operator_requests_cpu"></a> [keda\_operator\_requests\_cpu](#input\_keda\_operator\_requests\_cpu) | CPU request for KEDA operator pods | `string` | `"250m"` | no |
+| <a name="input_keda_operator_requests_memory"></a> [keda\_operator\_requests\_memory](#input\_keda\_operator\_requests\_memory) | Memory request for KEDA operator pods | `string` | `"512Mi"` | no |
+| <a name="input_keda_release_name"></a> [keda\_release\_name](#input\_keda\_release\_name) | Release name for KEDA | `string` | `"keda"` | no |
+| <a name="input_keda_webhooks_limits_cpu"></a> [keda\_webhooks\_limits\_cpu](#input\_keda\_webhooks\_limits\_cpu) | CPU limit for KEDA webhooks pods | `string` | `"250m"` | no |
+| <a name="input_keda_webhooks_limits_memory"></a> [keda\_webhooks\_limits\_memory](#input\_keda\_webhooks\_limits\_memory) | Memory limit for KEDA webhooks pods | `string` | `"512Mi"` | no |
+| <a name="input_keda_webhooks_requests_cpu"></a> [keda\_webhooks\_requests\_cpu](#input\_keda\_webhooks\_requests\_cpu) | CPU request for KEDA webhooks pods | `string` | `"250m"` | no |
+| <a name="input_keda_webhooks_requests_memory"></a> [keda\_webhooks\_requests\_memory](#input\_keda\_webhooks\_requests\_memory) | Memory request for KEDA webhooks pods | `string` | `"512Mi"` | no |
 | <a name="input_kube_state_metrics_enabled"></a> [kube\_state\_metrics\_enabled](#input\_kube\_state\_metrics\_enabled) | Enable kube-state-metrics helm charts installation. | `bool` | `true` | no |
 | <a name="input_kube_state_metrics_helm_config"></a> [kube\_state\_metrics\_helm\_config](#input\_kube\_state\_metrics\_helm\_config) | Helm provider config for kube-state-metrics. | `any` | `{}` | no |
-| <a name="input_kube_state_metrics_helm_config_defaults"></a> [kube\_state\_metrics\_helm\_config\_defaults](#input\_kube\_state\_metrics\_helm\_config\_defaults) | Helm provider default config for kube-state-metrics. | `any` | <pre>{<br/>  "chart": "kube-state-metrics",<br/>  "description": "kube-state-metrics helm Chart deployment configuration",<br/>  "name": "kube-state-metrics",<br/>  "namespace": "kube-system",<br/>  "repository": "https://prometheus-community.github.io/helm-charts",<br/>  "version": "5.25.1"<br/>}</pre> | no |
+| <a name="input_kube_state_metrics_helm_config_defaults"></a> [kube\_state\_metrics\_helm\_config\_defaults](#input\_kube\_state\_metrics\_helm\_config\_defaults) | Helm provider default config for kube-state-metrics. | `any` | <pre>{<br/>  "chart": "kube-state-metrics",<br/>  "description": "kube-state-metrics helm Chart deployment configuration",<br/>  "name": "kube-state-metrics",<br/>  "namespace": "kube-system",<br/>  "repository": "https://prometheus-community.github.io/helm-charts",<br/>  "version": "6.4.1"<br/>}</pre> | no |
 | <a name="input_kubernetes_annotations"></a> [kubernetes\_annotations](#input\_kubernetes\_annotations) | Annotations for Kubernetes resources | `map(string)` | <pre>{<br/>  "terraform": "true"<br/>}</pre> | no |
 | <a name="input_kubernetes_labels"></a> [kubernetes\_labels](#input\_kubernetes\_labels) | Labels for resources | `map(string)` | <pre>{<br/>  "app.kubernetes.io/managed-by": "Terraform"<br/>}</pre> | no |
 | <a name="input_leader_election_lease_duration"></a> [leader\_election\_lease\_duration](#input\_leader\_election\_lease\_duration) | Duration that non-leader candidates will wait after observing a leadership renewal | `string` | `"60s"` | no |
@@ -249,13 +270,13 @@ module "eks_essentials" {
 | <a name="input_log_level"></a> [log\_level](#input\_log\_level) | Set the verbosity of cert-manager. Range of 0 - 6 with 6 being the most verbose. | `number` | `2` | no |
 | <a name="input_metrics_server_enabled"></a> [metrics\_server\_enabled](#input\_metrics\_server\_enabled) | Enable metrics-server helm charts installation. | `bool` | `true` | no |
 | <a name="input_metrics_server_helm_config"></a> [metrics\_server\_helm\_config](#input\_metrics\_server\_helm\_config) | Helm provider config for Metrics Server. | `any` | `{}` | no |
-| <a name="input_metrics_server_helm_config_defaults"></a> [metrics\_server\_helm\_config\_defaults](#input\_metrics\_server\_helm\_config\_defaults) | Helm provider default config for Metrics Server. | `any` | <pre>{<br/>  "chart": "metrics-server",<br/>  "description": "Metric server helm Chart deployment configuration",<br/>  "name": "metrics-server",<br/>  "repository": "https://kubernetes-sigs.github.io/metrics-server/",<br/>  "version": "3.12.1"<br/>}</pre> | no |
+| <a name="input_metrics_server_helm_config_defaults"></a> [metrics\_server\_helm\_config\_defaults](#input\_metrics\_server\_helm\_config\_defaults) | Helm provider default config for Metrics Server. | `any` | <pre>{<br/>  "chart": "metrics-server",<br/>  "description": "Metric server helm Chart deployment configuration",<br/>  "name": "metrics-server",<br/>  "repository": "https://kubernetes-sigs.github.io/metrics-server/",<br/>  "version": "3.13.0"<br/>}</pre> | no |
 | <a name="input_mutating_webhook_configuration"></a> [mutating\_webhook\_configuration](#input\_mutating\_webhook\_configuration) | Mutating webhook configuration | `any` | <pre>{<br/>  "namespcaceSelector": {}<br/>}</pre> | no |
 | <a name="input_mutating_webhook_configuration_annotations"></a> [mutating\_webhook\_configuration\_annotations](#input\_mutating\_webhook\_configuration\_annotations) | Optional additional annotations to add to the webhook MutatingWebhookConfiguration | `map(string)` | `{}` | no |
 | <a name="input_namespaces"></a> [namespaces](#input\_namespaces) | List of namespaces to create | <pre>list(object({<br/>    name        = string<br/>    description = optional(string)<br/>  }))</pre> | <pre>[<br/>  {<br/>    "description": "For core Kubernetes services",<br/>    "name": "core"<br/>  }<br/>]</pre> | no |
 | <a name="input_node_exporter_enabled"></a> [node\_exporter\_enabled](#input\_node\_exporter\_enabled) | Enable prometheus-node-exporters helm charts installation. | `bool` | `true` | no |
 | <a name="input_node_exporter_helm_config"></a> [node\_exporter\_helm\_config](#input\_node\_exporter\_helm\_config) | Helm provider config for prometheus-node-exporter. | `any` | `{}` | no |
-| <a name="input_node_exporter_helm_config_defaults"></a> [node\_exporter\_helm\_config\_defaults](#input\_node\_exporter\_helm\_config\_defaults) | Helm provider default config for prometheus-node-exporter. | `any` | <pre>{<br/>  "chart": "prometheus-node-exporter",<br/>  "description": "prometheus-node-exporter helm Chart deployment configuration",<br/>  "name": "prometheus-node-exporter",<br/>  "namespace": "kube-system",<br/>  "repository": "https://prometheus-community.github.io/helm-charts",<br/>  "version": "4.39.0"<br/>}</pre> | no |
+| <a name="input_node_exporter_helm_config_defaults"></a> [node\_exporter\_helm\_config\_defaults](#input\_node\_exporter\_helm\_config\_defaults) | Helm provider default config for prometheus-node-exporter. | `any` | <pre>{<br/>  "chart": "prometheus-node-exporter",<br/>  "description": "prometheus-node-exporter helm Chart deployment configuration",<br/>  "name": "prometheus-node-exporter",<br/>  "namespace": "kube-system",<br/>  "repository": "https://prometheus-community.github.io/helm-charts",<br/>  "version": "4.49.0"<br/>}</pre> | no |
 | <a name="input_node_selector"></a> [node\_selector](#input\_node\_selector) | Node selector for cert-manager-controller pods | `map(string)` | `{}` | no |
 | <a name="input_node_termination_handler_chart_name"></a> [node\_termination\_handler\_chart\_name](#input\_node\_termination\_handler\_chart\_name) | Chart name for Node Termination Handler. Repo: https://github.com/aws/eks-charts/tree/master/stable/aws-node-termination-handler | `string` | `"aws-node-termination-handler"` | no |
 | <a name="input_node_termination_handler_chart_repository_url"></a> [node\_termination\_handler\_chart\_repository\_url](#input\_node\_termination\_handler\_chart\_repository\_url) | Chart Repository URL for Node Termination Handler | `string` | `"https://aws.github.io/eks-charts"` | no |
@@ -286,18 +307,18 @@ module "eks_essentials" {
 | <a name="input_nodelocaldns_cache_prefetch_enabled"></a> [nodelocaldns\_cache\_prefetch\_enabled](#input\_nodelocaldns\_cache\_prefetch\_enabled) | Enable cache prefetching | `bool` | `false` | no |
 | <a name="input_nodelocaldns_chart_name"></a> [nodelocaldns\_chart\_name](#input\_nodelocaldns\_chart\_name) | Chart name for Node Local DNS Cache | `string` | `"node-local-dns"` | no |
 | <a name="input_nodelocaldns_chart_repository"></a> [nodelocaldns\_chart\_repository](#input\_nodelocaldns\_chart\_repository) | Chart Repository URL for Node Local DNS Cache | `string` | `"oci://ghcr.io/deliveryhero/helm-charts"` | no |
-| <a name="input_nodelocaldns_chart_version"></a> [nodelocaldns\_chart\_version](#input\_nodelocaldns\_chart\_version) | Chart version for Node Local DNS Cache | `string` | `"2.1.5"` | no |
+| <a name="input_nodelocaldns_chart_version"></a> [nodelocaldns\_chart\_version](#input\_nodelocaldns\_chart\_version) | Chart version for Node Local DNS Cache | `string` | `"2.3.0"` | no |
 | <a name="input_nodelocaldns_custom_upstream_svc_name"></a> [nodelocaldns\_custom\_upstream\_svc\_name](#input\_nodelocaldns\_custom\_upstream\_svc\_name) | Custom upstream service name | `string` | `""` | no |
 | <a name="input_nodelocaldns_enable_logging"></a> [nodelocaldns\_enable\_logging](#input\_nodelocaldns\_enable\_logging) | Enable logging for Node Local DNS Cache | `bool` | `false` | no |
 | <a name="input_nodelocaldns_enabled"></a> [nodelocaldns\_enabled](#input\_nodelocaldns\_enabled) | Enable Node Local DNS Cache | `bool` | `false` | no |
 | <a name="input_nodelocaldns_image_pull_secrets"></a> [nodelocaldns\_image\_pull\_secrets](#input\_nodelocaldns\_image\_pull\_secrets) | Image pull secrets for Node Local DNS Cache | `list(any)` | `[]` | no |
-| <a name="input_nodelocaldns_image_repository"></a> [nodelocaldns\_image\_repository](#input\_nodelocaldns\_image\_repository) | Node Local DNS Cache image repository | `string` | `"k8s.gcr.io/dns/k8s-dns-node-cache"` | no |
-| <a name="input_nodelocaldns_image_tag"></a> [nodelocaldns\_image\_tag](#input\_nodelocaldns\_image\_tag) | Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag | `string` | `"1.25.0"` | no |
+| <a name="input_nodelocaldns_image_repository"></a> [nodelocaldns\_image\_repository](#input\_nodelocaldns\_image\_repository) | Node Local DNS Cache image repository | `string` | `"registry.k8s.io/dns/k8s-dns-node-cache"` | no |
+| <a name="input_nodelocaldns_image_tag"></a> [nodelocaldns\_image\_tag](#input\_nodelocaldns\_image\_tag) | Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag | `string` | `"1.26.0"` | no |
 | <a name="input_nodelocaldns_internal_domain_name"></a> [nodelocaldns\_internal\_domain\_name](#input\_nodelocaldns\_internal\_domain\_name) | Node Local DNS Cache internal domain name | `string` | `"cluster.local"` | no |
 | <a name="input_nodelocaldns_kube_dns_svc_ip"></a> [nodelocaldns\_kube\_dns\_svc\_ip](#input\_nodelocaldns\_kube\_dns\_svc\_ip) | Kube DNS service IP, This required Only kube-proxy mode is `iptables` mostprobably values would be '172.20.0.10' or 'fd74:1124:c4cd::a' | `string` | `"172.20.0.10"` | no |
 | <a name="input_nodelocaldns_localdns_ip"></a> [nodelocaldns\_localdns\_ip](#input\_nodelocaldns\_localdns\_ip) | Node Local DNS Cache IP, Range '169.254.0.0/16' for IPv4 and 'fd00::/8' for IPv6 | `string` | `"169.254.20.10"` | no |
 | <a name="input_nodelocaldns_namespace"></a> [nodelocaldns\_namespace](#input\_nodelocaldns\_namespace) | Namespace to deploy Node Local DNS Cache | `string` | `"kube-system"` | no |
-| <a name="input_nodelocaldns_no_ipv6_lookups"></a> [nodelocaldns\_no\_ipv6\_lookups](#input\_nodelocaldns\_no\_ipv6\_lookups) | Disable IPv6 lookups, If true, return NOERROR when attempting to resolve an IPv6 address | `bool` | `true` | no |
+| <a name="input_nodelocaldns_no_ipv6_lookups"></a> [nodelocaldns\_no\_ipv6\_lookups](#input\_nodelocaldns\_no\_ipv6\_lookups) | Disable IPv6 lookups, If true, return NOERROR when attempting to resolve an IPv6 address | `bool` | `false` | no |
 | <a name="input_nodelocaldns_pod_resources"></a> [nodelocaldns\_pod\_resources](#input\_nodelocaldns\_pod\_resources) | Node Local DNS Cache pod resources | `map(any)` | <pre>{<br/>  "limits": {<br/>    "memory": "128Mi"<br/>  },<br/>  "requests": {<br/>    "cpu": "25m",<br/>    "memory": "128Mi"<br/>  }<br/>}</pre> | no |
 | <a name="input_nodelocaldns_release_name"></a> [nodelocaldns\_release\_name](#input\_nodelocaldns\_release\_name) | Release name for Node Local DNS Cache | `string` | `"node-local-dns"` | no |
 | <a name="input_nodelocaldns_setup_interface"></a> [nodelocaldns\_setup\_interface](#input\_nodelocaldns\_setup\_interface) | Setup interface for Node Local DNS Cache | `bool` | `true` | no |

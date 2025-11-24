@@ -122,7 +122,7 @@ variable "cluster_autoscaler_chart_repository" {
 variable "cluster_autoscaler_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "9.40.0"
+  default     = "9.52.1"
 }
 
 variable "cluster_autoscaler_namespace" {
@@ -140,7 +140,7 @@ variable "cluster_autoscaler_image" {
 variable "cluster_autoscaler_tag" {
   description = "Docker image tag for Cluster Autoscaler. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.31.0"
+  default     = "v1.34.1"
 }
 
 variable "cluster_autoscaler_replica" {
@@ -631,7 +631,7 @@ variable "brupop_chart_repository" {
 variable "brupop_chart_version" {
   description = "Chart version for brupop"
   type        = string
-  default     = "1.4.0"
+  default     = "1.8.0"
 }
 
 variable "brupop_image" {
@@ -643,12 +643,12 @@ variable "brupop_image" {
 variable "brupop_tag" {
   description = "Docker image tag for brupop. This should correspond to the Kubernetes version"
   type        = string
-  default     = "v1.4.0"
+  default     = "v1.8.0"
 }
 
-##############
-# Cert Manager
-##############
+################
+# Cert Manager #
+################
 variable "cert_manager_release_name" {
   description = "Helm release name"
   type        = string
@@ -670,7 +670,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "1.15.3"
+  default     = "v1.19.1"
 }
 
 variable "certmanager_namespace" {
@@ -824,12 +824,6 @@ variable "image_repository" {
   description = "Image repository"
   type        = string
   default     = "quay.io/jetstack/cert-manager-controller"
-}
-
-variable "image_tag" {
-  description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
-  type        = string
-  default     = null
 }
 
 variable "extra_args" {
@@ -1004,7 +998,7 @@ variable "validating_webhook_configuration" {
   description = "Validating webhook configuration"
   type        = any
   default = {
-    namespcaceSelector = {
+    namespaceSelector = {
       matchExpressions = [
         {
           key      = "cert-manager.io/disable-validation"
@@ -1020,7 +1014,7 @@ variable "mutating_webhook_configuration" {
   description = "Mutating webhook configuration"
   type        = any
   default = {
-    namespcaceSelector = {}
+    namespaceSelector = {}
   }
 }
 
@@ -1092,12 +1086,6 @@ variable "webhook_image_repository" {
   description = "Image repository for webhook"
   type        = string
   default     = "quay.io/jetstack/cert-manager-webhook"
-}
-
-variable "webhook_image_tag" {
-  description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
-  type        = any
-  default     = null
 }
 
 variable "webhook_service_account_create" {
@@ -1234,12 +1222,6 @@ variable "ca_injector_image_repository" {
   default     = "quay.io/jetstack/cert-manager-cainjector"
 }
 
-variable "ca_injector_image_tag" {
-  description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
-  type        = any
-  default     = null
-}
-
 variable "ca_injector_service_account_create" {
   description = "Create ca_injector service account"
   type        = bool
@@ -1339,12 +1321,6 @@ variable "startupapicheck_image_repository" {
   default     = "quay.io/jetstack/cert-manager-startupapicheck"
 }
 
-variable "startupapicheck_image_tag" {
-  description = "Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used."
-  type        = any
-  default     = null
-}
-
 #################
 # metrics-server
 #################
@@ -1361,7 +1337,7 @@ variable "metrics_server_helm_config_defaults" {
     name        = "metrics-server"
     chart       = "metrics-server"
     repository  = "https://kubernetes-sigs.github.io/metrics-server/"
-    version     = "3.12.1"
+    version     = "3.13.0"
     description = "Metric server helm Chart deployment configuration"
   }
 }
@@ -1394,7 +1370,7 @@ variable "kube_state_metrics_helm_config_defaults" {
     name        = "kube-state-metrics"
     chart       = "kube-state-metrics"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "5.25.1"
+    version     = "6.4.1"
     namespace   = "kube-system"
     description = "kube-state-metrics helm Chart deployment configuration"
   }
@@ -1422,7 +1398,7 @@ variable "node_exporter_helm_config_defaults" {
     name        = "prometheus-node-exporter"
     chart       = "prometheus-node-exporter"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "4.39.0"
+    version     = "4.49.0"
     namespace   = "kube-system"
     description = "prometheus-node-exporter helm Chart deployment configuration"
   }
@@ -1450,7 +1426,7 @@ variable "fluent_bit_helm_config_defaults" {
     name        = "fluent-bit"
     chart       = "fluent-bit"
     repository  = "https://fluent.github.io/helm-charts"
-    version     = "0.47.9"
+    version     = "0.54.0"
     namespace   = "logging"
     description = "Fluent Bit helm Chart deployment configuration"
   }
@@ -1466,7 +1442,7 @@ variable "fluent_bit_image_repository" {
 variable "fluent_bit_image_tag" {
   description = "Fluent Bit Image tag"
   type        = string
-  default     = "2.32.0"
+  default     = "2.34.1"
 }
 
 variable "fluent_bit_helm_config" {
@@ -1631,7 +1607,7 @@ variable "nodelocaldns_chart_repository" {
 variable "nodelocaldns_chart_version" {
   description = "Chart version for Node Local DNS Cache"
   type        = string
-  default     = "2.1.5"
+  default     = "2.3.0"
 }
 
 variable "nodelocaldns_namespace" {
@@ -1643,13 +1619,13 @@ variable "nodelocaldns_namespace" {
 variable "nodelocaldns_image_repository" {
   description = "Node Local DNS Cache image repository"
   type        = string
-  default     = "k8s.gcr.io/dns/k8s-dns-node-cache"
+  default     = "registry.k8s.io/dns/k8s-dns-node-cache"
 }
 
 variable "nodelocaldns_image_tag" {
   description = "Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag "
   type        = string
-  default     = "1.25.0"
+  default     = "1.26.0"
 }
 
 variable "nodelocaldns_internal_domain_name" {
@@ -1768,4 +1744,113 @@ variable "nodelocaldns_image_pull_secrets" {
   description = "Image pull secrets for Node Local DNS Cache"
   type        = list(any)
   default     = []
+}
+
+## Keda ##
+variable "keda_enabled" {
+  description = "Enable KEDA"
+  type        = bool
+  default     = false
+}
+
+variable "keda_release_name" {
+  description = "Release name for KEDA"
+  type        = string
+  default     = "keda"
+}
+
+variable "keda_chart_name" {
+  description = "Chart name for KEDA"
+  type        = string
+  default     = "keda"
+}
+
+variable "keda_chart_repository" {
+  description = "Chart repository for KEDA"
+  type        = string
+  default     = "https://kedacore.github.io/charts"
+}
+
+variable "keda_chart_version" {
+  description = "Chart version for KEDA"
+  type        = string
+  default     = "2.18.1"
+}
+
+variable "keda_namespace" {
+  description = "Namespace to deploy KEDA"
+  type        = string
+  default     = "keda"
+}
+
+variable "keda_operator_requests_cpu" {
+  description = "CPU request for KEDA operator pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_operator_requests_memory" {
+  description = "Memory request for KEDA operator pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_operator_limits_cpu" {
+  description = "CPU limit for KEDA operator pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_operator_limits_memory" {
+  description = "Memory limit for KEDA operator pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_metric_server_requests_cpu" {
+  description = "CPU request for KEDA metric server pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_metric_server_requests_memory" {
+  description = "Memory request for KEDA metric server pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_metric_server_limits_cpu" {
+  description = "CPU limit for KEDA metric server pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_metric_server_limits_memory" {
+  description = "Memory limit for KEDA metric server pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_webhooks_requests_cpu" {
+  description = "CPU request for KEDA webhooks pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_webhooks_requests_memory" {
+  description = "Memory request for KEDA webhooks pods"
+  type        = string
+  default     = "512Mi"
+}
+
+variable "keda_webhooks_limits_cpu" {
+  description = "CPU limit for KEDA webhooks pods"
+  type        = string
+  default     = "250m"
+}
+
+variable "keda_webhooks_limits_memory" {
+  description = "Memory limit for KEDA webhooks pods"
+  type        = string
+  default     = "512Mi"
 }

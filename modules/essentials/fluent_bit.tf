@@ -64,12 +64,12 @@ module "helm_fluent_bit" {
   count = var.fluent_bit_enabled ? 1 : 0
 
   source  = "SPHTech-Platform/release/helm"
-  version = "~> 0.1.4"
+  version = "~> 0.3.0"
 
   helm_config = local.fluent_bit_helm_config
   irsa_config = {
-    role_name = "${var.cluster_name}-irsa-fluentbit"
-    role_policy_arns = merge(
+    name = "${var.cluster_name}-irsa-fluentbit"
+    policies = merge(
       {
         "fluent-bit" = one(aws_iam_policy.fluent_bit_irsa[*].arn)
       },

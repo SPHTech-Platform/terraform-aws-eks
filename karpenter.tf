@@ -15,7 +15,7 @@ locals {
       karpenter_security_group_selector_maps = lookup(local.karpenter_security_group_maps, var.karpenter_security_group_selector_terms_type, {})
       karpenter_node_metadata_options = {
         httpEndpoint            = "enabled"
-        httpProtocolIPv6        = var.cluster_ip_family != "ipv6" ? "disabled" : "enabled"
+        httpProtocolIPv6        = var.ip_family != "ipv6" ? "disabled" : "enabled"
         httpPutResponseHopLimit = 1
         httpTokens              = "required"
       }
@@ -97,9 +97,9 @@ module "karpenter" {
   karpenter_chart_version     = var.karpenter_chart_version
   karpenter_crd_chart_version = var.karpenter_crd_chart_version
 
-  cluster_name        = var.cluster_name
+  cluster_name        = var.name
   cluster_endpoint    = module.eks.cluster_endpoint
-  cluster_ip_family   = var.cluster_ip_family
+  cluster_ip_family   = var.ip_family
   oidc_provider_arn   = module.eks.oidc_provider_arn
   worker_iam_role_arn = aws_iam_role.workers.arn
 
@@ -116,13 +116,9 @@ module "karpenter" {
   # Required for Fargate profile
   subnet_ids = var.subnet_ids
 
-  # Enable for v1 Upgrade
-  enable_v1_permissions = var.enable_v1_permissions_for_karpenter
-
   # Enable Pod Identity
   ## AWS Fargate aren’t supported EKS Pod Identities ##
-  enable_pod_identity             = !var.fargate_cluster ? var.enable_pod_identity_for_karpenter : false
-  create_pod_identity_association = !var.fargate_cluster && var.enable_pod_identity_for_karpenter ? true : false
+  enable_irsa = var.fargate_cluster ? true : false
 
   # Metrics scraping
   enable_service_monitoring = var.enable_karpenter_service_monitoring

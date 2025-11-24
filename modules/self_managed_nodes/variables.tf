@@ -6,6 +6,24 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
+variable "partition" {
+  description = "The AWS partition - pass through value to reduce number of GET requests from data sources"
+  type        = string
+  default     = ""
+}
+
+variable "account_id" {
+  description = "The AWS account ID - pass through value to reduce number of GET requests from data sources"
+  type        = string
+  default     = ""
+}
+
 variable "worker_iam_instance_profile_arn" {
   description = "Worker Nodes IAM Instance Profile ARN"
   type        = string
