@@ -139,7 +139,7 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter
         matchLabels = {}
       }
       securityGroups = {
-        groupIds = [module.eks.node_security_group_id]
+        groupIds = [tostring(module.eks.node_security_group_id)]
       }
     }
   }
