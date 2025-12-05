@@ -198,6 +198,37 @@ module "eks" {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
     }
+    aws-secrets-store-csi-driver-provider = {
+      most_recent                 = true
+      resolve_conflicts_on_update = "OVERWRITE"
+      configuration_values = jsonencode({
+        affinity = {
+          nodeAffinity = {
+            requiredDuringSchedulingIgnoredDuringExecution = {
+              nodeSelectorTerms = [
+                {
+                  matchExpressions = [
+                    {
+                      key      = "eks.amazonaws.com/compute-type"
+                      operator = "NotIn"
+                      values   = ["fargate"]
+                    }
+                  ]
+                },
+                {
+                  matchExpressions = [
+                    {
+                      key      = "eks.amazonaws.com/compute-type"
+                      operator = "DoesNotExist"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      })
+    }
     },
     var.addons,
   )
