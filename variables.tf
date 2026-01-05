@@ -15,11 +15,11 @@ variable "name" {
 variable "kubernetes_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.33"
+  default     = "1.34"
 
   validation {
-    condition     = try(tonumber(var.kubernetes_version) < 1.34, false)
-    error_message = "EKS Cluster Version 1.34 is not supported by this module. Please use a version less than 1.33"
+    condition     = try(tonumber(var.kubernetes_version) < 1.35, false)
+    error_message = "EKS Cluster Version 1.35 is not supported by this module. Please use a version less than 1.35"
   }
 }
 
@@ -95,6 +95,12 @@ variable "addons_timeouts" {
   description = "Create, update, and delete timeout configurations for the cluster addons"
   type        = map(string)
   default     = {}
+}
+
+variable "addon_ascp_enabled" {
+  description = "Enable AWS Secrets Store CSI Driver Provider"
+  type        = bool
+  default     = true
 }
 
 #######################
