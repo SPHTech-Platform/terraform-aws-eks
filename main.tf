@@ -199,6 +199,12 @@ module "eks" {
       resolve_conflicts_on_update = "OVERWRITE"
     }
     },
+    var.addon_ascp_enabled ? {
+      aws-secrets-store-csi-driver-provider = {
+        most_recent                 = true
+        resolve_conflicts_on_update = "OVERWRITE"
+      }
+    } : {},
     var.addons,
   )
 
