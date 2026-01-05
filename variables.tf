@@ -19,7 +19,7 @@ variable "kubernetes_version" {
 
   validation {
     condition     = try(tonumber(var.kubernetes_version) < 1.35, false)
-    error_message = "EKS Cluster Version 1.35 is not supported by this module. Please use a version less than 1.35"
+    error_message = "EKS Cluster Version 1.35 is not supported by this module. The maximum supported version is 1.34."
   }
 }
 
