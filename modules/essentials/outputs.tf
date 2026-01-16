@@ -4,6 +4,6 @@ output "node_termination_handler_sqs_arn" {
 }
 
 output "fluent_bit_irsa_id" {
-  description = "ID of the IAM Role for Service Account used by Fluent Bit"
+  description = "ID of the IAM Policy used by the Fluent Bit IAM Role for Service Account"
   value       = try(aws_iam_policy.fluent_bit_irsa[0].policy_id, "")
 }
