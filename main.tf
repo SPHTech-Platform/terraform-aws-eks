@@ -205,6 +205,27 @@ module "eks" {
         resolve_conflicts_on_update = "OVERWRITE"
       }
     } : {},
+    var.addon_ascp_enabled && var.fargate_cluster ? {
+      aws-secrets-store-csi-driver-provider = {
+        most_recent                 = true
+        resolve_conflicts_on_update = "OVERWRITE"
+        configuration_values = jsonencode({
+          affinity = {
+            nodeAffinity = {
+              requiredDuringSchedulingIgnoredDuringExecution = {
+                nodeSelectorTerms = [{
+                  matchExpressions = [{
+                    key      = "eks.amazonaws.com/compute-type"
+                    operator = "NotIn"
+                    values   = ["fargate"]
+                  }]
+                }]
+              }
+            }
+          }
+        })
+      }
+    } : {},
     var.addons,
   )
 
