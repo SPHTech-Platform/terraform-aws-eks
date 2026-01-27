@@ -655,31 +655,6 @@ resource "aws_cloudwatch_event_target" "this" {
 }
 
 moved {
-  from = module.karpenter.aws_iam_role_policy_attachment.controller[0]
-  to   = aws_iam_role_policy_attachment.controller[0]
-}
-
-moved {
-  from = module.karpenter.aws_iam_role.controller[0]
-  to   = aws_iam_role.controller[0]
-}
-
-moved {
-  from = module.karpenter.aws_iam_policy.controller[0]
-  to   = aws_iam_policy.controller[0]
-}
-
-moved {
-  from = module.karpenter.aws_sqs_queue.this[0]
-  to   = aws_sqs_queue.this[0]
-}
-
-moved {
-  from = module.karpenter.aws_sqs_queue_policy.this[0]
-  to   = aws_sqs_queue_policy.this[0]
-}
-
-moved {
   from = module.karpenter.aws_cloudwatch_event_rule.this[0]
   to   = aws_cloudwatch_event_rule.this[0]
 }
@@ -687,44 +662,4 @@ moved {
 moved {
   from = module.karpenter.aws_cloudwatch_event_target.this[0]
   to   = aws_cloudwatch_event_target.this[0]
-}
-
-moved {
-  from = module.karpenter.aws_cloudwatch_event_rule.this["health_event"]
-  to   = aws_cloudwatch_event_rule.this["health_event"]
-}
-
-moved {
-  from = module.karpenter.aws_cloudwatch_event_rule.this["spot_interrupt"]
-  to   = aws_cloudwatch_event_rule.this["spot_interrupt"]
-}
-
-moved {
-  from = module.karpenter.aws_cloudwatch_event_rule.this["instance_rebalance"]
-  to   = aws_cloudwatch_event_rule.this["instance_rebalance"]
-}
-
-moved {
-  from = module.karpenter.aws_cloudwatch_event_rule.this["instance_state_change"]
-  to   = aws_cloudwatch_event_rule.this["instance_state_change"]
-}
-
-moved {
-  from = module.karpenter.aws_cloudwatch_event_target.this["health_event"]
-  to   = aws_cloudwatch_event_target.this["health_event"]
-}
-
-moved {
-  from = module.karpenter.aws_cloudwatch_event_target.this["spot_interrupt"]
-  to   = aws_cloudwatch_event_target.this["spot_interrupt"]
-}
-
-moved {
-  from = module.karpenter.aws_cloudwatch_event_target.this["instance_rebalance"]
-  to   = aws_cloudwatch_event_target.this["instance_rebalance"]
-}
-
-moved {
-  from = module.karpenter.aws_cloudwatch_event_target.this["instance_state_change"]
-  to   = aws_cloudwatch_event_target.this["instance_state_change"]
 }
