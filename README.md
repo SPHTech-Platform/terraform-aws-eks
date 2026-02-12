@@ -213,7 +213,7 @@ module "karpenter" {
 | <a name="module_aws_ebs_csi_pod_identity"></a> [aws\_ebs\_csi\_pod\_identity](#module\_aws\_ebs\_csi\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 2.4 |
 | <a name="module_aws_vpc_cni_pod_identity"></a> [aws\_vpc\_cni\_pod\_identity](#module\_aws\_vpc\_cni\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 2.4 |
 | <a name="module_ebs_csi_irsa_role"></a> [ebs\_csi\_irsa\_role](#module\_ebs\_csi\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 6.0 |
-| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 21.8.0 |
+| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 21.9.0 |
 | <a name="module_fargate_profiles"></a> [fargate\_profiles](#module\_fargate\_profiles) | ./modules/fargate_profile | n/a |
 | <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | ./modules/karpenter | n/a |
 | <a name="module_kms_ebs"></a> [kms\_ebs](#module\_kms\_ebs) | SPHTech-Platform/kms/aws | ~> 1.0 |
@@ -252,14 +252,15 @@ module "karpenter" {
 | <a name="input_additional_karpenter_security_group_selector_ids"></a> [additional\_karpenter\_security\_group\_selector\_ids](#input\_additional\_karpenter\_security\_group\_selector\_ids) | Additional security group IDs to add to the Karpenter node groups, Pass values if `karpenter_security_group_selector_terms_type = ids` | `list(string)` | `[]` | no |
 | <a name="input_additional_karpenter_security_group_selector_tags"></a> [additional\_karpenter\_security\_group\_selector\_tags](#input\_additional\_karpenter\_security\_group\_selector\_tags) | Additional security group tags to add to the Karpenter node groups. Pass values if `karpenter_security_group_selector_terms_type = tags` | `map(string)` | `{}` | no |
 | <a name="input_additional_security_group_ids"></a> [additional\_security\_group\_ids](#input\_additional\_security\_group\_ids) | List of additional, externally created security group IDs to attach to the cluster control plane | `list(string)` | `[]` | no |
+| <a name="input_addon_ascp_enabled"></a> [addon\_ascp\_enabled](#input\_addon\_ascp\_enabled) | Enable AWS Secrets Store CSI Driver Provider | `bool` | `true` | no |
 | <a name="input_addons"></a> [addons](#input\_addons) | Map of cluster addon configurations to enable for the cluster. Addon name can be the map keys or set with `name` | `any` | `{}` | no |
 | <a name="input_addons_timeouts"></a> [addons\_timeouts](#input\_addons\_timeouts) | Create, update, and delete timeout configurations for the cluster addons | `map(string)` | `{}` | no |
 | <a name="input_authentication_mode"></a> [authentication\_mode](#input\_authentication\_mode) | The authentication mode for the cluster. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP` | `string` | `"API"` | no |
 | <a name="input_autoscaling_mode"></a> [autoscaling\_mode](#input\_autoscaling\_mode) | Autoscaling mode: cluster\_autoscaler or karpenter | `string` | `"karpenter"` | no |
+| <a name="input_cloudwatch_log_group_retention_in_days"></a> [cloudwatch\_log\_group\_retention\_in\_days](#input\_cloudwatch\_log\_group\_retention\_in\_days) | Number of days to retain log events. Default retention - 90 days | `number` | `90` | no |
 | <a name="input_cloudwatch_log_group_tags"></a> [cloudwatch\_log\_group\_tags](#input\_cloudwatch\_log\_group\_tags) | A map of additional tags to add to the cloudwatch log group created | `map(string)` | `{}` | no |
 | <a name="input_cluster_iam_boundary"></a> [cluster\_iam\_boundary](#input\_cluster\_iam\_boundary) | IAM boundary for the cluster IAM role, if any | `string` | `null` | no |
 | <a name="input_cluster_iam_role"></a> [cluster\_iam\_role](#input\_cluster\_iam\_role) | Cluster IAM Role name. If undefined, is the same as the cluster name | `string` | `""` | no |
-| <a name="input_compute_config"></a> [compute\_config](#input\_compute\_config) | Configuration block for the cluster compute configuration | `any` | `{}` | no |
 | <a name="input_create_aws_observability_ns"></a> [create\_aws\_observability\_ns](#input\_create\_aws\_observability\_ns) | Whether to create AWS Observability Namespace. | `bool` | `true` | no |
 | <a name="input_create_aws_observability_ns_for_karpenter"></a> [create\_aws\_observability\_ns\_for\_karpenter](#input\_create\_aws\_observability\_ns\_for\_karpenter) | Create aws-observability namespace flag | `bool` | `false` | no |
 | <a name="input_create_cni_ipv6_iam_policy"></a> [create\_cni\_ipv6\_iam\_policy](#input\_create\_cni\_ipv6\_iam\_policy) | Whether to create CNI IPv6 IAM policy. | `bool` | `false` | no |
@@ -306,7 +307,7 @@ module "karpenter" {
 | <a name="input_karpenter_pod_resources"></a> [karpenter\_pod\_resources](#input\_karpenter\_pod\_resources) | Karpenter Pod Resource | <pre>object({<br/>    requests = object({<br/>      cpu    = string<br/>      memory = string<br/>    })<br/>    limits = object({<br/>      cpu    = string<br/>      memory = string<br/>    })<br/>  })</pre> | <pre>{<br/>  "limits": {<br/>    "cpu": "1",<br/>    "memory": "2Gi"<br/>  },<br/>  "requests": {<br/>    "cpu": "1",<br/>    "memory": "2Gi"<br/>  }<br/>}</pre> | no |
 | <a name="input_karpenter_security_group_selector_terms_type"></a> [karpenter\_security\_group\_selector\_terms\_type](#input\_karpenter\_security\_group\_selector\_terms\_type) | Type of terms to use in the security group selector | `string` | `"tags"` | no |
 | <a name="input_karpenter_upgrade"></a> [karpenter\_upgrade](#input\_karpenter\_upgrade) | Karpenter Upgrade | `bool` | `false` | no |
-| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | EKS Cluster Version | `string` | `"1.33"` | no |
+| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | EKS Cluster Version | `string` | `"1.34"` | no |
 | <a name="input_name"></a> [name](#input\_name) | EKS Cluster Name | `string` | n/a | yes |
 | <a name="input_node_security_group_additional_rules"></a> [node\_security\_group\_additional\_rules](#input\_node\_security\_group\_additional\_rules) | List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source | `any` | `{}` | no |
 | <a name="input_node_security_group_enable_recommended_rules"></a> [node\_security\_group\_enable\_recommended\_rules](#input\_node\_security\_group\_enable\_recommended\_rules) | Determines whether to enable recommended security group rules for the node security group created. This includes node-to-node TCP ingress on ephemeral ports and allows all egress traffic | `bool` | `true` | no |
