@@ -647,5 +647,5 @@ variable "enable_cluster_creator_admin_permissions" {
 variable "cloudwatch_log_group_retention_in_days" {
   description = "Number of days to retain log events. Default retention - 90 days"
   type        = number
-  default     = 90
+  default     = 30
 }
