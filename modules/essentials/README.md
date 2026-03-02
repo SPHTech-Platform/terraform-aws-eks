@@ -150,7 +150,6 @@ module "eks_essentials" {
 | <a name="input_ca_injector_enabled"></a> [ca\_injector\_enabled](#input\_ca\_injector\_enabled) | Enable CA Injector. | `bool` | `true` | no |
 | <a name="input_ca_injector_extra_args"></a> [ca\_injector\_extra\_args](#input\_ca\_injector\_extra\_args) | Extra args for ca\_injector | `any` | `[]` | no |
 | <a name="input_ca_injector_image_repository"></a> [ca\_injector\_image\_repository](#input\_ca\_injector\_image\_repository) | Image repository for ca\_injector | `string` | `"quay.io/jetstack/cert-manager-cainjector"` | no |
-| <a name="input_ca_injector_image_tag"></a> [ca\_injector\_image\_tag](#input\_ca\_injector\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `any` | `null` | no |
 | <a name="input_ca_injector_node_selector"></a> [ca\_injector\_node\_selector](#input\_ca\_injector\_node\_selector) | Node selector for ca\_injector | `map(string)` | `{}` | no |
 | <a name="input_ca_injector_pod_annotations"></a> [ca\_injector\_pod\_annotations](#input\_ca\_injector\_pod\_annotations) | Extra annotations for ca\_injector pods | `map(string)` | `{}` | no |
 | <a name="input_ca_injector_pod_labels"></a> [ca\_injector\_pod\_labels](#input\_ca\_injector\_pod\_labels) | Extra labels for ca\_injector pods | `map(string)` | `{}` | no |
@@ -165,7 +164,7 @@ module "eks_essentials" {
 | <a name="input_cert_manager_chart_name"></a> [cert\_manager\_chart\_name](#input\_cert\_manager\_chart\_name) | Helm chart name to provision | `string` | `"cert-manager"` | no |
 | <a name="input_cert_manager_chart_repository"></a> [cert\_manager\_chart\_repository](#input\_cert\_manager\_chart\_repository) | Helm repository for the chart | `string` | `"https://charts.jetstack.io"` | no |
 | <a name="input_cert_manager_chart_timeout"></a> [cert\_manager\_chart\_timeout](#input\_cert\_manager\_chart\_timeout) | Timeout to wait for the Chart to be deployed. | `number` | `300` | no |
-| <a name="input_cert_manager_chart_version"></a> [cert\_manager\_chart\_version](#input\_cert\_manager\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"1.19.1"` | no |
+| <a name="input_cert_manager_chart_version"></a> [cert\_manager\_chart\_version](#input\_cert\_manager\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"v1.19.1"` | no |
 | <a name="input_cert_manager_max_history"></a> [cert\_manager\_max\_history](#input\_cert\_manager\_max\_history) | Max History for Helm | `number` | `20` | no |
 | <a name="input_cert_manager_release_name"></a> [cert\_manager\_release\_name](#input\_cert\_manager\_release\_name) | Helm release name | `string` | `"cert-manager"` | no |
 | <a name="input_certmanager_namespace"></a> [certmanager\_namespace](#input\_certmanager\_namespace) | Namespace to install the chart into | `string` | `"cert-manager"` | no |
@@ -237,7 +236,6 @@ module "eks_essentials" {
 | <a name="input_helm_release_max_history"></a> [helm\_release\_max\_history](#input\_helm\_release\_max\_history) | The maximum number of history releases to keep track in each Helm release | `number` | `20` | no |
 | <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | Secrets for image pulling | `list(any)` | `[]` | no |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | Image repository | `string` | `"quay.io/jetstack/cert-manager-controller"` | no |
-| <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `string` | `null` | no |
 | <a name="input_ingress_shim"></a> [ingress\_shim](#input\_ingress\_shim) | Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/ | `map(any)` | `{}` | no |
 | <a name="input_ip_dual_stack_enabled"></a> [ip\_dual\_stack\_enabled](#input\_ip\_dual\_stack\_enabled) | Enable essentials to support EKS dual stack cluster | `bool` | `false` | no |
 | <a name="input_keda_chart_name"></a> [keda\_chart\_name](#input\_keda\_chart\_name) | Chart name for KEDA | `string` | `"keda"` | no |
@@ -271,7 +269,7 @@ module "eks_essentials" {
 | <a name="input_metrics_server_enabled"></a> [metrics\_server\_enabled](#input\_metrics\_server\_enabled) | Enable metrics-server helm charts installation. | `bool` | `true` | no |
 | <a name="input_metrics_server_helm_config"></a> [metrics\_server\_helm\_config](#input\_metrics\_server\_helm\_config) | Helm provider config for Metrics Server. | `any` | `{}` | no |
 | <a name="input_metrics_server_helm_config_defaults"></a> [metrics\_server\_helm\_config\_defaults](#input\_metrics\_server\_helm\_config\_defaults) | Helm provider default config for Metrics Server. | `any` | <pre>{<br/>  "chart": "metrics-server",<br/>  "description": "Metric server helm Chart deployment configuration",<br/>  "name": "metrics-server",<br/>  "repository": "https://kubernetes-sigs.github.io/metrics-server/",<br/>  "version": "3.13.0"<br/>}</pre> | no |
-| <a name="input_mutating_webhook_configuration"></a> [mutating\_webhook\_configuration](#input\_mutating\_webhook\_configuration) | Mutating webhook configuration | `any` | <pre>{<br/>  "namespcaceSelector": {}<br/>}</pre> | no |
+| <a name="input_mutating_webhook_configuration"></a> [mutating\_webhook\_configuration](#input\_mutating\_webhook\_configuration) | Mutating webhook configuration | `any` | <pre>{<br/>  "namespaceSelector": {}<br/>}</pre> | no |
 | <a name="input_mutating_webhook_configuration_annotations"></a> [mutating\_webhook\_configuration\_annotations](#input\_mutating\_webhook\_configuration\_annotations) | Optional additional annotations to add to the webhook MutatingWebhookConfiguration | `map(string)` | `{}` | no |
 | <a name="input_namespaces"></a> [namespaces](#input\_namespaces) | List of namespaces to create | <pre>list(object({<br/>    name        = string<br/>    description = optional(string)<br/>  }))</pre> | <pre>[<br/>  {<br/>    "description": "For core Kubernetes services",<br/>    "name": "core"<br/>  }<br/>]</pre> | no |
 | <a name="input_node_exporter_enabled"></a> [node\_exporter\_enabled](#input\_node\_exporter\_enabled) | Enable prometheus-node-exporters helm charts installation. | `bool` | `true` | no |
@@ -346,7 +344,6 @@ module "eks_essentials" {
 | <a name="input_startupapicheck_enabled"></a> [startupapicheck\_enabled](#input\_startupapicheck\_enabled) | Enable startupapicheck | `bool` | `true` | no |
 | <a name="input_startupapicheck_extra_args"></a> [startupapicheck\_extra\_args](#input\_startupapicheck\_extra\_args) | Extra args for startupapicheck | `list(any)` | `[]` | no |
 | <a name="input_startupapicheck_image_repository"></a> [startupapicheck\_image\_repository](#input\_startupapicheck\_image\_repository) | Image repository for startupapicheck | `string` | `"quay.io/jetstack/cert-manager-startupapicheck"` | no |
-| <a name="input_startupapicheck_image_tag"></a> [startupapicheck\_image\_tag](#input\_startupapicheck\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `any` | `null` | no |
 | <a name="input_startupapicheck_node_selector"></a> [startupapicheck\_node\_selector](#input\_startupapicheck\_node\_selector) | Node selector for startupapicheck | `map(string)` | `{}` | no |
 | <a name="input_startupapicheck_pod_labels"></a> [startupapicheck\_pod\_labels](#input\_startupapicheck\_pod\_labels) | Extra labels for startupapicheck pods | `map(string)` | `{}` | no |
 | <a name="input_startupapicheck_resources"></a> [startupapicheck\_resources](#input\_startupapicheck\_resources) | startupapicheck pod resources | `map(any)` | <pre>{<br/>  "limits": {<br/>    "cpu": "10m",<br/>    "memory": "32Mi"<br/>  },<br/>  "requests": {<br/>    "cpu": "10m",<br/>    "memory": "32Mi"<br/>  }<br/>}</pre> | no |
@@ -356,7 +353,7 @@ module "eks_essentials" {
 | <a name="input_strategy"></a> [strategy](#input\_strategy) | Update strategy of deployment | `any` | <pre>{<br/>  "rollingUpdate": {<br/>    "maxSurge": 1,<br/>    "maxUnavailable": "50%"<br/>  },<br/>  "type": "RollingUpdate"<br/>}</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_tolerations"></a> [tolerations](#input\_tolerations) | Pod tolerations | `list(any)` | `[]` | no |
-| <a name="input_validating_webhook_configuration"></a> [validating\_webhook\_configuration](#input\_validating\_webhook\_configuration) | Validating webhook configuration | `any` | <pre>{<br/>  "namespcaceSelector": {<br/>    "matchExpressions": [<br/>      {<br/>        "key": "cert-manager.io/disable-validation",<br/>        "operator": "NotIn",<br/>        "values": [<br/>          "true"<br/>        ]<br/>      }<br/>    ]<br/>  }<br/>}</pre> | no |
+| <a name="input_validating_webhook_configuration"></a> [validating\_webhook\_configuration](#input\_validating\_webhook\_configuration) | Validating webhook configuration | `any` | <pre>{<br/>  "namespaceSelector": {<br/>    "matchExpressions": [<br/>      {<br/>        "key": "cert-manager.io/disable-validation",<br/>        "operator": "NotIn",<br/>        "values": [<br/>          "true"<br/>        ]<br/>      }<br/>    ]<br/>  }<br/>}</pre> | no |
 | <a name="input_validating_webhook_configuration_annotations"></a> [validating\_webhook\_configuration\_annotations](#input\_validating\_webhook\_configuration\_annotations) | Optional additional annotations to add to the webhook ValidatingWebhookConfiguration | `map(string)` | `{}` | no |
 | <a name="input_volume_mounts"></a> [volume\_mounts](#input\_volume\_mounts) | Extra volume mounts for the container | `any` | `[]` | no |
 | <a name="input_volumes"></a> [volumes](#input\_volumes) | Extra volumes for the pod | `any` | `[]` | no |
@@ -365,7 +362,6 @@ module "eks_essentials" {
 | <a name="input_webhook_extra_args"></a> [webhook\_extra\_args](#input\_webhook\_extra\_args) | Extra args for webhook | `any` | `[]` | no |
 | <a name="input_webhook_host_network"></a> [webhook\_host\_network](#input\_webhook\_host\_network) | Whether webhook should use host network | `bool` | `false` | no |
 | <a name="input_webhook_image_repository"></a> [webhook\_image\_repository](#input\_webhook\_image\_repository) | Image repository for webhook | `string` | `"quay.io/jetstack/cert-manager-webhook"` | no |
-| <a name="input_webhook_image_tag"></a> [webhook\_image\_tag](#input\_webhook\_image\_tag) | Override the image tag to deploy by setting this variable. If no value is set, the chart's appVersion will be used. | `any` | `null` | no |
 | <a name="input_webhook_liveness_probe"></a> [webhook\_liveness\_probe](#input\_webhook\_liveness\_probe) | Liveness probe for webhook | `map(any)` | <pre>{<br/>  "failureThreshold": 3,<br/>  "initialDelaySeconds": 60,<br/>  "periodSeconds": 10,<br/>  "successThreshold": 1,<br/>  "timeoutSeconds": 5<br/>}</pre> | no |
 | <a name="input_webhook_node_selector"></a> [webhook\_node\_selector](#input\_webhook\_node\_selector) | Node selector for webhook | `map(string)` | `{}` | no |
 | <a name="input_webhook_pod_annotations"></a> [webhook\_pod\_annotations](#input\_webhook\_pod\_annotations) | Extra annotations for webhook pods | `map(string)` | `{}` | no |
@@ -388,5 +384,6 @@ module "eks_essentials" {
 
 | Name | Description |
 |------|-------------|
+| <a name="output_fluent_bit_irsa_id"></a> [fluent\_bit\_irsa\_id](#output\_fluent\_bit\_irsa\_id) | ID of the IAM Policy used by the Fluent Bit IAM Role for Service Account |
 | <a name="output_node_termination_handler_sqs_arn"></a> [node\_termination\_handler\_sqs\_arn](#output\_node\_termination\_handler\_sqs\_arn) | ARN of the SQS queue used to handle node termination events |
 <!-- END_TF_DOCS -->
