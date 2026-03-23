@@ -4,7 +4,15 @@ data "aws_caller_identity" "current" {
 data "aws_region" "current" {
 }
 
+data "aws_eks_cluster" "this" {
+  name = var.cluster_name
+}
+
 data "aws_subnets" "this" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_eks_cluster.this.vpc_config[0].vpc_id]
+  }
   filter {
     name   = "tag:type"
     values = ["private"]
