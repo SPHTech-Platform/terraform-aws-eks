@@ -4,6 +4,13 @@ data "aws_caller_identity" "current" {
 data "aws_region" "current" {
 }
 
+data "aws_subnets" "this" {
+  filter {
+    name   = "tag:type"
+    values = ["private"]
+  }
+}
+
 data "aws_arn" "node_termination_handler_sqs" {
   count = var.node_termination_handler_enable ? 1 : 0
 

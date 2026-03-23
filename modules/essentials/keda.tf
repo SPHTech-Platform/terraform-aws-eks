@@ -62,3 +62,29 @@ resource "helm_release" "keda" {
     },
   ]
 }
+
+module "keda_fargate_profile" {
+  count = var.keda_enabled && var.fargate_cluster ? 1 : 0
+
+  source = "../fargate_profile"
+
+  create_aws_observability_ns     = var.create_aws_observability_ns_for_keda
+  create_fargate_logger_configmap = var.create_fargate_logger_configmap_for_keda
+  create_fargate_log_group        = var.create_fargate_log_group_for_keda
+  create_fargate_logging_policy   = var.create_fargate_logging_policy_for_keda
+  cluster_name                    = var.cluster_name
+  fargate_profiles = {
+    keda = {
+      iam_role_name = "fargate_profile_keda"
+      subnet_ids    = coalescelist(var.subnet_ids, data.aws_subnets.this.ids)
+      selectors = [
+        {
+          namespace = var.keda_namespace
+        }
+      ]
+    }
+  }
+
+  fargate_namespaces_for_security_group = [var.keda_namespace]
+  eks_worker_security_group_id          = var.node_security_group_id
+}

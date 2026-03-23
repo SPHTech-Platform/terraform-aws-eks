@@ -34,6 +34,12 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "subnet_ids" {
+  description = "List of subnet IDs to use for Fargate profiles. If not provided, it will default to all private subnets in the cluster's VPC."
+  type        = list(string)
+  default     = []
+}
+
 variable "helm_release_max_history" {
   description = "The maximum number of history releases to keep track in each Helm release"
   type        = number
@@ -1853,4 +1859,34 @@ variable "keda_webhooks_limits_memory" {
   description = "Memory limit for KEDA webhooks pods"
   type        = string
   default     = "512Mi"
+}
+
+variable "create_aws_observability_ns_for_keda" {
+  description = "Whether to create aws-observability namespace for KEDA or not. This is required when KEDA is enabled and aws-observability namespace doesn't exist in the cluster"
+  type        = bool
+  default     = false
+}
+
+variable "create_fargate_logger_configmap_for_keda" {
+  description = "Whether to create fargate-logger-configmap for KEDA or not. This is required when KEDA is enabled and fargate-logger-configmap doesn't exist in the cluster"
+  type        = bool
+  default     = false
+}
+
+variable "create_fargate_log_group_for_keda" {
+  description = "Whether to create fargate log group for KEDA or not. This is required when KEDA is enabled and fargate log group doesn't exist in the cluster"
+  type        = bool
+  default     = false
+}
+
+variable "create_fargate_logging_policy_for_keda" {
+  description = "Whether to create fargate logging policy for KEDA or not. This is required when KEDA is enabled and fargate logging policy doesn't exist in the cluster"
+  type        = bool
+  default     = false
+}
+
+variable "node_security_group_id" {
+  description = "Node security group id, required for KEDA to create security group rules for scaling windows nodes. This is required when KEDA is enabled and cluster has windows nodes"
+  type        = string
+  default     = ""
 }
