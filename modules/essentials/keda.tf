@@ -75,7 +75,7 @@ module "keda_fargate_profile" {
   cluster_name                    = var.cluster_name
   fargate_profiles = {
     keda = {
-      iam_role_name = "${var.cluster_name}-fargate-profile-keda"
+      iam_role_name = "fargate-profile-keda"
       subnet_ids    = length(var.subnet_ids) > 0 ? var.subnet_ids : data.aws_subnets.this.ids
       selectors = [
         {
