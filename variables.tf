@@ -361,7 +361,7 @@ variable "fargate_security_group_policy_excluded_k8s_apps" {
 variable "fargate_security_group_policy_excluded_names" {
   description = "List of 'app.kubernetes.io/name' label values to exclude from the Fargate SecurityGroupPolicy."
   type        = list(string)
-  default     = ["eks-pod-identity-agent", "aws-guardduty-agent"]
+  default     = ["eks-pod-identity-agent"]
 }
 
 variable "create_aws_observability_ns" {
