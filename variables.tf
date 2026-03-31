@@ -460,6 +460,10 @@ variable "karpenter_nodepools" {
       operator = "Gt"
       values   = ["2048"]
       }, {
+      key      = "karpenter.k8s.aws/instance-generation"
+      operator = "Gt"
+      values   = ["2"]
+      }, {
       key      = "karpenter.sh/capacity-type"
       operator = "In"
       values   = ["on-demand"]
