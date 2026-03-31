@@ -346,6 +346,24 @@ variable "fargate_profile_defaults" {
   default     = {}
 }
 
+variable "fargate_security_group_policy_excluded_apps" {
+  description = "List of 'app' label values to exclude from the Fargate SecurityGroupPolicy to prevent Pod ENI injection on node-level agents."
+  type        = list(string)
+  default     = ["ebs-csi-node"]
+}
+
+variable "fargate_security_group_policy_excluded_k8s_apps" {
+  description = "List of 'k8s-app' label values to exclude from the Fargate SecurityGroupPolicy."
+  type        = list(string)
+  default     = ["aws-node", "kube-proxy"]
+}
+
+variable "fargate_security_group_policy_excluded_names" {
+  description = "List of 'app.kubernetes.io/name' label values to exclude from the Fargate SecurityGroupPolicy."
+  type        = list(string)
+  default     = ["eks-pod-identity-agent", "aws-guardduty-agent"]
+}
+
 variable "create_aws_observability_ns" {
   description = "Whether to create AWS Observability Namespace."
   type        = bool
@@ -441,10 +459,6 @@ variable "karpenter_nodepools" {
       key      = "karpenter.k8s.aws/instance-memory"
       operator = "Gt"
       values   = ["2048"]
-      }, {
-      key      = "karpenter.k8s.aws/instance-generation"
-      operator = "Gt"
-      values   = ["2"]
       }, {
       key      = "karpenter.sh/capacity-type"
       operator = "In"
