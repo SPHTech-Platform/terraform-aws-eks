@@ -65,7 +65,29 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy" {
     }
     spec = {
       podSelector = {
-        matchLabels = {}
+        matchExpressions = concat(
+          length(var.fargate_security_group_policy_excluded_apps) > 0 ? [
+            {
+              key      = "app"
+              operator = "NotIn"
+              values   = var.fargate_security_group_policy_excluded_apps
+            }
+          ] : [],
+          length(var.fargate_security_group_policy_excluded_k8s_apps) > 0 ? [
+            {
+              key      = "k8s-app"
+              operator = "NotIn"
+              values   = var.fargate_security_group_policy_excluded_k8s_apps
+            }
+          ] : [],
+          length(var.fargate_security_group_policy_excluded_names) > 0 ? [
+            {
+              key      = "app.kubernetes.io/name"
+              operator = "NotIn"
+              values   = var.fargate_security_group_policy_excluded_names
+            }
+          ] : []
+        )
       }
       securityGroups = {
         groupIds = [tostring(module.eks.node_security_group_id)]
