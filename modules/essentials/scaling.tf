@@ -87,6 +87,9 @@ resource "kubernetes_manifest" "system_scaled_objects" {
       name      = "${each.value.name}-office-hours"
       namespace = each.value.namespace
       labels    = var.kubernetes_labels
+      annotations = {
+        "scaledobject.keda.sh/transfer-hpa-ownership" = "true"
+      }
     }
     spec = {
       scaleTargetRef = {
