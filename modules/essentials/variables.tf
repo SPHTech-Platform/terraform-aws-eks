@@ -228,7 +228,7 @@ variable "cluster_autoscaler_expander" {
 variable "cluster_autoscaler_pdb" {
   description = "PDB for Cluster AutoScaler"
   type        = any
-  default     = {
+  default = {
     maxUnavailable = 1
   }
 }
@@ -782,6 +782,18 @@ variable "cluster_resource_namespace" {
   description = "Override the namespace used to store DNS provider credentials etc. for ClusterIssuer resources. By default, the same namespace as cert-manager is deployed within is used. This namespace will not be automatically created by the Helm chart."
   type        = string
   default     = ""
+}
+
+variable "crds_enabled" {
+  description = "Install CRDs with chart"
+  type        = bool
+  default     = true
+}
+
+variable "crds_keep" {
+  description = "Keep cert-manager custom resources"
+  type        = bool
+  default     = true
 }
 
 variable "replica_count" {
