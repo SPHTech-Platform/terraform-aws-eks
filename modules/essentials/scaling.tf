@@ -150,12 +150,12 @@ resource "kubernetes_role_binding_v1" "keda_scaler" {
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
-    name      = try(kubernetes_role_v1.keda_scaler[0].metadata[0].name, "")
+    name      = one(kubernetes_role_v1.keda_scaler[*].metadata[0].name)
   }
 
   subject {
     kind      = "ServiceAccount"
-    name      = try(kubernetes_service_account_v1.keda_scaler[0].metadata[0].name, "")
+    name      = one(kubernetes_service_account_v1.keda_scaler[*].metadata[0].name)
     namespace = var.keda_namespace
   }
 }
@@ -172,11 +172,14 @@ resource "kubernetes_cron_job_v1" "scale_down_keda" {
 
   spec {
     schedule = var.keda_self_scale_down_schedule
+    timezone = "Asia/Singapore"
     job_template {
+      metadata {}
       spec {
         template {
+          metadata {}
           spec {
-            service_account_name = try(kubernetes_service_account_v1.keda_scaler[0].metadata[0].name, "")
+            service_account_name = one(kubernetes_service_account_v1.keda_scaler[*].metadata[0].name)
             container {
               name    = "scaler"
               image   = "registry.k8s.io/kubectl:v1.31.0"
@@ -211,11 +214,14 @@ resource "kubernetes_cron_job_v1" "scale_up_keda" {
 
   spec {
     schedule = var.keda_self_scale_up_schedule
+    timezone = "Asia/Singapore"
     job_template {
+      metadata {}
       spec {
         template {
+          metadata {}
           spec {
-            service_account_name = try(kubernetes_service_account_v1.keda_scaler[0].metadata[0].name, "")
+            service_account_name = one(kubernetes_service_account_v1.keda_scaler[*].metadata[0].name)
             container {
               name    = "scaler"
               image   = "registry.k8s.io/kubectl:v1.31.0"

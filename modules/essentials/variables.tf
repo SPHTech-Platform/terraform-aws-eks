@@ -1891,53 +1891,38 @@ variable "node_security_group_id" {
   default     = ""
 }
 
-#################
-# KEDA Scaling
-#################
 variable "is_production" {
-  description = "Whether the cluster is a production environment. Scaling to zero is disabled in production."
+  description = "Whether the environment is production or not"
   type        = bool
   default     = false
 }
 
 variable "keda_scaling_enabled" {
-  description = "Enable automatic scaling to zero for non-production clusters."
+  description = "Whether to enable scaling for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
   type        = bool
   default     = true
 }
 
+variable "keda_additional_scaling_targets" {
+  description = "Additional scaling targets for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
+  type        = list(any)
+  default     = []
+}
+
 variable "keda_scaling_timezone" {
-  description = "Timezone for KEDA cron triggers"
+  description = "Timezone for scaling, required if scaling is enabled for KEDA operator and metric server"
   type        = string
   default     = "Asia/Singapore"
 }
 
-variable "keda_scaling_start_schedule" {
-  description = "Cron schedule to scale up pods (start of office hours)"
-  type        = string
-  default     = "15 7 * * 1-5"
-}
-
-variable "keda_scaling_end_schedule" {
-  description = "Cron schedule to scale down pods (end of office hours)"
-  type        = string
-  default     = "45 20 * * 1-5"
-}
-
-variable "keda_self_scale_up_schedule" {
-  description = "Cron schedule for KEDA to scale itself up"
-  type        = string
-  default     = "30 7 * * 1-5"
-}
-
 variable "keda_self_scale_down_schedule" {
-  description = "Cron schedule for KEDA to scale itself down"
+  description = "Cron expression for self scale down, required if scaling is enabled for KEDA operator and metric server"
   type        = string
   default     = "0 21 * * 1-5"
 }
 
-variable "keda_additional_scaling_targets" {
-  description = "List of additional scaling targets for KEDA ScaledObjects"
-  type        = list(any)
-  default     = []
+variable "keda_self_scale_up_schedule" {
+  description = "Cron expression for self scale up, required if scaling is enabled for KEDA operator and metric server"
+  type        = string
+  default     = "30 7 * * 1-5"
 }
