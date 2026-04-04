@@ -444,8 +444,8 @@ variable "karpenter_nodepools" {
     karpenter_nodepool_node_labels = {
       "bottlerocket.aws/updater-interface-version" = "2.0.0"
     }
-    karpenter_nodepool_annotations = {}
-    karpenter_nodepool_node_taints = []
+    karpenter_nodepool_annotations    = {}
+    karpenter_nodepool_node_taints    = []
     karpenter_nodepool_startup_taints = []
     karpenter_requirements = [
       {
