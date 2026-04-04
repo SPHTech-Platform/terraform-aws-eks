@@ -228,7 +228,7 @@ variable "cluster_autoscaler_expander" {
 variable "cluster_autoscaler_pdb" {
   description = "PDB for Cluster AutoScaler"
   type        = any
-  default = {
+  default     = {
     maxUnavailable = 1
   }
 }
@@ -782,18 +782,6 @@ variable "cluster_resource_namespace" {
   description = "Override the namespace used to store DNS provider credentials etc. for ClusterIssuer resources. By default, the same namespace as cert-manager is deployed within is used. This namespace will not be automatically created by the Helm chart."
   type        = string
   default     = ""
-}
-
-variable "crds_enabled" {
-  description = "Install CRDs with chart"
-  type        = bool
-  default     = true
-}
-
-variable "crds_keep" {
-  description = "Keep cert-manager custom resources"
-  type        = bool
-  default     = true
 }
 
 variable "replica_count" {
@@ -1891,38 +1879,53 @@ variable "node_security_group_id" {
   default     = ""
 }
 
+#################
+# KEDA Scaling
+#################
 variable "is_production" {
-  description = "Whether the environment is production or not"
+  description = "Whether the cluster is a production environment. Scaling to zero is disabled in production."
   type        = bool
   default     = false
 }
 
 variable "keda_scaling_enabled" {
-  description = "Whether to enable scaling for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
+  description = "Enable automatic scaling to zero for non-production clusters."
   type        = bool
   default     = true
 }
 
-variable "keda_additional_scaling_targets" {
-  description = "Additional scaling targets for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
-  type        = list(any)
-  default     = []
-}
-
 variable "keda_scaling_timezone" {
-  description = "Timezone for scaling, required if scaling is enabled for KEDA operator and metric server"
+  description = "Timezone for KEDA cron triggers"
   type        = string
   default     = "Asia/Singapore"
 }
 
+variable "keda_scaling_start_schedule" {
+  description = "Cron schedule to scale up pods (start of office hours)"
+  type        = string
+  default     = "15 7 * * 1-5"
+}
+
+variable "keda_scaling_end_schedule" {
+  description = "Cron schedule to scale down pods (end of office hours)"
+  type        = string
+  default     = "45 20 * * 1-5"
+}
+
+variable "keda_self_scale_up_schedule" {
+  description = "Cron schedule for KEDA to scale itself up"
+  type        = string
+  default     = "30 7 * * 1-5"
+}
+
 variable "keda_self_scale_down_schedule" {
-  description = "Cron expression for self scale down, required if scaling is enabled for KEDA operator and metric server"
+  description = "Cron schedule for KEDA to scale itself down"
   type        = string
   default     = "0 21 * * 1-5"
 }
 
-variable "keda_self_scale_up_schedule" {
-  description = "Cron expression for self scale up, required if scaling is enabled for KEDA operator and metric server"
-  type        = string
-  default     = "30 7 * * 1-5"
+variable "keda_additional_scaling_targets" {
+  description = "List of additional scaling targets for KEDA ScaledObjects"
+  type        = list(any)
+  default     = []
 }
