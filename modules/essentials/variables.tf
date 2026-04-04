@@ -784,6 +784,18 @@ variable "cluster_resource_namespace" {
   default     = ""
 }
 
+variable "crds_enabled" {
+  description = "Install CRDs with chart"
+  type        = bool
+  default     = true
+}
+
+variable "crds_keep" {
+  description = "Keep cert-manager custom resources"
+  type        = bool
+  default     = true
+}
+
 variable "replica_count" {
   description = "Number of controller replicas"
   type        = number
@@ -893,6 +905,12 @@ variable "ingress_shim" {
   description = "Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/"
   type        = map(any)
   default     = {}
+}
+
+variable "prometheus_enabled" {
+  description = "Enable Prometheus metrics"
+  type        = bool
+  default     = true
 }
 
 variable "node_selector" {
@@ -1040,7 +1058,7 @@ variable "webhook_liveness_probe" {
 }
 
 variable "webhook_readiness_probe" {
-  description = "Ready-ness probe for webhook"
+  description = "Readiness probe for webhook"
   type        = map(any)
   default = {
     failureThreshold    = 3
@@ -1336,6 +1354,12 @@ variable "metrics_server_helm_config" {
   default     = {}
 }
 
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}
+
 #####################
 # kube-state-metrics
 #####################
@@ -1457,7 +1481,7 @@ variable "fluent_bit_custom_parser" {
   default = {
     name        = "custom_apache"
     format      = "regex"
-    regex       = "^(?<client_ip>[^ ]*) \\<(?<x_forwarded_for>[^\\\\" ]*)\\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \\[(?<time>[^\\\\]]*)\\] \\\"(?<latency>[^\\\" ]*)\\\" \\\"(?<method>\\S+)(?: +(?<path>[^ ]*) +\\S*)?\\\" (?<code>[^ ]*) (?<size>[^ ]*)(?: \\\"(?<referer>[^\\\" ]*)\\\" \\\"(?<agent>[^\\\" ]*)\\\")?$"
+    regex       = "^(?<client_ip>[^ ]*) \\<(?<x_forwarded_for>[^\\\"]*)\\> (?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \\[(?<time>[^\\]]*)\\] \"(?<latency>[^\\\"]*)\" \"(?<method>\\S+)(?: +(?<path>[^ ]*) +\\S*)?\" (?<code>[^ ]*) (?<size>[^ ]*)(?: \"(?<referer>[^\\\"]*)\" \"(?<agent>[^\\\"]*)\")?$"
     time_key    = "time"
     time_format = "%d/%b/%Y:%H:%M:%S %z"
   }
@@ -1865,60 +1889,4 @@ variable "node_security_group_id" {
   description = "Node security group id, required for KEDA to create security group rules for scaling windows nodes. This is required when KEDA is enabled and cluster has windows nodes"
   type        = string
   default     = ""
-}
-
-#################
-# KEDA Scaling
-#################
-variable "is_production" {
-  description = "Whether the cluster is a production environment. Scaling to zero is disabled in production."
-  type        = bool
-  default     = false
-}
-
-variable "keda_scaling_enabled" {
-  description = "Enable automatic scaling to zero for non-production clusters."
-  type        = bool
-  default     = true
-}
-
-variable "keda_scaling_timezone" {
-  description = "Timezone for KEDA cron triggers"
-  type        = string
-  default     = "Asia/Singapore"
-}
-
-variable "keda_scaling_start_schedule" {
-  description = "Cron schedule to scale up pods (start of office hours)"
-  type        = string
-  default     = "15 7 * * 1-5"
-}
-
-variable "keda_scaling_end_schedule" {
-  description = "Cron schedule to scale down pods (end of office hours)"
-  type        = string
-  default     = "45 20 * * 1-5"
-}
-
-variable "keda_self_scale_up_schedule" {
-  description = "Cron schedule for KEDA to scale itself up"
-  type        = string
-  default     = "30 7 * * 1-5"
-}
-
-variable "keda_self_scale_down_schedule" {
-  description = "Cron schedule for KEDA to scale itself down"
-  type        = string
-  default     = "0 21 * * 1-5"
-}
-
-variable "keda_additional_scaling_targets" {
-  description = "List of additional scaling targets for KEDA ScaledObjects"
-  type = list(object({
-    name      = string
-    namespace = string
-    kind      = string
-    replicas  = number
-  }))
-  default = []
 }
