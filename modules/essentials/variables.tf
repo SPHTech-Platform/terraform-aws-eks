@@ -1890,3 +1890,39 @@ variable "node_security_group_id" {
   type        = string
   default     = ""
 }
+
+variable "is_production" {
+  description = "Whether the environment is production or not"
+  type        = bool
+  default     = false
+}
+
+variable "keda_scaling_enabled" {
+  description = "Whether to enable scaling for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
+  type        = bool
+  default     = true
+}
+
+variable "keda_additional_scaling_targets" {
+  description = "Additional scaling targets for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
+  type        = list(any)
+  default     = []
+}
+
+variable "keda_scaling_timezone" {
+  description = "Timezone for scaling, required if scaling is enabled for KEDA operator and metric server"
+  type        = string
+  default     = "Asia/Singapore"
+}
+
+variable "keda_self_scale_down_schedule" {
+  description = "Cron expression for self scale down, required if scaling is enabled for KEDA operator and metric server"
+  type        = string
+  default     = "0 21 * * 1-5"
+}
+
+variable "keda_self_scale_up_schedule" {
+  description = "Cron expression for self scale up, required if scaling is enabled for KEDA operator and metric server"
+  type        = string
+  default     = "30 7 * * 1-5"
+}

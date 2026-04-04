@@ -8,6 +8,8 @@ locals {
       name      = "metrics-server"
       namespace = "kube-system"
       kind      = "Deployment"
+      start     = "0 8 * * 1-5"
+      end       = "0 20 * * 1-5"
       replicas  = 1
       enabled   = var.metrics_server_enabled
     },
@@ -15,6 +17,8 @@ locals {
       name      = "cert-manager"
       namespace = var.certmanager_namespace
       kind      = "Deployment"
+      start     = "0 8 * * 1-5"
+      end       = "0 20 * * 1-5"
       replicas  = 1
       enabled   = true
     },
@@ -22,6 +26,8 @@ locals {
       name      = "cert-manager-cainjector"
       namespace = var.certmanager_namespace
       kind      = "Deployment"
+      start     = "0 8 * * 1-5"
+      end       = "0 20 * * 1-5"
       replicas  = 1
       enabled   = var.ca_injector_enabled
     },
@@ -29,6 +35,8 @@ locals {
       name      = "cert-manager-webhook"
       namespace = var.certmanager_namespace
       kind      = "Deployment"
+      start     = "0 8 * * 1-5"
+      end       = "0 20 * * 1-5"
       replicas  = 1
       enabled   = true
     },
@@ -36,20 +44,17 @@ locals {
       name      = "karpenter"
       namespace = "kube-system"
       kind      = "Deployment"
+      start     = "30 7 * * 1-5"
+      end       = "30 20 * * 1-5"
       replicas  = 2
       enabled   = var.autoscaling_mode == "karpenter"
-    },
-    {
-      name      = "coredns"
-      namespace = "kube-system"
-      kind      = "Deployment"
-      replicas  = 2
-      enabled   = true
     },
     {
       name      = "ebs-csi-controller"
       namespace = "kube-system"
       kind      = "Deployment"
+      start     = "30 7 * * 1-5"
+      end       = "30 20 * * 1-5"
       replicas  = 2
       enabled   = true
     },
@@ -57,7 +62,9 @@ locals {
       name      = "aws-load-balancer-controller"
       namespace = "kube-system"
       kind      = "Deployment"
-      replicas  = 2
+      start     = "0 8 * * 1-5"
+      end       = "0 20 * * 1-5"
+      replicas  = 1
       enabled   = true
     }
   ]
@@ -94,8 +101,8 @@ resource "kubernetes_manifest" "system_scaled_objects" {
           type = "cron"
           metadata = {
             timezone        = var.keda_scaling_timezone
-            start           = var.keda_scaling_start_schedule
-            end             = var.keda_scaling_end_schedule
+            start           = each.value.start
+            end             = each.value.end
             desiredReplicas = tostring(each.value.replicas)
           }
         }
@@ -165,9 +172,12 @@ resource "kubernetes_cron_job_v1" "scale_down_keda" {
 
   spec {
     schedule = var.keda_self_scale_down_schedule
+    timezone = "Asia/Singapore"
     job_template {
+      metadata {}
       spec {
         template {
+          metadata {}
           spec {
             service_account_name = one(kubernetes_service_account_v1.keda_scaler[*].metadata[0].name)
             container {
@@ -204,9 +214,12 @@ resource "kubernetes_cron_job_v1" "scale_up_keda" {
 
   spec {
     schedule = var.keda_self_scale_up_schedule
+    timezone = "Asia/Singapore"
     job_template {
+      metadata {}
       spec {
         template {
+          metadata {}
           spec {
             service_account_name = one(kubernetes_service_account_v1.keda_scaler[*].metadata[0].name)
             container {
