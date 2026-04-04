@@ -444,37 +444,44 @@ variable "karpenter_nodepools" {
     karpenter_nodepool_node_labels = {
       "bottlerocket.aws/updater-interface-version" = "2.0.0"
     }
-    karpenter_nodepool_annotations    = {}
-    karpenter_nodepool_node_taints    = []
+    karpenter_nodepool_annotations = {}
+    karpenter_nodepool_node_taints = []
     karpenter_nodepool_startup_taints = []
-    karpenter_requirements = [{
-      key      = "karpenter.k8s.aws/instance-category"
-      operator = "In"
-      values   = ["t", "m"]
-      }, {
-      key      = "karpenter.k8s.aws/instance-cpu"
-      operator = "In"
-      values   = ["2", "4"]
-      }, {
-      key      = "karpenter.k8s.aws/instance-memory"
-      operator = "Gt"
-      values   = ["2048"]
-      }, {
-      key      = "karpenter.k8s.aws/instance-generation"
-      operator = "Gt"
-      values   = ["2"]
-      }, {
-      key      = "karpenter.sh/capacity-type"
-      operator = "In"
-      values   = ["on-demand"]
-      }, {
-      key      = "kubernetes.io/arch"
-      operator = "In"
-      values   = ["amd64"]
-      }, {
-      key      = "kubernetes.io/os"
-      operator = "In"
-      values   = ["linux"]
+    karpenter_requirements = [
+      {
+        key      = "karpenter.k8s.aws/instance-category"
+        operator = "In"
+        values   = ["t", "m"]
+      },
+      {
+        key      = "karpenter.k8s.aws/instance-cpu"
+        operator = "In"
+        values   = ["2", "4"]
+      },
+      {
+        key      = "karpenter.k8s.aws/instance-memory"
+        operator = "Gt"
+        values   = ["2048"]
+      },
+      {
+        key      = "karpenter.k8s.aws/instance-generation"
+        operator = "Gt"
+        values   = ["2"]
+      },
+      {
+        key      = "karpenter.sh/capacity-type"
+        operator = "In"
+        values   = ["on-demand"]
+      },
+      {
+        key      = "kubernetes.io/arch"
+        operator = "In"
+        values   = ["amd64"]
+      },
+      {
+        key      = "kubernetes.io/os"
+        operator = "In"
+        values   = ["linux"]
       }
     ]
     karpenter_nodepool_disruption = {
