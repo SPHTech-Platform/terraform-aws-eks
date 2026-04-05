@@ -12,3 +12,4 @@ jobs:
     uses: SPHTech-Platform/reusable-workflows/.github/workflows/terraform.yaml@v2
     with:
       upload_sarif: true
+      pre_init_hook: "find . -name '.terraform.lock.hcl' -delete && find . -name '.terraform' -type d -exec rm -rf {} +"
