@@ -34,7 +34,7 @@ variable "karpenter_crd_chart_repository" {
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.8.1"
+  default     = "1.10.0"
 }
 
 ###############
@@ -67,7 +67,7 @@ variable "karpenter_chart_repository" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.8.1"
+  default     = "1.10.0"
 }
 
 variable "karpenter_nodepools" {

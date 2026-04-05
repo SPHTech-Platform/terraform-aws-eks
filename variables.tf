@@ -15,11 +15,11 @@ variable "name" {
 variable "kubernetes_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.34"
+  default     = "1.35"
 
   validation {
-    condition     = try(tonumber(var.kubernetes_version) < 1.35, false)
-    error_message = "EKS Cluster Version 1.35 is not supported by this module. The maximum supported version is 1.34."
+    condition     = try(tonumber(var.kubernetes_version) < 1.36, false)
+    error_message = "EKS Cluster Version 1.36 is not supported by this module. The maximum supported version is 1.35."
   }
 }
 
@@ -549,13 +549,13 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.7.3"
+  default     = "1.10.0"
 }
 
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "1.7.3"
+  default     = "1.10.0"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
