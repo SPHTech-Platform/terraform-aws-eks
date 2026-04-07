@@ -44,11 +44,12 @@ module "fargate_profiles" {
 
   count = var.fargate_cluster ? 1 : 0
 
-  cluster_name                    = split("/", data.aws_arn.cluster.resource)[1]
-  fargate_profiles                = local.fargate_profiles
-  fargate_profile_defaults        = var.fargate_profile_defaults
-  create_aws_observability_ns     = var.create_aws_observability_ns
-  create_fargate_logger_configmap = var.create_fargate_logger_configmap
+  cluster_name                     = split("/", data.aws_arn.cluster.resource)[1]
+  fargate_profiles                 = local.fargate_profiles
+  fargate_profile_defaults         = var.fargate_profile_defaults
+  create_aws_observability_ns      = var.create_aws_observability_ns
+  create_fargate_logger_configmap  = var.create_fargate_logger_configmap
+  fargate_log_group_retention_days = var.fargate_log_group_retention_days
 
   tags = var.tags
 }
