@@ -98,9 +98,9 @@ locals {
           type = "cron"
           metadata = {
             timezone        = var.keda_scaling_timezone
-            start           = t.start
-            end             = t.end
-            desiredReplicas = tostring(t.replicas)
+            start           = lookup(t, "start", "0 8 * * 1-5")
+            end             = lookup(t, "end", "0 20 * * 1-5")
+            desiredReplicas = tostring(lookup(t, "replicas", 1))
           }
         }
       ])
@@ -116,9 +116,9 @@ locals {
           type = "cron"
           metadata = {
             timezone        = var.keda_scaling_timezone
-            start           = t.start
-            end             = t.end
-            desiredReplicas = tostring(t.replicas)
+            start           = lookup(t, "start", "0 8 * * 1-5")
+            end             = lookup(t, "end", "0 20 * * 1-5")
+            desiredReplicas = tostring(lookup(t, "replicas", 1))
           }
         }
       ])
