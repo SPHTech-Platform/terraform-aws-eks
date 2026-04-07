@@ -62,17 +62,67 @@ locals {
       name      = "aws-load-balancer-controller"
       namespace = "kube-system"
       kind      = "Deployment"
-      start     = "0 8 * * 1-5"
-      end       = "0 20 * * 1-5"
       replicas  = 1
       enabled   = true
+      triggers = [
+        {
+          type = "cron"
+          metadata = {
+            timezone        = var.keda_scaling_timezone
+            start           = "0 8 * * 1-5"
+            end             = "0 20 * * 1-5"
+            desiredReplicas = "1"
+          }
+        },
+        {
+          type       = "cpu"
+          metricType = "Utilization"
+          metadata = {
+            value = "80"
+          }
+        }
+      ]
     }
   ]
 
   # Combine system targets with additional targets
   all_scaling_targets = concat(
-    [for t in local.system_scaling_targets : t if t.enabled],
-    [for t in var.keda_additional_scaling_targets : merge(t, { enabled = true })]
+    [for t in local.system_scaling_targets : {
+      name      = t.name
+      namespace = t.namespace
+      kind      = t.kind
+      replicas  = t.replicas
+      enabled   = t.enabled
+      triggers = lookup(t, "triggers", [
+        {
+          type = "cron"
+          metadata = {
+            timezone        = var.keda_scaling_timezone
+            start           = t.start
+            end             = t.end
+            desiredReplicas = tostring(t.replicas)
+          }
+        }
+      ])
+    } if t.enabled],
+    [for t in var.keda_additional_scaling_targets : {
+      name      = t.name
+      namespace = t.namespace
+      kind      = t.kind
+      replicas  = t.replicas
+      enabled   = true
+      triggers = lookup(t, "triggers", [
+        {
+          type = "cron"
+          metadata = {
+            timezone        = var.keda_scaling_timezone
+            start           = t.start
+            end             = t.end
+            desiredReplicas = tostring(t.replicas)
+          }
+        }
+      ])
+    }]
   )
 }
 
@@ -99,17 +149,7 @@ resource "kubernetes_manifest" "system_scaled_objects" {
       }
       minReplicaCount = 0
       maxReplicaCount = each.value.replicas
-      triggers = [
-        {
-          type = "cron"
-          metadata = {
-            timezone        = var.keda_scaling_timezone
-            start           = each.value.start
-            end             = each.value.end
-            desiredReplicas = tostring(each.value.replicas)
-          }
-        }
-      ]
+      triggers        = each.value.triggers
     }
   }
 
@@ -137,7 +177,7 @@ resource "kubernetes_role_v1" "keda_scaler" {
 
   rule {
     api_groups = ["apps"]
-    resources  = ["deployments"]
+    resources  = ["deployments", "deployments/scale"]
     verbs      = ["get", "patch", "update"]
   }
 }
