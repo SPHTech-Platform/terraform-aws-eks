@@ -87,6 +87,7 @@ module "eks_essentials" {
 | <a name="module_helm_kube_state_metrics"></a> [helm\_kube\_state\_metrics](#module\_helm\_kube\_state\_metrics) | SPHTech-Platform/release/helm | ~> 0.3.0 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.3.0 |
 | <a name="module_helm_node_exporter"></a> [helm\_node\_exporter](#module\_helm\_node\_exporter) | SPHTech-Platform/release/helm | ~> 0.3.0 |
+| <a name="module_keda_fargate_profile"></a> [keda\_fargate\_profile](#module\_keda\_fargate\_profile) | ../fargate_profile | n/a |
 | <a name="module_node_termination_handler_irsa"></a> [node\_termination\_handler\_irsa](#module\_node\_termination\_handler\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 6.0 |
 | <a name="module_node_termination_handler_sqs"></a> [node\_termination\_handler\_sqs](#module\_node\_termination\_handler\_sqs) | terraform-aws-modules/sqs/aws | ~> 5.0 |
 
@@ -118,11 +119,13 @@ module "eks_essentials" {
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_eks_addon_version.latest_adot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_addon_version) | data source |
 | [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
+| [aws_eks_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_iam_policy_document.ecr_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.fluent_bit](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.node_termination_handler_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_sqs_queue.node_termination_handler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/sqs_queue) | data source |
+| [aws_subnets.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 
 ## Inputs
 
@@ -198,6 +201,10 @@ module "eks_essentials" {
 | <a name="input_coredns_pdb_max_unavailable"></a> [coredns\_pdb\_max\_unavailable](#input\_coredns\_pdb\_max\_unavailable) | PDB max unavailable CoreDNS pods. | `number` | `1` | no |
 | <a name="input_crds_enabled"></a> [crds\_enabled](#input\_crds\_enabled) | Install CRDs with chart | `bool` | `true` | no |
 | <a name="input_crds_keep"></a> [crds\_keep](#input\_crds\_keep) | Keep cert-manager custom resources | `bool` | `true` | no |
+| <a name="input_create_aws_observability_ns_for_keda"></a> [create\_aws\_observability\_ns\_for\_keda](#input\_create\_aws\_observability\_ns\_for\_keda) | Whether to create aws-observability namespace for KEDA or not. This is required when KEDA is enabled and aws-observability namespace doesn't exist in the cluster | `bool` | `false` | no |
+| <a name="input_create_fargate_log_group_for_keda"></a> [create\_fargate\_log\_group\_for\_keda](#input\_create\_fargate\_log\_group\_for\_keda) | Whether to create fargate log group for KEDA or not. This is required when KEDA is enabled and fargate log group doesn't exist in the cluster | `bool` | `false` | no |
+| <a name="input_create_fargate_logger_configmap_for_keda"></a> [create\_fargate\_logger\_configmap\_for\_keda](#input\_create\_fargate\_logger\_configmap\_for\_keda) | Whether to create fargate-logger-configmap for KEDA or not. This is required when KEDA is enabled and fargate-logger-configmap doesn't exist in the cluster | `bool` | `false` | no |
+| <a name="input_create_fargate_logging_policy_for_keda"></a> [create\_fargate\_logging\_policy\_for\_keda](#input\_create\_fargate\_logging\_policy\_for\_keda) | Whether to create fargate logging policy for KEDA or not. This is required when KEDA is enabled and fargate logging policy doesn't exist in the cluster | `bool` | `false` | no |
 | <a name="input_create_node_termination_handler_sqs"></a> [create\_node\_termination\_handler\_sqs](#input\_create\_node\_termination\_handler\_sqs) | Whether to create node\_termination\_handler\_sqs. | `bool` | `false` | no |
 | <a name="input_create_pdb_for_coredns"></a> [create\_pdb\_for\_coredns](#input\_create\_pdb\_for\_coredns) | Create PDB for CoreDNS | `bool` | `false` | no |
 | <a name="input_csi_allow_volume_expansion"></a> [csi\_allow\_volume\_expansion](#input\_csi\_allow\_volume\_expansion) | Allow volume expansion in the StorageClass for CSI. Can be true or false | `bool` | `true` | no |
@@ -275,6 +282,7 @@ module "eks_essentials" {
 | <a name="input_node_exporter_enabled"></a> [node\_exporter\_enabled](#input\_node\_exporter\_enabled) | Enable prometheus-node-exporters helm charts installation. | `bool` | `true` | no |
 | <a name="input_node_exporter_helm_config"></a> [node\_exporter\_helm\_config](#input\_node\_exporter\_helm\_config) | Helm provider config for prometheus-node-exporter. | `any` | `{}` | no |
 | <a name="input_node_exporter_helm_config_defaults"></a> [node\_exporter\_helm\_config\_defaults](#input\_node\_exporter\_helm\_config\_defaults) | Helm provider default config for prometheus-node-exporter. | `any` | <pre>{<br/>  "chart": "prometheus-node-exporter",<br/>  "description": "prometheus-node-exporter helm Chart deployment configuration",<br/>  "name": "prometheus-node-exporter",<br/>  "namespace": "kube-system",<br/>  "repository": "https://prometheus-community.github.io/helm-charts",<br/>  "version": "4.49.0"<br/>}</pre> | no |
+| <a name="input_node_security_group_id"></a> [node\_security\_group\_id](#input\_node\_security\_group\_id) | Node security group id, required for KEDA to create security group rules for scaling windows nodes. This is required when KEDA is enabled and cluster has windows nodes | `string` | `""` | no |
 | <a name="input_node_selector"></a> [node\_selector](#input\_node\_selector) | Node selector for cert-manager-controller pods | `map(string)` | `{}` | no |
 | <a name="input_node_termination_handler_chart_name"></a> [node\_termination\_handler\_chart\_name](#input\_node\_termination\_handler\_chart\_name) | Chart name for Node Termination Handler. Repo: https://github.com/aws/eks-charts/tree/master/stable/aws-node-termination-handler | `string` | `"aws-node-termination-handler"` | no |
 | <a name="input_node_termination_handler_chart_repository_url"></a> [node\_termination\_handler\_chart\_repository\_url](#input\_node\_termination\_handler\_chart\_repository\_url) | Chart Repository URL for Node Termination Handler | `string` | `"https://aws.github.io/eks-charts"` | no |
@@ -351,6 +359,7 @@ module "eks_essentials" {
 | <a name="input_startupapicheck_timeout"></a> [startupapicheck\_timeout](#input\_startupapicheck\_timeout) | startupapicheck timeout | `string` | `"1m"` | no |
 | <a name="input_startupapicheck_tolerations"></a> [startupapicheck\_tolerations](#input\_startupapicheck\_tolerations) | Tolerations for startupapicheck | `any` | `[]` | no |
 | <a name="input_strategy"></a> [strategy](#input\_strategy) | Update strategy of deployment | `any` | <pre>{<br/>  "rollingUpdate": {<br/>    "maxSurge": 1,<br/>    "maxUnavailable": "50%"<br/>  },<br/>  "type": "RollingUpdate"<br/>}</pre> | no |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of subnet IDs to use for Fargate profiles. If not provided, it will default to all private subnets in the cluster's VPC. | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_tolerations"></a> [tolerations](#input\_tolerations) | Pod tolerations | `list(any)` | `[]` | no |
 | <a name="input_validating_webhook_configuration"></a> [validating\_webhook\_configuration](#input\_validating\_webhook\_configuration) | Validating webhook configuration | `any` | <pre>{<br/>  "namespaceSelector": {<br/>    "matchExpressions": [<br/>      {<br/>        "key": "cert-manager.io/disable-validation",<br/>        "operator": "NotIn",<br/>        "values": [<br/>          "true"<br/>        ]<br/>      }<br/>    ]<br/>  }<br/>}</pre> | no |
