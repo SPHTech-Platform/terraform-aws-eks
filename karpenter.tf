@@ -136,7 +136,9 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy_for_karpenter
     }
     spec = {
       podSelector = {
-        matchLabels = {}
+        matchLabels = {
+          "app.kubernetes.io/name" = "karpenter"
+        }
       }
       securityGroups = {
         groupIds = [tostring(module.eks.node_security_group_id)]
