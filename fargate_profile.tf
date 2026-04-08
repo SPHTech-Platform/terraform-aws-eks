@@ -65,8 +65,8 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy" {
       namespace = each.value
     }
     spec = {
-      podSelector = {
-        matchExpressions = each.value == "kube-system" ? concat(
+      podSelector = each.value == "kube-system" ? {
+        matchExpressions = concat(
           length(var.fargate_security_group_policy_excluded_apps) > 0 ? [
             {
               key      = "app"
@@ -88,9 +88,9 @@ resource "kubernetes_manifest" "fargate_node_security_group_policy" {
               values   = var.fargate_security_group_policy_excluded_names
             }
           ] : []
-        ) : null
-
-        matchLabels = each.value == "kube-system" ? null : {}
+        )
+        } : {
+        matchLabels = {}
       }
       securityGroups = {
         groupIds = [tostring(module.eks.node_security_group_id)]
