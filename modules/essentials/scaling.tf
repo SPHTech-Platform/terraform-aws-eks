@@ -6,7 +6,7 @@ locals {
   system_scaling_targets = [
     {
       name      = "metrics-server"
-      namespace = "kube-system"
+      namespace = var.fargate_cluster ? "metrics-server" : "kube-system"
       kind      = "Deployment"
       start     = "0 8 * * 1-5"
       end       = "0 20 * * 1-5"
