@@ -128,7 +128,7 @@ variable "cluster_autoscaler_chart_repository" {
 variable "cluster_autoscaler_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "9.52.1"
+  default     = "9.56.0"
 }
 
 variable "cluster_autoscaler_namespace" {
@@ -676,7 +676,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "v1.19.1"
+  default     = "v1.20.2"
 }
 
 variable "certmanager_namespace" {
@@ -1376,7 +1376,7 @@ variable "kube_state_metrics_helm_config_defaults" {
     name        = "kube-state-metrics"
     chart       = "kube-state-metrics"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "6.4.1"
+    version     = "7.2.2"
     namespace   = "kube-system"
     description = "kube-state-metrics helm Chart deployment configuration"
   }
@@ -1404,7 +1404,7 @@ variable "node_exporter_helm_config_defaults" {
     name        = "prometheus-node-exporter"
     chart       = "prometheus-node-exporter"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "4.49.0"
+    version     = "4.53.1"
     namespace   = "kube-system"
     description = "prometheus-node-exporter helm Chart deployment configuration"
   }
@@ -1432,7 +1432,7 @@ variable "fluent_bit_helm_config_defaults" {
     name        = "fluent-bit"
     chart       = "fluent-bit"
     repository  = "https://fluent.github.io/helm-charts"
-    version     = "0.54.0"
+    version     = "0.57.2"
     namespace   = "logging"
     description = "Fluent Bit helm Chart deployment configuration"
   }
@@ -1613,7 +1613,7 @@ variable "nodelocaldns_chart_repository" {
 variable "nodelocaldns_chart_version" {
   description = "Chart version for Node Local DNS Cache"
   type        = string
-  default     = "2.3.0"
+  default     = "2.7.0"
 }
 
 variable "nodelocaldns_namespace" {
@@ -1780,7 +1780,7 @@ variable "keda_chart_repository" {
 variable "keda_chart_version" {
   description = "Chart version for KEDA"
   type        = string
-  default     = "2.18.1"
+  default     = "2.19.0"
 }
 
 variable "keda_namespace" {
