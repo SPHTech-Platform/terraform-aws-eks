@@ -1432,7 +1432,7 @@ variable "fluent_bit_helm_config_defaults" {
     name        = "fluent-bit"
     chart       = "fluent-bit"
     repository  = "https://fluent.github.io/helm-charts"
-    version     = "0.57.2"
+    version     = "0.57.3"
     namespace   = "logging"
     description = "Fluent Bit helm Chart deployment configuration"
   }
@@ -1521,11 +1521,13 @@ variable "fluent_bit_readiness_probe" {
   type        = map(any)
   default = {
     httpGet = {
-      path = "/api/v1/health"
+      path = "/api/v2/health"
       port = 2020
     }
   }
 }
+
+
 
 variable "fluent_bit_resources" {
   description = "Resources for fluent-bit"
