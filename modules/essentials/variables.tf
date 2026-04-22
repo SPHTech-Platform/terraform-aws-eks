@@ -1527,8 +1527,6 @@ variable "fluent_bit_readiness_probe" {
   }
 }
 
-
-
 variable "fluent_bit_resources" {
   description = "Resources for fluent-bit"
   type        = map(any)
