@@ -34,7 +34,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | terraform-aws-modules/eks/aws//modules/karpenter | ~> 21.9.0 |
+| <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | terraform-aws-modules/eks/aws//modules/karpenter | ~> 21.19.0 |
 | <a name="module_karpenter_fargate_profile"></a> [karpenter\_fargate\_profile](#module\_karpenter\_fargate\_profile) | ../fargate_profile | n/a |
 
 ## Resources
@@ -93,10 +93,10 @@
 | <a name="input_irsa_assume_role_condition_test"></a> [irsa\_assume\_role\_condition\_test](#input\_irsa\_assume\_role\_condition\_test) | Name of the [IAM condition operator](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition_operators.html) to evaluate when assuming the role | `string` | `"StringEquals"` | no |
 | <a name="input_karpenter_chart_name"></a> [karpenter\_chart\_name](#input\_karpenter\_chart\_name) | Chart name for Karpenter | `string` | `"karpenter"` | no |
 | <a name="input_karpenter_chart_repository"></a> [karpenter\_chart\_repository](#input\_karpenter\_chart\_repository) | Chart repository for Karpenter | `string` | `"oci://public.ecr.aws/karpenter"` | no |
-| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Karpenter | `string` | `"1.8.1"` | no |
+| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Karpenter | `string` | `"1.11.1"` | no |
 | <a name="input_karpenter_crd_chart_name"></a> [karpenter\_crd\_chart\_name](#input\_karpenter\_crd\_chart\_name) | Chart name for Karpenter | `string` | `"karpenter-crd"` | no |
 | <a name="input_karpenter_crd_chart_repository"></a> [karpenter\_crd\_chart\_repository](#input\_karpenter\_crd\_chart\_repository) | Chart repository for Karpenter | `string` | `"oci://public.ecr.aws/karpenter"` | no |
-| <a name="input_karpenter_crd_chart_version"></a> [karpenter\_crd\_chart\_version](#input\_karpenter\_crd\_chart\_version) | Chart version for Karpenter | `string` | `"1.8.1"` | no |
+| <a name="input_karpenter_crd_chart_version"></a> [karpenter\_crd\_chart\_version](#input\_karpenter\_crd\_chart\_version) | Chart version for Karpenter | `string` | `"1.11.1"` | no |
 | <a name="input_karpenter_crd_namespace"></a> [karpenter\_crd\_namespace](#input\_karpenter\_crd\_namespace) | Namespace to deploy karpenter | `string` | `"kube-system"` | no |
 | <a name="input_karpenter_crd_release_name"></a> [karpenter\_crd\_release\_name](#input\_karpenter\_crd\_release\_name) | Release name for Karpenter | `string` | `"karpenter-crd"` | no |
 | <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | Namespace to deploy karpenter | `string` | `"kube-system"` | no |
