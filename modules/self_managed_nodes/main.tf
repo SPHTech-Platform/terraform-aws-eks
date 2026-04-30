@@ -56,10 +56,9 @@ locals {
   }]...)
 }
 
-module "self_managed_node_group" {
+module "self_managed_group" {
   source  = "terraform-aws-modules/eks/aws//modules/self-managed-node-group"
   version = "~> 21.19.0"
-
 
   for_each = local.self_managed_node_groups
 
