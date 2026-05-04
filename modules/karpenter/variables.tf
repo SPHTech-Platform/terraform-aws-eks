@@ -287,7 +287,7 @@ variable "enable_irsa" {
 variable "enable_inline_policy" {
   description = "Determines whether the controller policy is created as a standard IAM policy or inline IAM policy. This can be enabled when the error `LimitExceeded: Cannot exceed quota for PolicySize: 6144` is received since standard IAM policies have a limit of 6,144 characters versus an inline role policy's limit of 10,240 ([Reference](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html))"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "oidc_provider_arn" {
