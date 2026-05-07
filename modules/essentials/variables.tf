@@ -1906,13 +1906,17 @@ variable "keda_scaling_enabled" {
 variable "keda_additional_scaling_targets" {
   description = "Additional scaling targets for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
   type = list(object({
-    name      = string
-    namespace = string
-    kind      = optional(string, "Deployment")
-    start     = optional(string)
-    end       = optional(string)
-    replicas  = optional(number, 1)
-    triggers  = optional(list(any))
+    name           = string
+    namespace      = string
+    kind           = optional(string, "Deployment")
+    start          = optional(string)
+    end            = optional(string)
+    replicas       = optional(number, 1)
+    min_replicas   = optional(number)
+    max_replicas   = optional(number)
+    scaled_object  = optional(any)
+    triggers       = optional(list(any))
+    authentication = optional(any)
   }))
   default = []
 }
