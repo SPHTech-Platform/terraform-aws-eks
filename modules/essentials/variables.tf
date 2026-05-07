@@ -1493,7 +1493,7 @@ variable "resolve_conflicts_on_update" {
   default     = "PRESERVE"
 }
 
-variable "call_wait_for_previous_on_create" {
+variable "resolve_conflicts_on_create" {
   description = "value for resolve_conflicts_on_create for aws_eks_addon resource"
   type        = string
   default     = "OVERWRITE"
@@ -1905,20 +1905,8 @@ variable "keda_scaling_enabled" {
 
 variable "keda_additional_scaling_targets" {
   description = "Additional scaling targets for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
-  type = list(object({
-    name           = string
-    namespace      = string
-    kind           = optional(string, "Deployment")
-    start          = optional(string)
-    end            = optional(string)
-    replicas       = optional(number, 1)
-    min_replicas   = optional(number)
-    max_replicas   = optional(number)
-    scaled_object  = optional(any)
-    triggers       = optional(any)
-    authentication = optional(any)
-  }))
-  default = []
+  type        = any
+  default     = []
 }
 
 variable "keda_scaling_timezone" {
