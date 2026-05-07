@@ -88,11 +88,13 @@ locals {
   # Combine system targets with additional targets
   all_scaling_targets = concat(
     [for t in local.system_scaling_targets : {
-      name      = t.name
-      namespace = t.namespace
-      kind      = t.kind
-      replicas  = t.replicas
-      enabled   = t.enabled
+      name           = t.name
+      namespace      = t.namespace
+      kind           = try(t.kind, "Deployment")
+      min_replicas   = try(t.min_replicas, 0)
+      max_replicas   = try(t.max_replicas, t.replicas, 1)
+      scaled_object  = try(t.scaled_object, null)
+      authentication = try(t.authentication, null)
       triggers = try(t.triggers, [
         {
           type = "cron"
@@ -104,13 +106,15 @@ locals {
           }
         }
       ])
-    } if t.enabled],
+    } if try(t.enabled, true)],
     [for t in var.keda_additional_scaling_targets : {
-      name      = t.name
-      namespace = t.namespace
-      kind      = t.kind
-      replicas  = t.replicas
-      enabled   = true
+      name           = t.name
+      namespace      = t.namespace
+      kind           = try(t.kind, "Deployment")
+      min_replicas   = try(t.min_replicas, 0)
+      max_replicas   = try(t.max_replicas, t.replicas, 1)
+      scaled_object  = try(t.scaled_object, null)
+      authentication = try(t.authentication, null)
       triggers = try(t.triggers, [
         {
           type = "cron"
@@ -142,14 +146,24 @@ resource "kubernetes_manifest" "system_scaled_objects" {
       }
     }
     spec = {
-      scaleTargetRef = {
+      scaleTargetRef = each.value.scaled_object != null ? each.value.scaled_object : {
         apiVersion = "apps/v1"
         kind       = each.value.kind
         name       = each.value.name
       }
-      minReplicaCount = 0
-      maxReplicaCount = each.value.replicas
+      minReplicaCount = each.value.min_replicas
+      maxReplicaCount = each.value.max_replicas
       triggers        = each.value.triggers
+    }
+  }
+
+  # Add authenticationRef if provided
+  dynamic "manifest" {
+    for_each = each.value.authentication != null ? [each.value.authentication] : []
+    content {
+      spec = {
+        authenticationRef = manifest.value
+      }
     }
   }
 
