@@ -93,14 +93,14 @@ locals {
       kind      = t.kind
       replicas  = t.replicas
       enabled   = t.enabled
-      triggers = lookup(t, "triggers", [
+      triggers = try(t.triggers, [
         {
           type = "cron"
           metadata = {
             timezone        = var.keda_scaling_timezone
-            start           = lookup(t, "start", "0 8 * * 1-5")
-            end             = lookup(t, "end", "0 20 * * 1-5")
-            desiredReplicas = tostring(lookup(t, "replicas", 1))
+            start           = try(t.start, "0 8 * * 1-5")
+            end             = try(t.end, "0 20 * * 1-5")
+            desiredReplicas = tostring(try(t.replicas, 1))
           }
         }
       ])
@@ -111,14 +111,14 @@ locals {
       kind      = t.kind
       replicas  = t.replicas
       enabled   = true
-      triggers = lookup(t, "triggers", [
+      triggers = try(t.triggers, [
         {
           type = "cron"
           metadata = {
             timezone        = var.keda_scaling_timezone
-            start           = lookup(t, "start", "0 8 * * 1-5")
-            end             = lookup(t, "end", "0 20 * * 1-5")
-            desiredReplicas = tostring(lookup(t, "replicas", 1))
+            start           = try(t.start, "0 8 * * 1-5")
+            end             = try(t.end, "0 20 * * 1-5")
+            desiredReplicas = tostring(try(t.replicas, 1))
           }
         }
       ])
