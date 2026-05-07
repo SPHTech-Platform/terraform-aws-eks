@@ -1493,7 +1493,7 @@ variable "resolve_conflicts_on_update" {
   default     = "PRESERVE"
 }
 
-variable "resolve_conflicts_on_create" {
+variable "call_wait_for_previous_on_create" {
   description = "value for resolve_conflicts_on_create for aws_eks_addon resource"
   type        = string
   default     = "OVERWRITE"
@@ -1915,7 +1915,7 @@ variable "keda_additional_scaling_targets" {
     min_replicas   = optional(number)
     max_replicas   = optional(number)
     scaled_object  = optional(any)
-    triggers       = optional(list(any))
+    triggers       = optional(any)
     authentication = optional(any)
   }))
   default = []
