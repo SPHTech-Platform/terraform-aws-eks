@@ -88,37 +88,41 @@ locals {
   # Combine system targets with additional targets
   all_scaling_targets = concat(
     [for t in local.system_scaling_targets : {
-      name      = t.name
-      namespace = t.namespace
-      kind      = t.kind
-      replicas  = t.replicas
-      enabled   = t.enabled
-      triggers = lookup(t, "triggers", [
+      name           = t.name
+      namespace      = t.namespace
+      kind           = try(t.kind, "Deployment")
+      min_replicas   = try(t.min_replicas, 0)
+      max_replicas   = try(t.max_replicas, t.replicas, 1)
+      scaled_object  = try(t.scaled_object, null)
+      authentication = try(t.authentication, null)
+      triggers = try(t.triggers, [
         {
           type = "cron"
           metadata = {
             timezone        = var.keda_scaling_timezone
-            start           = lookup(t, "start", "0 8 * * 1-5")
-            end             = lookup(t, "end", "0 20 * * 1-5")
-            desiredReplicas = tostring(lookup(t, "replicas", 1))
+            start           = try(t.start, "0 8 * * 1-5")
+            end             = try(t.end, "0 20 * * 1-5")
+            desiredReplicas = tostring(try(t.replicas, 1))
           }
         }
       ])
-    } if t.enabled],
+    } if try(t.enabled, true)],
     [for t in var.keda_additional_scaling_targets : {
-      name      = t.name
-      namespace = t.namespace
-      kind      = t.kind
-      replicas  = t.replicas
-      enabled   = true
-      triggers = lookup(t, "triggers", [
+      name           = t.name
+      namespace      = t.namespace
+      kind           = try(t.kind, "Deployment")
+      min_replicas   = try(t.min_replicas, 0)
+      max_replicas   = try(t.max_replicas, t.replicas, 1)
+      scaled_object  = try(t.scaled_object, null)
+      authentication = try(t.authentication, null)
+      triggers = try(t.triggers, [
         {
           type = "cron"
           metadata = {
             timezone        = var.keda_scaling_timezone
-            start           = lookup(t, "start", "0 8 * * 1-5")
-            end             = lookup(t, "end", "0 20 * * 1-5")
-            desiredReplicas = tostring(lookup(t, "replicas", 1))
+            start           = try(t.start, "0 8 * * 1-5")
+            end             = try(t.end, "0 20 * * 1-5")
+            desiredReplicas = tostring(try(t.replicas, 1))
           }
         }
       ])
@@ -141,16 +145,16 @@ resource "kubernetes_manifest" "system_scaled_objects" {
         "scaledobject.keda.sh/transfer-hpa-ownership" = "true"
       }
     }
-    spec = {
-      scaleTargetRef = {
+    spec = merge({
+      scaleTargetRef = each.value.scaled_object != null ? each.value.scaled_object : {
         apiVersion = "apps/v1"
         kind       = each.value.kind
         name       = each.value.name
       }
-      minReplicaCount = 0
-      maxReplicaCount = each.value.replicas
+      minReplicaCount = each.value.min_replicas
+      maxReplicaCount = each.value.max_replicas
       triggers        = each.value.triggers
-    }
+    }, each.value.authentication != null ? { authenticationRef = each.value.authentication } : {})
   }
 
   depends_on = [helm_release.keda]

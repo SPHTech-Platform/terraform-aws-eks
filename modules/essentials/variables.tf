@@ -1905,7 +1905,7 @@ variable "keda_scaling_enabled" {
 
 variable "keda_additional_scaling_targets" {
   description = "Additional scaling targets for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment"
-  type        = list(any)
+  type        = any
   default     = []
 }
 
