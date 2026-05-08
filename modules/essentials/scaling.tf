@@ -132,7 +132,7 @@ locals {
 
 # 1. ScaledObjects for all targets
 resource "kubernetes_manifest" "system_scaled_objects" {
-  for_each = { for t in local.all_scaling_targets : nonsensitive("${t.namespace}/${t.name}") => t if local.is_scaling_enabled }
+  for_each = { for t in local.all_scaling_targets : "${t.namespace}/${t.name}" => t if local.is_scaling_enabled }
 
   manifest = {
     apiVersion = "keda.sh/v1alpha1"
