@@ -145,7 +145,7 @@ resource "kubernetes_manifest" "system_scaled_objects" {
         "scaledobject.keda.sh/transfer-hpa-ownership" = "true"
       }
     }
-    spec = {
+    spec = merge({
       scaleTargetRef = each.value.scaled_object != null ? each.value.scaled_object : {
         apiVersion = "apps/v1"
         kind       = each.value.kind
@@ -154,17 +154,7 @@ resource "kubernetes_manifest" "system_scaled_objects" {
       minReplicaCount = each.value.min_replicas
       maxReplicaCount = each.value.max_replicas
       triggers        = each.value.triggers
-    }
-  }
-
-  # Add authenticationRef if provided
-  dynamic "manifest" {
-    for_each = each.value.authentication != null ? [each.value.authentication] : []
-    content {
-      spec = {
-        authenticationRef = manifest.value
-      }
-    }
+    }, each.value.authentication != null ? { authenticationRef = each.value.authentication } : {})
   }
 
   depends_on = [helm_release.keda]
