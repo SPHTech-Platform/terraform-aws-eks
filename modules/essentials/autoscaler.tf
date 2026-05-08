@@ -57,7 +57,7 @@ module "cluster_autoscaler_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   version = "~> 6.0"
 
-  name                 = coalesce(var.cluster_autoscaler_iam_role, "${var.cluster_name}-autoscaler")
+  name                 = nonsensitive(coalesce(var.cluster_autoscaler_iam_role, "${var.cluster_name}-autoscaler"))
   description          = "EKS Cluster ${var.cluster_name} Autoscaler"
   permissions_boundary = var.cluster_autoscaler_permissions_boundary
 
