@@ -49,7 +49,7 @@ module "node_termination_handler_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   version = "~> 6.4.0"
 
-  name                 = coalesce(var.node_termination_handler_iam_role, "${var.cluster_name}-nth")
+  name                 = nonsensitive(coalesce(var.node_termination_handler_iam_role, "${var.cluster_name}-nth"))
   description          = "EKS Cluster ${var.cluster_name} Node Termination Handler"
   permissions_boundary = var.node_termination_handler_permissions_boundary
 
@@ -69,7 +69,7 @@ module "node_termination_handler_irsa" {
 # See example at https://github.com/terraform-aws-modules/terraform-aws-eks/tree/v18.7.2/examples/irsa_autoscale_refresh
 #########################################################################################################################
 locals {
-  nth_sqs_name = coalesce(var.node_termination_handler_sqs_name, "${var.cluster_name}-nth")
+  nth_sqs_name = nonsensitive(coalesce(var.node_termination_handler_sqs_name, "${var.cluster_name}-nth"))
 }
 
 module "node_termination_handler_sqs" {
@@ -103,8 +103,8 @@ data "aws_iam_policy_document" "node_termination_handler_sqs" {
 resource "aws_cloudwatch_event_rule" "node_termination_handler_spot" {
   count = var.node_termination_handler_enable ? 1 : 0
 
-  name        = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
-  description = "Node termination event rule for EKS Cluster ${var.cluster_name}"
+  name          = nonsensitive(coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination"))
+  description   = "Node termination event rule for EKS Cluster ${var.cluster_name}"
   event_pattern = jsonencode({
     source      = ["aws.ec2"],
     detail-type = ["EC2 Spot Instance Interruption Warning"]
@@ -114,7 +114,7 @@ resource "aws_cloudwatch_event_rule" "node_termination_handler_spot" {
 resource "aws_cloudwatch_event_target" "node_termination_handler_spot" {
   count = var.node_termination_handler_enable ? 1 : 0
 
-  target_id = coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination")
+  target_id = nonsensitive(coalesce(var.node_termination_handler_spot_event_name, "${var.cluster_name}-spot-termination"))
   rule      = aws_cloudwatch_event_rule.node_termination_handler_spot[0].name
   arn       = module.node_termination_handler_sqs[0].queue_arn
 }
