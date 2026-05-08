@@ -64,6 +64,11 @@ locals {
       kind      = "Deployment"
       replicas  = 1
       enabled   = true
+      advanced = {
+        horizontalPodAutoscalerConfig = {
+          name = "aws-load-balancer-controller"
+        }
+      }
       triggers = [
         {
           type = "cron"
@@ -95,6 +100,7 @@ locals {
       max_replicas   = try(t.max_replicas, t.replicas, 1)
       scaled_object  = try(t.scaled_object, null)
       authentication = try(t.authentication, null)
+      advanced       = try(t.advanced, null)
       triggers = try(t.triggers, [
         {
           type = "cron"
@@ -115,6 +121,7 @@ locals {
       max_replicas   = try(t.max_replicas, t.replicas, 1)
       scaled_object  = try(t.scaled_object, null)
       authentication = try(t.authentication, null)
+      advanced       = try(t.advanced, null)
       triggers = try(t.triggers, [
         {
           type = "cron"
@@ -154,7 +161,10 @@ resource "kubernetes_manifest" "system_scaled_objects" {
       minReplicaCount = each.value.min_replicas
       maxReplicaCount = each.value.max_replicas
       triggers        = each.value.triggers
-    }, each.value.authentication != null ? { authenticationRef = each.value.authentication } : {})
+      },
+      each.value.authentication != null ? { authenticationRef = each.value.authentication } : {},
+      each.value.advanced != null ? { advanced = each.value.advanced } : {}
+    )
   }
 
   depends_on = [helm_release.keda]
