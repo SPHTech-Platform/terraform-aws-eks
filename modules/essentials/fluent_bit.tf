@@ -68,7 +68,7 @@ module "helm_fluent_bit" {
 
   helm_config = local.fluent_bit_helm_config
   irsa_config = {
-    name = "${var.cluster_name}-irsa-fluentbit"
+    name = nonsensitive("${var.cluster_name}-irsa-fluentbit")
     policies = merge(
       {
         "fluent-bit" = one(aws_iam_policy.fluent_bit_irsa[*].arn)
