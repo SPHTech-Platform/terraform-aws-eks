@@ -80,7 +80,7 @@ module "node_termination_handler_sqs" {
 
   name                          = local.nth_sqs_name
   message_retention_seconds     = 300
-  source_queue_policy_documents = data.aws_iam_policy_document.node_termination_handler_sqs.json
+  source_queue_policy_documents = [data.aws_iam_policy_document.node_termination_handler_sqs.json]
 }
 
 data "aws_iam_policy_document" "node_termination_handler_sqs" {
