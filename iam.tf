@@ -174,3 +174,20 @@ moved {
   from = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.ebs_csi[0]
   to   = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.this[0]
 }
+
+# Workaround for EKS CNI IPv6 policy permission gap (pending community module PR #652)
+resource "aws_iam_role_policy" "vpc_cni_ipv6_workaround_irsa" {
+  count = (!var.enable_pod_identity_for_eks_addons && var.ip_family == "ipv6") ? 1 : 0
+
+  name   = "cni-describe-subnets-patch"
+  role   = module.vpc_cni_irsa_role[0].name
+  policy = data.aws_iam_policy_document.cni_ipv6_workaround.json
+}
+
+resource "aws_iam_role_policy" "vpc_cni_ipv6_workaround_pod_identity" {
+  count = (var.enable_pod_identity_for_eks_addons && var.ip_family == "ipv6") ? 1 : 0
+
+  name   = "cni-describe-subnets-patch"
+  role   = module.aws_vpc_cni_pod_identity[0].iam_role_name
+  policy = data.aws_iam_policy_document.cni_ipv6_workaround.json
+}
