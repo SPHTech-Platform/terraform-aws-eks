@@ -107,4 +107,3 @@ data "aws_iam_policy_document" "cni_ipv6_workaround" {
     resources = ["*"]
   }
 }
-

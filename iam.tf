@@ -191,4 +191,3 @@ resource "aws_iam_role_policy" "vpc_cni_ipv6_workaround_pod_identity" {
   role   = module.aws_vpc_cni_pod_identity[0].iam_role_name
   policy = data.aws_iam_policy_document.cni_ipv6_workaround.json
 }
-
