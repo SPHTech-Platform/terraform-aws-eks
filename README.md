@@ -192,7 +192,7 @@ module "karpenter" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 3.0 |
@@ -202,14 +202,14 @@ module "karpenter" {
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.33 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_aws_ebs_csi_pod_identity"></a> [aws\_ebs\_csi\_pod\_identity](#module\_aws\_ebs\_csi\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 2.4 |
 | <a name="module_aws_vpc_cni_pod_identity"></a> [aws\_vpc\_cni\_pod\_identity](#module\_aws\_vpc\_cni\_pod\_identity) | terraform-aws-modules/eks-pod-identity/aws | ~> 2.4 |
 | <a name="module_ebs_csi_irsa_role"></a> [ebs\_csi\_irsa\_role](#module\_ebs\_csi\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 6.0 |
@@ -224,10 +224,12 @@ module "karpenter" {
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_iam_role.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.workers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.ebs_csi_kms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
+| [aws_iam_role_policy.vpc_cni_ipv6_workaround_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
+| [aws_iam_role_policy.vpc_cni_ipv6_workaround_pod_identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy_attachment.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.workers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_service_linked_role.autoscaling](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_service_linked_role) | resource |
@@ -237,6 +239,7 @@ module "karpenter" {
 | [aws_ami.eks_default_bottlerocket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_arn.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/arn) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.cni_ipv6_workaround](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.ec2_assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.eks_assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.kms_csi_ebs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -247,7 +250,7 @@ module "karpenter" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_access_entries"></a> [access\_entries](#input\_access\_entries) | Map of access entries to add to the cluster | `any` | `{}` | no |
 | <a name="input_additional_karpenter_security_group_selector_ids"></a> [additional\_karpenter\_security\_group\_selector\_ids](#input\_additional\_karpenter\_security\_group\_selector\_ids) | Additional security group IDs to add to the Karpenter node groups, Pass values if `karpenter_security_group_selector_terms_type = ids` | `list(string)` | `[]` | no |
 | <a name="input_additional_karpenter_security_group_selector_tags"></a> [additional\_karpenter\_security\_group\_selector\_tags](#input\_additional\_karpenter\_security\_group\_selector\_tags) | Additional security group tags to add to the Karpenter node groups. Pass values if `karpenter_security_group_selector_terms_type = tags` | `map(string)` | `{}` | no |
@@ -301,8 +304,8 @@ module "karpenter" {
 | <a name="input_force_irsa"></a> [force\_irsa](#input\_force\_irsa) | Force usage of IAM Roles for Service Account | `bool` | `true` | no |
 | <a name="input_iam_role_additional_policies"></a> [iam\_role\_additional\_policies](#input\_iam\_role\_additional\_policies) | Additional policies to be added to the IAM role | `set(string)` | `[]` | no |
 | <a name="input_ip_family"></a> [ip\_family](#input\_ip\_family) | The IP family used to assign Kubernetes pod and service addresses. Valid values are `ipv4` (default) and `ipv6`. You can only specify an IP family when you create a cluster, changing this value will force a new cluster to be created | `string` | `"ipv4"` | no |
-| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Karpenter | `string` | `"1.11.1"` | no |
-| <a name="input_karpenter_crd_chart_version"></a> [karpenter\_crd\_chart\_version](#input\_karpenter\_crd\_chart\_version) | Chart version for Karpenter CRDs same version as `karpenter_chart_version` | `string` | `"1.11.1"` | no |
+| <a name="input_karpenter_chart_version"></a> [karpenter\_chart\_version](#input\_karpenter\_chart\_version) | Chart version for Karpenter | `string` | `"1.12.0"` | no |
+| <a name="input_karpenter_crd_chart_version"></a> [karpenter\_crd\_chart\_version](#input\_karpenter\_crd\_chart\_version) | Chart version for Karpenter CRDs same version as `karpenter_chart_version` | `string` | `"1.12.0"` | no |
 | <a name="input_karpenter_default_subnet_selector_tags"></a> [karpenter\_default\_subnet\_selector\_tags](#input\_karpenter\_default\_subnet\_selector\_tags) | Subnet selector tags for Karpenter default node class | `map(string)` | <pre>{<br/>  "kubernetes.io/role/internal-elb": "1"<br/>}</pre> | no |
 | <a name="input_karpenter_ephemeral_volume_size"></a> [karpenter\_ephemeral\_volume\_size](#input\_karpenter\_ephemeral\_volume\_size) | Ephemeral volume size for Karpenter node groups | `string` | `"50Gi"` | no |
 | <a name="input_karpenter_nodeclass_kubelet_clusterdns_ips"></a> [karpenter\_nodeclass\_kubelet\_clusterdns\_ips](#input\_karpenter\_nodeclass\_kubelet\_clusterdns\_ips) | Cluster DNS IPs for Karpenter node classes, assign values if `kube-proxy` mode is `IPVS` and should match with Essentials module `nodelocaldns_localdns_ip` variable value | `list(string)` | `[]` | no |
@@ -333,7 +336,7 @@ module "karpenter" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_cluster_arn"></a> [cluster\_arn](#output\_cluster\_arn) | The ARN of the EKS cluster |
 | <a name="output_cluster_certificate_authority_data"></a> [cluster\_certificate\_authority\_data](#output\_cluster\_certificate\_authority\_data) | Base64 Encoded Cluster CA Data |
 | <a name="output_cluster_endpoint"></a> [cluster\_endpoint](#output\_cluster\_endpoint) | Endpoint of the EKS Cluster |
