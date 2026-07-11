@@ -104,7 +104,7 @@ variable "addon_ascp_enabled" {
 }
 
 variable "vpc_cni_env" {
-  description = "Additional environment variables for the VPC CNI (aws-node) container, merged over the module defaults. Example: { WARM_IP_TARGET = \"4\", MINIMUM_IP_TARGET = \"8\" } to shrink per-node warm IP pools on IP-constrained subnets."
+  description = "Additional environment variables for the VPC CNI (aws-node) container, merged over the module defaults. Example: { WARM_IP_TARGET = \"4\", MINIMUM_IP_TARGET = \"8\" } to shrink per-node warm IP pools on IP-constrained subnets. Values land in addon configuration (plan output and state) — do not use for secrets."
   type        = map(string)
   default     = {}
 }
