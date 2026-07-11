@@ -1,14 +1,16 @@
 locals {
+  # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
+  addon_vpc_cni_fargate_env = {
+    ENABLE_POD_ENI                    = "true"
+    POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
+  }
+
   addon_vpc_cni = {
     fargate_pod_identity = {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       configuration_values = jsonencode({
-        env = {
-          # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
-          ENABLE_POD_ENI                    = "true"
-          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
-        }
+        env = merge(local.addon_vpc_cni_fargate_env, var.vpc_cni_env)
         init = {
           env = {
             DISABLE_TCP_EARLY_DEMUX = "true"
@@ -24,11 +26,7 @@ locals {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       configuration_values = jsonencode({
-        env = {
-          # Reference doc: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html#security-groups-pods-deployment
-          ENABLE_POD_ENI                    = "true"
-          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
-        }
+        env = merge(local.addon_vpc_cni_fargate_env, var.vpc_cni_env)
         init = {
           env = {
             DISABLE_TCP_EARLY_DEMUX = "true"
@@ -41,6 +39,7 @@ locals {
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       service_account_role_arn    = try(module.vpc_cni_irsa_role[0].arn, null)
+      configuration_values        = length(var.vpc_cni_env) > 0 ? jsonencode({ env = var.vpc_cni_env }) : null
     }
     nodegroup_pod_identity = {
       most_recent                 = true
@@ -49,6 +48,7 @@ locals {
         role_arn        = try(module.aws_vpc_cni_pod_identity[0].iam_role_arn, null)
         service_account = "aws-node"
       }]
+      configuration_values = length(var.vpc_cni_env) > 0 ? jsonencode({ env = var.vpc_cni_env }) : null
     }
   }
 
