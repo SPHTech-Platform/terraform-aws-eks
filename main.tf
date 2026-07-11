@@ -12,6 +12,8 @@ locals {
 
   addon_vpc_cni = {
     fargate_pod_identity = {
+      # CNI settings must apply before nodes launch or first nodes bootstrap with defaults.
+      before_compute              = true
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       configuration_values = jsonencode({
@@ -28,6 +30,7 @@ locals {
       }]
     }
     fargate_irsa = {
+      before_compute              = true
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       configuration_values = jsonencode({
@@ -41,11 +44,13 @@ locals {
       service_account_role_arn = try(module.vpc_cni_irsa_role[0].arn, null)
     }
     nodegroup_irsa = merge({
+      before_compute              = true
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       service_account_role_arn    = try(module.vpc_cni_irsa_role[0].arn, null)
     }, local.addon_vpc_cni_nodegroup_config)
     nodegroup_pod_identity = merge({
+      before_compute              = true
       most_recent                 = true
       resolve_conflicts_on_update = "OVERWRITE"
       pod_identity_association = [{
