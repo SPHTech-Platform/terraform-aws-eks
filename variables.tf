@@ -15,11 +15,11 @@ variable "name" {
 variable "kubernetes_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.35"
+  default     = "1.36"
 
   validation {
-    condition     = try(tonumber(var.kubernetes_version) < 1.36, false)
-    error_message = "EKS Cluster Version 1.36 is not supported by this module. The maximum supported version is 1.35."
+    condition     = try(tonumber(var.kubernetes_version) < 1.37, false)
+    error_message = "EKS Cluster Version 1.37 is not supported by this module. The maximum supported version is 1.36."
   }
 }
 
@@ -101,6 +101,12 @@ variable "addon_ascp_enabled" {
   description = "Enable AWS Secrets Store CSI Driver Provider"
   type        = bool
   default     = true
+}
+
+variable "vpc_cni_env" {
+  description = "Additional environment variables for the VPC CNI (aws-node) container, merged over the module defaults. Example: { WARM_IP_TARGET = \"4\", MINIMUM_IP_TARGET = \"8\" } to shrink per-node warm IP pools on IP-constrained subnets. Values land in addon configuration (plan output and state) — do not use for secrets."
+  type        = map(string)
+  default     = {}
 }
 
 #######################
@@ -549,13 +555,13 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.12.0"
+  default     = "1.14.0"
 }
 
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "1.12.0"
+  default     = "1.14.0"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
