@@ -15,11 +15,11 @@ variable "name" {
 variable "kubernetes_version" {
   description = "EKS Cluster Version"
   type        = string
-  default     = "1.35"
+  default     = "1.36"
 
   validation {
-    condition     = try(tonumber(var.kubernetes_version) < 1.36, false)
-    error_message = "EKS Cluster Version 1.36 is not supported by this module. The maximum supported version is 1.35."
+    condition     = try(tonumber(var.kubernetes_version) < 1.37, false)
+    error_message = "EKS Cluster Version 1.37 is not supported by this module. The maximum supported version is 1.36."
   }
 }
 
