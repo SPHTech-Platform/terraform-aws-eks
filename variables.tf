@@ -555,13 +555,13 @@ variable "create_fargate_logging_policy_for_karpenter" {
 variable "karpenter_chart_version" {
   description = "Chart version for Karpenter"
   type        = string
-  default     = "1.12.0"
+  default     = "1.14.0"
 }
 
 variable "karpenter_crd_chart_version" {
   description = "Chart version for Karpenter CRDs same version as `karpenter_chart_version`"
   type        = string
-  default     = "1.12.0"
+  default     = "1.14.0"
 }
 
 variable "karpenter_default_subnet_selector_tags" {
