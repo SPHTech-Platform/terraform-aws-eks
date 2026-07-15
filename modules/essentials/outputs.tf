@@ -10,10 +10,10 @@ output "fluent_bit_irsa_id" {
 
 output "fluent_bit_s3_bucket_id" {
   description = "Name of S3 bucket used to store Fluentbit logs"
-  value       = try(module.fluentbit_s3_bucket.s3_bucket_id, "")
+  value       = try(module.fluentbit_s3_bucket[0].s3_bucket_id, "")
 }
 
 output "fluent_bit_s3_bucket_arn" {
   description = "ARN of S3 bucket used to store Fluentbit logs"
-  value       = try(module.fluentbit_s3_bucket.s3_bucket_arn, "")
+  value       = try(module.fluentbit_s3_bucket[0].s3_bucket_arn, "")
 }
