@@ -10,7 +10,7 @@ output:
 
     ### Defining Providers
 
-    Definining providers in reusable modules is
+    Defining providers in reusable modules is
     [deprecated](https://www.terraform.io/language/modules/develop/providers) and causes features like
     modules `for_each` and `count` to not work. In addition to the `aws` providers, the main module
     and submodules can require additional Kubernetes providers to be configured.
