@@ -53,15 +53,14 @@ Set the autoscaling mode so that essentials module will skip creation of autosca
 ```
 module "eks_essentials" {
   autoscaling_mode        = "karpenter"
-   # ...
+  # ...
 }
 ```
 
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 3.0 |
@@ -71,7 +70,7 @@ module "eks_essentials" {
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | >= 3.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.33 |
@@ -80,10 +79,10 @@ module "eks_essentials" {
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_cluster_autoscaler_irsa_role"></a> [cluster\_autoscaler\_irsa\_role](#module\_cluster\_autoscaler\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts | ~> 6.0 |
 | <a name="module_fluentbit_s3_bucket"></a> [fluentbit\_s3\_bucket](#module\_fluentbit\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~> 5.12.0 |
-| <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 0.3.0 |
+| <a name="module_helm_fluent_bit"></a> [helm\_fluent\_bit](#module\_helm\_fluent\_bit) | SPHTech-Platform/release/helm | ~> 1.1.0 |
 | <a name="module_helm_kube_state_metrics"></a> [helm\_kube\_state\_metrics](#module\_helm\_kube\_state\_metrics) | SPHTech-Platform/release/helm | ~> 0.3.0 |
 | <a name="module_helm_metrics_server"></a> [helm\_metrics\_server](#module\_helm\_metrics\_server) | SPHTech-Platform/release/helm | ~> 0.3.0 |
 | <a name="module_helm_node_exporter"></a> [helm\_node\_exporter](#module\_helm\_node\_exporter) | SPHTech-Platform/release/helm | ~> 0.3.0 |
@@ -94,7 +93,7 @@ module "eks_essentials" {
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_cloudwatch_event_rule.node_termination_handler_spot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_rule) | resource |
 | [aws_cloudwatch_event_target.node_termination_handler_spot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_log_group.aws_for_fluent_bit](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
@@ -136,7 +135,7 @@ module "eks_essentials" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_adot_addon"></a> [adot\_addon](#input\_adot\_addon) | value of the adot addon | `any` | `{}` | no |
 | <a name="input_affinity"></a> [affinity](#input\_affinity) | Pod affinity | `map(string)` | `{}` | no |
 | <a name="input_autoscaling_mode"></a> [autoscaling\_mode](#input\_autoscaling\_mode) | Autoscaling mode: cluster\_autoscaler or karpenter | `string` | `"cluster_autoscaler"` | no |
@@ -252,7 +251,7 @@ module "eks_essentials" {
 | <a name="input_ingress_shim"></a> [ingress\_shim](#input\_ingress\_shim) | Configure Ingess Shim. See https://cert-manager.io/docs/usage/ingress/ | `map(any)` | `{}` | no |
 | <a name="input_ip_dual_stack_enabled"></a> [ip\_dual\_stack\_enabled](#input\_ip\_dual\_stack\_enabled) | Enable essentials to support EKS dual stack cluster | `bool` | `false` | no |
 | <a name="input_is_production"></a> [is\_production](#input\_is\_production) | Whether the environment is production or not | `bool` | `false` | no |
-| <a name="input_keda_additional_scaling_targets"></a> [keda\_additional\_scaling\_targets](#input\_keda\_additional\_scaling\_targets) | Additional scaling targets for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment | `list(any)` | `[]` | no |
+| <a name="input_keda_additional_scaling_targets"></a> [keda\_additional\_scaling\_targets](#input\_keda\_additional\_scaling\_targets) | Additional scaling targets for KEDA operator and metric server. This is required when KEDA is enabled and it's not production environment | `any` | `[]` | no |
 | <a name="input_keda_chart_name"></a> [keda\_chart\_name](#input\_keda\_chart\_name) | Chart name for KEDA | `string` | `"keda"` | no |
 | <a name="input_keda_chart_repository"></a> [keda\_chart\_repository](#input\_keda\_chart\_repository) | Chart repository for KEDA | `string` | `"https://kedacore.github.io/charts"` | no |
 | <a name="input_keda_chart_version"></a> [keda\_chart\_version](#input\_keda\_chart\_version) | Chart version for KEDA | `string` | `"2.19.0"` | no |
@@ -404,7 +403,8 @@ module "eks_essentials" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_fluent_bit_irsa_id"></a> [fluent\_bit\_irsa\_id](#output\_fluent\_bit\_irsa\_id) | ID of the IAM Policy used by the Fluent Bit IAM Role for Service Account |
+| <a name="output_fluent_bit_s3_bucket_arn"></a> [fluent\_bit\_s3\_bucket\_arn](#output\_fluent\_bit\_s3\_bucket\_arn) | ARN of S3 bucket used to store Fluentbit logs |
+| <a name="output_fluent_bit_s3_bucket_id"></a> [fluent\_bit\_s3\_bucket\_id](#output\_fluent\_bit\_s3\_bucket\_id) | Name of S3 bucket used to store Fluentbit logs |
 | <a name="output_node_termination_handler_sqs_arn"></a> [node\_termination\_handler\_sqs\_arn](#output\_node\_termination\_handler\_sqs\_arn) | ARN of the SQS queue used to handle node termination events |
-<!-- END_TF_DOCS -->

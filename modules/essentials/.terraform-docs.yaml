@@ -1,0 +1,69 @@
+formatter: "markdown table"
+
+output:
+  file: "README.md"
+  mode: replace
+  template: |
+    # EKS Essentials
+
+    ## Usage
+
+    ### Defining Providers
+
+    Defining providers in reusable modules is
+    [deprecated](https://www.terraform.io/language/modules/develop/providers) and causes features like
+    modules `for_each` and `count` to not work. In addition to the `aws` providers, the main module
+    and submodules can require additional Kubernetes providers to be configured.
+
+    ```hcl
+    provider "aws" {
+      # ...
+    }
+
+    data "aws_eks_cluster" "this" {
+      name = var.cluster_name
+    }
+
+    data "aws_eks_cluster_auth" "this" {
+      name = var.cluster_name
+    }
+
+    provider "kubernetes" {
+      host                   = data.aws_eks_cluster.this.endpoint
+      cluster_ca_certificate = base64decode(data.aws_eks_cluster.this.certificate_authority[0].data)
+      token                  = data.aws_eks_cluster_auth.this.token
+    }
+
+    provider "helm" {
+      kubernetes {
+        host                   = data.aws_eks_cluster.this.endpoint
+        cluster_ca_certificate = base64decode(data.aws_eks_cluster.this.certificate_authority[0].data)
+        token                  = data.aws_eks_cluster_auth.this.token
+      }
+
+      experiments {
+        manifest = true
+      }
+    }
+
+    module "eks_essentials" {
+      # ...
+    }
+    ```
+
+    ## To use Karpenter instead of cluster autoscaler [for managed_nodegroups only for now]
+
+    > The key difference between nodegroups and fargate profiles Karpenter config is, the latter sets the IAM role at EKS cluster level using Karpenter's Role, while nodegroups gives its IAM roles to the Karpenter to assume. Note the config diff at https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/karpenter
+
+    Set the autoscaling mode so that essentials module will skip creation of autoscaler resources
+    ```
+    module "eks_essentials" {
+      autoscaling_mode        = "karpenter"
+      # ...
+    }
+    ```
+
+    {{ .Content }}
+
+settings:
+  lockfile: false
