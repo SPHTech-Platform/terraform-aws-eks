@@ -2,10 +2,11 @@ locals {
   base_karpenter_values = {
     # interruptionQueue: on the IRSA path the queue is aws_sqs_queue.this in this module;
     # the nested module runs with enable_spot_termination = false so its output is null.
+    # Guard mirrors that resource's count so the name stays known at plan time.
     settings = {
       clusterName       = var.cluster_name
       clusterEndpoint   = var.cluster_endpoint
-      interruptionQueue = try(aws_sqs_queue.this[0].name, module.karpenter.queue_name, null)
+      interruptionQueue = var.enable_irsa && var.enable_spot_termination ? local.queue_name : module.karpenter.queue_name
     }
     controller = {
       resources = {
