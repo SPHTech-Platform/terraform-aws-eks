@@ -128,7 +128,7 @@ variable "cluster_autoscaler_chart_repository" {
 variable "cluster_autoscaler_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "9.56.0"
+  default     = "9.59.0"
 }
 
 variable "cluster_autoscaler_namespace" {
@@ -1780,7 +1780,7 @@ variable "keda_chart_repository" {
 variable "keda_chart_version" {
   description = "Chart version for KEDA"
   type        = string
-  default     = "2.19.0"
+  default     = "2.21.0"
 }
 
 variable "keda_namespace" {
