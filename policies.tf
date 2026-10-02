@@ -96,5 +96,3 @@ data "aws_iam_policy_document" "kms_csi_ebs" {
     resources = [module.kms_ebs.key_arn]
   }
 }
-
-

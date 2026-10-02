@@ -174,5 +174,3 @@ moved {
   from = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.ebs_csi[0]
   to   = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.this[0]
 }
-
-
