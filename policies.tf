@@ -97,13 +97,4 @@ data "aws_iam_policy_document" "kms_csi_ebs" {
   }
 }
 
-# Workaround for EKS CNI IPv6 policy permission gap (pending community module PR #652)
-data "aws_iam_policy_document" "cni_ipv6_workaround" {
-  statement {
-    actions = [
-      "ec2:DescribeSubnets",
-      "ec2:DescribeSecurityGroups",
-    ]
-    resources = ["*"]
-  }
-}
+
