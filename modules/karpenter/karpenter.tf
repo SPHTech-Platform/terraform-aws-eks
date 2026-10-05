@@ -48,7 +48,7 @@ locals {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 21.19.0"
+  version = "~> 21.26.0"
 
   region = var.region
 

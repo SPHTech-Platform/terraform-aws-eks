@@ -70,7 +70,7 @@ module "vpc_cni_irsa_role" {
   count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "~> 6.0"
+  version = "~> 6.8.2"
 
   name        = "${var.name}-cni"
   description = "EKS Cluster ${var.name} VPC CNI Addon"
@@ -93,7 +93,7 @@ module "ebs_csi_irsa_role" {
   count = !var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "~> 6.0"
+  version = "~> 6.8.2"
 
   name        = "${var.name}-ebs-csi"
   description = "EKS Cluster ${var.name} EBS CSI Addon"
@@ -126,7 +126,7 @@ module "aws_vpc_cni_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 2.4"
+  version = "~> 2.9.0"
 
   name   = "aws-vpc-cni-${var.ip_family}"
   region = var.region
@@ -142,7 +142,7 @@ module "aws_ebs_csi_pod_identity" {
   count = var.enable_pod_identity_for_eks_addons ? 1 : 0
 
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "~> 2.4"
+  version = "~> 2.9.0"
 
   name   = "aws-ebs-csi"
   region = var.region
@@ -173,21 +173,4 @@ moved {
 moved {
   from = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.ebs_csi[0]
   to   = module.ebs_csi_irsa_role[0].aws_iam_role_policy_attachment.this[0]
-}
-
-# Workaround for EKS CNI IPv6 policy permission gap (pending community module PR #652)
-resource "aws_iam_role_policy" "vpc_cni_ipv6_workaround_irsa" {
-  count = (!var.enable_pod_identity_for_eks_addons && var.ip_family == "ipv6") ? 1 : 0
-
-  name   = "cni-describe-subnets-patch"
-  role   = module.vpc_cni_irsa_role[0].name
-  policy = data.aws_iam_policy_document.cni_ipv6_workaround.json
-}
-
-resource "aws_iam_role_policy" "vpc_cni_ipv6_workaround_pod_identity" {
-  count = (var.enable_pod_identity_for_eks_addons && var.ip_family == "ipv6") ? 1 : 0
-
-  name   = "cni-describe-subnets-patch"
-  role   = module.aws_vpc_cni_pod_identity[0].iam_role_name
-  policy = data.aws_iam_policy_document.cni_ipv6_workaround.json
 }

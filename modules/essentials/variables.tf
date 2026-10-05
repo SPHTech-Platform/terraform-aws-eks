@@ -128,7 +128,7 @@ variable "cluster_autoscaler_chart_repository" {
 variable "cluster_autoscaler_chart_version" {
   description = "Chart version for Cluster Autoscaler"
   type        = string
-  default     = "9.56.0"
+  default     = "9.59.0"
 }
 
 variable "cluster_autoscaler_namespace" {
@@ -1780,7 +1780,7 @@ variable "keda_chart_repository" {
 variable "keda_chart_version" {
   description = "Chart version for KEDA"
   type        = string
-  default     = "2.19.0"
+  default     = "2.21.0"
 }
 
 variable "keda_namespace" {
@@ -1925,4 +1925,10 @@ variable "keda_self_scale_up_schedule" {
   description = "Cron expression for self scale up, required if scaling is enabled for KEDA operator and metric server"
   type        = string
   default     = "30 7 * * 1-5"
+}
+
+variable "keda_watch_label_selector" {
+  description = "Restricts the KEDA operator to reconcile only ScaledObjects and ScaledJobs matching the given Kubernetes label selector"
+  type        = string
+  default     = ""
 }

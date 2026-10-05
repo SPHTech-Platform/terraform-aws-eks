@@ -1,6 +1,6 @@
 module "fargate_profile" {
   source  = "terraform-aws-modules/eks/aws//modules/fargate-profile"
-  version = "~> 21.19.0"
+  version = "~> 21.26.0"
 
   region     = var.region
   partition  = var.partition
