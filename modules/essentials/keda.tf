@@ -60,6 +60,10 @@ resource "helm_release" "keda" {
       name  = "resources.webhooks.limits.memory"
       value = var.keda_webhooks_limits_memory
     },
+    {
+      name  = "watchLabelSelector"
+      value = var.keda_watch_label_selector
+    },
   ]
 }
 

@@ -1926,3 +1926,9 @@ variable "keda_self_scale_up_schedule" {
   type        = string
   default     = "30 7 * * 1-5"
 }
+
+variable "keda_watch_label_selector" {
+  description = "Restricts the KEDA operator to reconcile only ScaledObjects and ScaledJobs matching the given Kubernetes label selector"
+  type        = string
+  default     = ""
+}
