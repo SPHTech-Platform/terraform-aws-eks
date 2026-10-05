@@ -38,3 +38,5 @@ example: *tfplan*
 .terraformrc
 terraform.rc
 GEMINI.md
+.agents/*
+.learnings/*
