@@ -676,7 +676,7 @@ variable "cert_manager_chart_repository" {
 variable "cert_manager_chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
   type        = string
-  default     = "v1.20.2"
+  default     = "v1.21.2"
 }
 
 variable "certmanager_namespace" {
@@ -1343,7 +1343,7 @@ variable "metrics_server_helm_config_defaults" {
     name        = "metrics-server"
     chart       = "metrics-server"
     repository  = "https://kubernetes-sigs.github.io/metrics-server/"
-    version     = "3.13.0"
+    version     = "3.14.0"
     description = "Metric server helm Chart deployment configuration"
   }
 }
@@ -1376,7 +1376,7 @@ variable "kube_state_metrics_helm_config_defaults" {
     name        = "kube-state-metrics"
     chart       = "kube-state-metrics"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "7.2.2"
+    version     = "8.6.0"
     namespace   = "kube-system"
     description = "kube-state-metrics helm Chart deployment configuration"
   }
@@ -1404,7 +1404,7 @@ variable "node_exporter_helm_config_defaults" {
     name        = "prometheus-node-exporter"
     chart       = "prometheus-node-exporter"
     repository  = "https://prometheus-community.github.io/helm-charts"
-    version     = "4.53.1"
+    version     = "4.59.0"
     namespace   = "kube-system"
     description = "prometheus-node-exporter helm Chart deployment configuration"
   }
@@ -1432,7 +1432,7 @@ variable "fluent_bit_helm_config_defaults" {
     name        = "fluent-bit"
     chart       = "fluent-bit"
     repository  = "https://fluent.github.io/helm-charts"
-    version     = "0.57.3"
+    version     = "0.58.2"
     namespace   = "logging"
     description = "Fluent Bit helm Chart deployment configuration"
   }
