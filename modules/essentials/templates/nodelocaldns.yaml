@@ -36,6 +36,15 @@ config:
     duration: 30s
     percentage: 20%
 
+  # -- Cache TTL in seconds for DNS records.
+  cacheTTL: ${cache_ttl}
+
+  # -- Serve stale cache entries while fetching fresh ones in the background
+  serveStale:
+    enabled: ${serve_stale_enabled}
+    duration: "1h"
+    mode: verify
+
   # -- Port used for the health endpoint
   healthPort: 8080
 

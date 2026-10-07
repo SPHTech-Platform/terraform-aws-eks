@@ -1613,7 +1613,7 @@ variable "nodelocaldns_chart_repository" {
 variable "nodelocaldns_chart_version" {
   description = "Chart version for Node Local DNS Cache"
   type        = string
-  default     = "2.7.0"
+  default     = "2.9.2"
 }
 
 variable "nodelocaldns_namespace" {
@@ -1631,7 +1631,7 @@ variable "nodelocaldns_image_repository" {
 variable "nodelocaldns_image_tag" {
   description = "Node Local DNS Cache image tag, Refer https://github.com/kubernetes/dns/releases to get tag "
   type        = string
-  default     = "1.26.0"
+  default     = "1.27.1"
 }
 
 variable "nodelocaldns_internal_domain_name" {
@@ -1931,4 +1931,16 @@ variable "keda_watch_label_selector" {
   description = "Restricts the KEDA operator to reconcile only ScaledObjects and ScaledJobs matching the given Kubernetes label selector"
   type        = string
   default     = ""
+}
+
+variable "nodelocaldns_cache_ttl" {
+  description = "Cache TTL in seconds for DNS records."
+  type        = number
+  default     = 30
+}
+
+variable "nodelocaldns_serve_stale_enabled" {
+  description = "If enabled, coredns will serve stale cache entries while fetching fresh ones in the background."
+  type        = bool
+  default     = false
 }
