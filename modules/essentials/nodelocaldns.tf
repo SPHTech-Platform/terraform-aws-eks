@@ -15,6 +15,8 @@ locals {
     pod_resources            = jsonencode(var.nodelocaldns_pod_resources)
     affinity                 = jsonencode(var.nodelocaldns_affinity)
     image_pull_secrets       = jsonencode(var.nodelocaldns_image_pull_secrets)
+    cache_ttl                = var.nodelocaldns_cache_ttl
+    serve_stale_enabled      = var.nodelocaldns_serve_stale_enabled
   }
 }
 
