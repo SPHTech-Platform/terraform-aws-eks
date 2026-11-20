@@ -6,6 +6,8 @@ module "fluentbit_s3_bucket" {
 
   bucket = "fluentbit-log-bucket-${random_string.s3_suffix.result}"
 
+  attach_deny_insecure_transport_policy = true
+
   versioning = {
     enabled = false
   }
